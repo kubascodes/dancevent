@@ -23,9 +23,9 @@
     "bcryptjs": "2.4.3",
     "body-parser": "1.18.2",
     "express": "4.16.2",
-    "helmet": "3.11.0",
+    "helmet": "^3.22.0",
     "jsonwebtoken": "8.1.1",
-    "mongoose": "5.0.7"
+    "mongoose": "^5.9.16"
   },
   "devDependencies": {
     "nodemon": "1.14.12"

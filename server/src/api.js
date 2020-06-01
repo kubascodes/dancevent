@@ -10,25 +10,25 @@ const auth  = require('./routes/auth');
 const movie = require('./routes/movie');
 
 
-const api = express();
+const app = express();
 
 // Adding Basic Middlewares
-api.use(helmet());
-api.use(bodyParser.json());
-api.use(bodyParser.urlencoded({ extended: false }));
-api.use(middlewares.allowCrossDomain);
+app.use(helmet());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(middlewares.allowCrossDomain);
 
 
 // Basic route
-api.get('/', (req, res) => {
+app.get('/', (req, res) => {
     res.json({
         name: 'SEBA Master Movie Backend'
     });
 });
 
-// API routes
-api.use('/auth'  , auth);
-api.use('/movies', movie);
+// app routes
+app.use('/auth'  , auth);
+app.use('/movies', movie);
 
 
-module.exports = api;
+module.exports = app;

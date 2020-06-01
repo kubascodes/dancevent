@@ -43,23 +43,15 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
-                    use: "css-loader"
-                })
+                use: ['style-loader', 'css-loader']
             }
-
         ]
     },
     plugins: [
         new CleanWebpackPlugin(['dist']),
-        new webpack.optimize.CommonsChunkPlugin({name: "vendor", minChunks: Infinity,}),
-        new HtmlWebpackPlugin({
-            template: './src/index.html',
-            filename: 'index.html',
-            inject: 'body'
-        }),
-        new ExtractTextPlugin("styles/app.css")
+        //new config.optimization.splitChunks({name: "vendor", minChunks: Infinity,}),
+        //new HtmlWebpackPlugin(),
+        //new ExtractTextPlugin("styles/app.css")
     ]
 
 };

@@ -9,9 +9,11 @@ const common         = require('./webpack.common.js');
 module.exports = merge(common, {
     plugins: [
         new UglifyJSPlugin({
-            output: {
-                comments: false,
-            },
+          uglifyOptions: {
+                      output: {
+                          comments: false,
+                      },
+                    }
         }),
         new webpack.DefinePlugin({
             'process.env': {
