@@ -1,6 +1,4 @@
-"use strict";
-
-const MovieModel = require('../models/movie');
+const Event = require('../models/event');
 
 
 const create = async (req, res) => {
@@ -10,7 +8,7 @@ const create = async (req, res) => {
     });
 
     try {
-      let movie = await MovieModel.create(req.body);
+      let movie = await Event.create(req.body);
 
       return res.status(201).json(movie)
     } catch(err) {
@@ -23,7 +21,7 @@ const create = async (req, res) => {
 
 const read = async (req, res) => {
   try {
-    let movie = await MovieModel.findById(req.params.id).exec();
+    let movie = await Event.findById(req.params.id).exec();
 
     if (!movie) return res.status(404).json({
       error: 'Not Found',
@@ -48,7 +46,7 @@ const update = async (req, res) => {
     }
 
     try {
-      let movie = await MovieModel.findByIdAndUpdate(req.params.id, req.body, {
+      let movie = await Event.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
       }).exec();
@@ -64,7 +62,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    await MovieModel.findByIdAndRemove(req.params.id).exec();
+    await Event.findByIdAndRemove(req.params.id).exec();
 
     return res.status(200).json({message: `Movie with id${req.params.id} was deleted`});
   } catch(err) {
@@ -77,7 +75,7 @@ const remove = async (req, res) => {
 
 const list  = async (req, res) => {
   try {
-    let movies = await MovieModel.find({}).exec();
+    let movies = await Event.find({}).exec();
 
     return res.status(200).json(movies);
   } catch(err) {

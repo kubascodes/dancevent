@@ -22,13 +22,13 @@ app.use(middlewares.allowCrossDomain);
 // Basic route
 app.get('/', (req, res) => {
     res.json({
-        name: 'SEBA Master Movie Backend'
+        name: 'Dancevent Backend'
     });
 });
 
 // app routes
 app.use('/auth'  , auth);
-app.use('/movies', movie);
+app.use('/dancevent', movie);
 
 
 module.exports = app;
