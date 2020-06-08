@@ -13,10 +13,10 @@ const EventSchema  = new mongoose.Schema({
     picture: Buffer,
     listOfDanceStyles: [{
       type: String
-    }],
+    }], //Array of dance styles
     listOfProficiencyLevels: [{
       type: String
-    }],
+    }], //Array of dance styles
     price: Number,
     affiliateLink: String
 });

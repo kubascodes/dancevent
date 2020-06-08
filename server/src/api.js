@@ -7,7 +7,7 @@ const helmet     = require('helmet');
 const middlewares = require('./middlewares');
 
 const auth  = require('./routes/auth');
-const movie = require('./routes/movie');
+const events = require('./routes/events');
 
 
 const app = express();
@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 
 // app routes
 app.use('/auth'  , auth);
-app.use('/dancevent', movie);
+app.use('/events', events);
 
 
 module.exports = app;

@@ -1,26 +1,13 @@
 const mongoose = require('mongoose');
-
+const User = require('./user');
 
 // Define the Organizer schema
-const OrganizerSchema  = new mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true,
-    },
-    name: String,
-    city: String,
+const OrganizerSchema  = new User({
     street: String,
-    postalCode: Number,
-    picture: Buffer,
     description: String,
     publicEmail: String,
     phone: Number,
-    events: [{type: String}]
+    events: [{type: String}] //Array of Strings -> store events ids
 });
 
 
