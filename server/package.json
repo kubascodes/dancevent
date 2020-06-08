@@ -1,31 +1,34 @@
 {
-  "name": "sebamaster-movie-backend",
+  "name": "Dancevent Backend",
   "version": "1.0.0",
-  "description": "EBAMaster movie backend as a service",
+  "description": "Dancevent Backend",
   "main": "index.js",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/sebischair/sebamaster-movie-backend.git"
+    "url": "https://github.com/kubas2014/dancevent.git"
   },
-  "author": "sebischair",
+  "author": "Jakub Velfl",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sebischair/sebamaster-movie-backend/issues"
+    "url": "https://github.com/kubas2014/dancevent/issues"
   },
-  "homepage": "ttps://github.com/sebischair/sebamaster-movie-backend.git#readme",
+  "homepage": "https://github.com/kubas2014/dancevent",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./index.js",
     "devstart": "nodemon ./index.js"
   },
   "dependencies": {
-    "bcryptjs": "2.4.3",
+    "bcrypt": "^4.0.1",
     "body-parser": "1.18.2",
     "express": "4.16.2",
     "helmet": "^3.22.0",
     "jsonwebtoken": "8.1.1",
-    "mongoose": "^5.9.16"
+    "mongoose": "^5.9.16",
+    "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "nodemon": "1.14.12"

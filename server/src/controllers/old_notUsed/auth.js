@@ -1,7 +1,7 @@
 "use strict";
 
 const jwt        = require('jsonwebtoken');
-const bcrypt     = require('bcryptjs');
+const bcrypt     = require('bcrypt'); //bcrypt and not bcryptjs because bcrypt is much faster!
 
 const config     = require('../config');
 const UserModel  = require('../models/user');
