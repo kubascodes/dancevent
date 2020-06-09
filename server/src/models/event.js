@@ -7,7 +7,9 @@ const EventSchema  = new mongoose.Schema({
     type: {
       type: String, 
       enum: ['ball', 'competition', 'course', 'party'],
-      required: true },
+      default: 'course',
+      required: true 
+    },
     description: { type: String, required: false },
     startDate: { type: Date, required: true },
     duration: { type: Number, required: true },

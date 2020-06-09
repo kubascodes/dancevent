@@ -1,0 +1,16 @@
+POST http://localhost:3000/events HTTP/1.1
+content-type: application/json
+
+{
+    "title": "Dance Party Neubeck",
+    "type": "party",
+    "description": "Come to our great party!",
+    "startDate": "2020-06-12T19:00:00",
+    "duration": 120,
+    "city": "Munich",
+    "location": "some location",
+    "listOfDanceStyles": ["mambo", "jive"],
+    "listOfProficiencyLevels": ["beginner", "bronze", "silver"],
+    "price": "7",
+    "promoCode": "NEUBECK05"
+}

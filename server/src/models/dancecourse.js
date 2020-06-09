@@ -3,9 +3,14 @@ const Event = require('./event')
 
 // Define the DanceCourse schema
 const DanceCourseSchema  = Event.discriminator('DanceCourse', new mongoose.Schema({
-  endDate: Date,
-  interval: Mixed //what's meant by this? Is it a calculation of start date and end date?
-})
+  endDate: { type: Date, required: true },
+  interval: {
+    type: String, 
+    enum: ['once', 'daily', 'weekly', 'every two weeks', 'monthly'],
+    default: 'once',
+    required: true 
+  },
+  })
 );
 
 // Export the DanceCourse model

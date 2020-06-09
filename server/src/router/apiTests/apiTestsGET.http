@@ -1,0 +1,16 @@
+GET http://localhost:3000/events
+
+###
+GET http://localhost:3000/events/1
+
+###
+GET http://localhost:3000/user
+
+###
+GET http://localhost:3000/login
+
+###
+GET http://localhost:3000/register/organizer
+
+###
+GET http://localhost:3000/register/dancer
