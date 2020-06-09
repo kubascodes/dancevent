@@ -12,8 +12,7 @@ const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
     birthYear: Number,
     listOfDanceStyles: [{ type: String }],
     proficiencyLevel: String,
-    prefMinAge: Number,
-    prefMaxAge: Number,
+    prefAgeOffset: Number,
     prefGender: String,
     interestedInEvents: [{ type: String }] //Array of Strings -> store events ids
 })
