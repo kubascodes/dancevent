@@ -3,22 +3,31 @@ const options = { discriminatorKey: 'eventType', collection: 'events' }; //to al
 
 // Define the Event schema
 const EventSchema  = new mongoose.Schema({
-    title: String,
-    type: String,
-    description: String,
-    startDate: Date,
-    duration: Number,
-    city: String,
-    location: String,
-    picture: Buffer,
+    title: { type: String, required: true },
+    type: {
+      type: String, 
+      enum: ['ball', 'competition', 'course', 'party'],
+      required: true },
+    description: { type: String, required: false },
+    startDate: { type: Date, required: true },
+    duration: { type: Number, required: true },
+    city: { type: String, required: true },
+    location: { type: String, required: true },
+    picture: { type: Buffer, required: false },
     listOfDanceStyles: [{
-      type: String
+      type: String,
+      enum: ['latin', 'cha-cha-cha', 'samba', 'jive', 'paso doble', 'boldero', 'rumba', 'mambo', 'east coast swing', 'standard', 'waltz', 'viennese waltz', 'tango', 'foxtrot', 'quickstep', 'hustle', 'west coast swing', 'salsa', 'bachata', 'various'],
+      default: 'standard',
+      required: true
     }], //Array of dance styles
     listOfProficiencyLevels: [{
-      type: String
-    }], //Array of dance styles
-    price: Number,
-    affiliateLink: String
+      type: String,
+      enum: ['beginner', 'bronze', 'silver', 'gold', 'pre-tournament 1', 'pre-tournament 2'],
+      default: 'beginner',
+      required: true
+    }], //Array of proficiency levels
+    price: { type: Number, required: true },
+    promoCode: { type: String, required: false }
 }, options); //pass the options variable to allow for inheritance
 
 // Export the Event model
