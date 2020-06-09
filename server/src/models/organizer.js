@@ -3,11 +3,14 @@ const User = require('./user'); //we require the user model to extend it
 
 // Define the Organizer schema that extends User
 const OrganizerSchema  = User.discriminator('Organizer', new mongoose.Schema({
-    street: String,
-    description: String,
-    publicEmail: String,
-    phone: Number,
-    events: [{type: String}] //Array of Strings -> store events ids
+    street: { type: String, required: true },
+    description: { type: String, required: false },
+    publicEmail: { type: String, required: true },
+    phone: { type: Number, required: true },
+    events: [{ 
+        type: Schema.Types.ObjectId, 
+        ref: 'event' 
+    }] //Array of Strings -> store events ids
 })
 );
 

@@ -13,10 +13,10 @@ const UserSchema  = new mongoose.Schema({
         type: String,
         required: [true, 'You forgot your password']
     },
-    name: String,
-    city: String,
-    postalCode: Number,
-    picture: Buffer
+    name: { type: String, required: true },
+    city: { type: String, required: true },
+    postalCode: { type: Number, required: true },
+    picture: { type: Buffer, required: false }
 }, options); //pass the options variable to allow for inheritance
 
 //Before you save the user to the database, hash his password

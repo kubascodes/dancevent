@@ -7,14 +7,35 @@ A nice read on discriminators used below: https://dev.to/helenasometimes/getting
 
 // Define the Dancer schema that extends User
 const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
-    gender: String,
-    height: Number,
-    birthYear: Number,
-    listOfDanceStyles: [{ type: String }],
-    proficiencyLevel: String,
-    prefAgeOffset: Number,
-    prefGender: String,
-    interestedInEvents: [{ type: String }] //Array of Strings -> store events ids
+    gender: { 
+        type: String, 
+        enum: ['female', 'male', 'unspecified'],
+        required: true 
+    },
+    height: { type: Number, required: false },
+    birthYear: { type: Number, required: true },
+    listOfDanceStyles: [{
+        type: String,
+        enum: ['latin', 'cha-cha-cha', 'samba', 'jive', 'paso doble', 'boldero', 'rumba', 'mambo', 'east coast swing', 'standard', 'waltz', 'viennese waltz', 'tango', 'foxtrot', 'quickstep', 'hustle', 'west coast swing', 'salsa', 'bachata', 'various'],
+        default: 'standard',
+        required: true
+      }],
+    proficiencyLevel: { 
+        type: String, 
+        enum: ['beginner', 'bronze', 'silver', 'gold', 'pre-tournament 1', 'pre-tournament 2'],
+        default: 'beginner',
+        required: true 
+    },
+    prefAgeOffset: { type: Number, required: false },
+    prefGender: { 
+        type: String, 
+        enum: ['female', 'male', 'unspecified'],
+        required: true 
+    },
+    interestedInEvents: [{ 
+        type: Schema.Types.ObjectId, 
+        ref: 'event' 
+    }] //Array of Strings -> store events ids
 })
 );
 
