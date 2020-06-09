@@ -33,7 +33,7 @@ const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
         required: true 
     },
     interestedInEvents: [{ 
-        type: Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId, 
         ref: 'event' 
     }] //Array of Strings -> store events ids
 })

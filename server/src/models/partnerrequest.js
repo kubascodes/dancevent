@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // Define the PartnerRequest schema
 const PartnerRequestSchema  = new mongoose.Schema({
     dancerId: {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: 'Dancer'}, //reference dancer by his Id -≥ change to original schema
     description: { type: String, required: true }, //description of the partner request
     ageOffset: { type: Number, required: true },

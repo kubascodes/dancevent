@@ -8,7 +8,7 @@ const OrganizerSchema  = User.discriminator('Organizer', new mongoose.Schema({
     publicEmail: { type: String, required: true },
     phone: { type: Number, required: true },
     events: [{ 
-        type: Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId, 
         ref: 'event' 
     }] //Array of Strings -> store events ids
 })
