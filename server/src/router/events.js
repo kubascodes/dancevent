@@ -5,6 +5,8 @@ const router   = express.Router();
 const middlewares = require('../middlewares');
 const passport = require('passport');
 const User = require('../models/user');
+const Organizer = require('../models/organizer');
+
 const Event = require('../models/event');
 
 //Public Routes for viewing events
@@ -19,15 +21,23 @@ router.get('/:id', (req, res, next) => {
 //1. Create a new event
 router.post('/', passport.authenticate('jwt', { session : false, failureRedirect: '/login' }), async (req, res, next) => {
     try {
-      //authenticate user internally
-      //TODO: the user must be an organizer
-      let user = await User.findOne({_id: req.user._id});
-      if (!user) { return; }
-      //if user is found continue
-      else {
-        let newEvent = await Event.create(req.body); //event is a reserved keyword, using newEvent instead
+
+      //get user to check if it is an organizer (authentication)
+      let user = await User.findById(req.user._id).exec();
+      if(user && user.userType == "Organizer"){
+        //Create the new event
+        let newEvent = await Event.create(req.body);
+        //add the event to the user (Organizer)
+        await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
+        //return the new Event with status Code: 201 - Created
         return res.status(201).json(newEvent);
+      }else{
+        //403 -> Forbidden request  (user did not have the right to post events)
+        res.status(403).json({
+          error: 'Current user is not an Oranizer'
+        });
       }
+
     }
     catch (error) {
       return res.status(500).json({
