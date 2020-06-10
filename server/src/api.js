@@ -26,5 +26,22 @@ app.use('/', main); // homepage router
 app.use('/events', events); // event-related router
 app.use('/', users); // users router -> access by /login or /register/dancer
 
+// Error handling in case none of the routes matches the request
+app.use((req, res, next) => {
+	const error = new Error("Page not found");
+	error.status = 404;
+	next(error);
+})
+
+// This will be triggered by all errors (e.g. 500 server errors), not just by the 404 above
+app.use((error, req, res, next) => {
+	res.status(error.status || 500);
+	res.json({
+		error: {
+			message: error.message
+		}
+	});
+});
+
 
 module.exports = app;
