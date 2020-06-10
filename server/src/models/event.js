@@ -10,6 +10,9 @@ const EventSchema  = new mongoose.Schema({
       default: 'course',
       required: true 
     },
+    organizer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'organizer'},
     description: { type: String, required: false },
     startDate: { type: Date, required: true },
     duration: { type: Number, required: true },
