@@ -9,15 +9,54 @@ const Organizer = require('../models/organizer');
 
 const Event = require('../models/event');
 
-//Public Routes for viewing events
-router.get('/', (req, res, next) => {
-  res.send("Hello event page");
-}); // List all events
-router.get('/:id', (req, res, next) => {
-  res.send("Hello specific event page");
-}); // List all events
+//   ---------Public event routes for viewing events---------
 
-//Secured events routes which require authentication
+//List all events 
+//parameters are optional e.g .de/events/?city=Munich will search for all events in munich
+router.get('/', async (req, res, next) => {
+  
+  //TODO based on the frontend a default startDate range should be defined to not send past event
+
+   try {
+        //search in database based on the url-request-parameters
+        //sort based on the startDate
+        //limit the results to 50 (the user probably doesn't need more)
+         let event = await Event.find(req.query).sort({'startDate': 'desc'}).limit(50).exec();
+         //send the found result back
+        return res.status(200).json(event);
+  } catch(err) {
+    return res.status(500).json({
+      error: 'Internal server error',
+      message: err.message
+    });
+  }
+  //res.send("Hello event page");
+}); 
+
+// List a specific event 
+//id is number after .de/events/xxx
+router.get('/:id', (req, res, next) => {
+    //find event with id in database
+    var event = Event.findById(req.params.id, (err, event) =>{
+      //error in step (will also be called if <id> has not correct the pattern)
+      if(err){
+        return res.status(500).json({
+          error: 'Internal server error',
+          message: err.message
+        })
+      ;}
+      //Querry is empty (event does not exist)
+      if(!event){return res.status(404).json({
+        error: 'Event not found',  
+      });}
+      //successfull querry -> send found event
+      return res.status(200).json(event);
+    })
+}); 
+
+
+//   --------- Secured event routes for manipulation which require authentication---------
+
 //1. Create a new event
 router.post('/', passport.authenticate('jwt', { session : false, failureRedirect: '/login' }), async (req, res, next) => {
     try {
@@ -25,10 +64,14 @@ router.post('/', passport.authenticate('jwt', { session : false, failureRedirect
       //get user to check if it is an organizer (authentication)
       let user = await User.findById(req.user._id).exec();
       if(user && user.userType == "Organizer"){
-        //Create the new event
+        //add the user as foreign key to the event
+        req.body["organizer"] = user._id
+        //Save the event to the databas
         let newEvent = await Event.create(req.body);
-        //add the event to the user (Organizer)
-        await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
+
+        //old---add the event to the user (Organizer)
+        //old  await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
+        
         //return the new Event with status Code: 201 - Created
         return res.status(201).json(newEvent);
       }else{
