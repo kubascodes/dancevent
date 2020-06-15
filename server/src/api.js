@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const passport = require('passport');
 const passportStrategy = require('./controllers/passport'); //import our passport strategies
 const middlewares = require('./middlewares');
+const cors = require("cors");
 
 //router import
 const main = require('./router/main');
@@ -14,12 +15,17 @@ const users = require('./router/users');
 
 const app = express();
 
+// Dev Middlewares
+const morgan = require('morgan'); //for logging
+app.use(morgan('combined'));
+
 // Adding Basic Middlewares
+app.use(cors());
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());
-app.use(middlewares.allowCrossDomain);
+//app.use(middlewares.allowCrossDomain);
 
 //router use
 app.use('/', main); // homepage router

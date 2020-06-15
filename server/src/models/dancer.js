@@ -7,34 +7,34 @@ A nice read on discriminators used below: https://dev.to/helenasometimes/getting
 
 // Define the Dancer schema that extends User
 const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
-    gender: { 
-        type: String, 
+    gender: {
+        type: String,
         enum: ['female', 'male', 'unspecified'],
-        required: true 
+        required: false //edit to true
     },
     height: { type: Number, required: false },
-    birthYear: { type: Number, required: true },
+    yearOfBirth: { type: Number, required: true },
     listOfDanceStyles: [{
         type: String,
         enum: ['latin', 'cha-cha-cha', 'samba', 'jive', 'paso doble', 'boldero', 'rumba', 'mambo', 'east coast swing', 'standard', 'waltz', 'viennese waltz', 'tango', 'foxtrot', 'quickstep', 'hustle', 'west coast swing', 'salsa', 'bachata', 'various'],
         default: 'standard',
-        required: true
+        required: false //not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
       }],
-    proficiencyLevel: { 
-        type: String, 
+    proficiencyLevel: {
+        type: String,
         enum: ['beginner', 'bronze', 'silver', 'gold', 'pre-tournament 1', 'pre-tournament 2'],
         default: 'beginner',
-        required: true 
+        required: false //not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
     },
     prefAgeOffset: { type: Number, required: false },
-    prefGender: { 
-        type: String, 
+    prefGender: {
+        type: String,
         enum: ['female', 'male', 'unspecified'],
-        required: true 
+        required: false ///not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
     },
-    interestedInEvents: [{ 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'event' 
+    interestedInEvents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'event'
     }] //Array of Strings -> store events ids
 })
 );
