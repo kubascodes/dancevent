@@ -18,6 +18,7 @@ export default class App extends Component {
     login: false,
     username: ''
   }
+  
   addUser = (User) => {
     console.log(User);
   }

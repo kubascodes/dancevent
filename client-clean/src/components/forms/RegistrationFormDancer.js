@@ -38,6 +38,7 @@ class RegistrationFormDancer extends React.Component {
 
   registerUser = (event) => {
     event.preventDefault();
+    console.log("Logging Event");
     console.log(event);
     console.log(this.state.email);
     console.log(this.state.password);
@@ -71,6 +72,7 @@ class RegistrationFormDancer extends React.Component {
     }) //create a get request which is a Promise
     .then(res => res.json(res))
     .then(function(res){
+      console.log("Logging Response");
       console.log(res);
       document.getElementById("RegistrationFormDancer").reset();
       component_scope.setState({

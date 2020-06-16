@@ -15,7 +15,7 @@ const UserSchema  = new mongoose.Schema({
     },
     name: { type: String, required: true },
     city: { type: String, required: true },
-    postalCode: { type: Number, required: false }, //is it actually necessary? You can easily find out the postal code based on the city.
+    postalCode: { type: Number, required: false },
     picture: { type: Buffer, required: false }
 }, options); //pass the options variable to allow for inheritance
 

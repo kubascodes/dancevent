@@ -10,7 +10,7 @@ const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
     gender: {
         type: String,
         enum: ['female', 'male', 'unspecified'],
-        required: false //edit to true
+        required: true
     },
     height: { type: Number, required: false },
     yearOfBirth: { type: Number, required: true },
