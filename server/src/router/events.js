@@ -19,6 +19,7 @@ router.get('/', async (req, res, next) => {
 
    try {
         //search in database based on the url-request-parameters
+        //If the parameter access a list it looks if it contains the url-parameter
         //sort based on the startDate
         //limit the results to 50 (the user probably doesn't need more)
          let event = await Event.find(req.query).sort({'startDate': 'desc'}).limit(50).exec();

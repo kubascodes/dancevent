@@ -19,6 +19,7 @@ const NavBar = ({state}) => {
       <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
         <ul className="navbar-nav">
           <li className="nav-item nav-link  text-secondary "><Link className="font-weight-bolder text-decoration-none" to="/">Homepage</Link></li>
+          <li className="nav-item nav-link"><Link className="font-weight-bolder text-body text-decoration-none" to="/events">Events</Link></li>
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           {/*
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
@@ -48,6 +49,7 @@ const NavBar = ({state}) => {
 
         <ul className="navbar-nav">
           <li className="nav-item nav-link"><Link className="font-weight-bolder text-body text-decoration-none" to="/">Homepage</Link></li>
+          <li className="nav-item nav-link"><Link className="font-weight-bolder text-body text-decoration-none" to="/events">Events</Link></li>
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           {/*
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>

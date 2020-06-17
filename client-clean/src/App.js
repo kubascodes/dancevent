@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import NavBar from './components/NavBar';
 import Homepage from './components/Homepage';
+import Events from './components/Events';
 import RegistrationForm from './components/forms/RegistrationForm';
 import RegistrationFormDancer from './components/forms/RegistrationFormDancer';
+
 
 /*
 import RegistrationFormOrganizer from './components/RegistrationFormOrganizer';
@@ -66,6 +68,7 @@ export default class App extends Component {
           <Route exact path='/register/dancer'render={(props) => <RegistrationFormDancer {...props} auth_token={this.secret_token} />} />
           <Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />
           <Route path='/login'render={(props) => <LoginForm {...props} auth_token={this.auth_token} />} />
+          <Route path='/events'render={(props) => <Events {...props} auth_token={this.auth_token} />} />
           </div>
           </BrowserRouter>
 
