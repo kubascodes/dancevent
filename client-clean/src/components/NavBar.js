@@ -12,26 +12,27 @@ const NavBar = ({state}) => {
   if (window.sessionStorage.secret_token != null) {
     return (
       <div className="navBar">
-      <nav id="navBar" className="navbar navbar-expand navbar-light container-fluid border-black border-bottom shadow-sm bg-white">
-      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon" />
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <ul className="navbar-nav">
-          <li className="nav-item nav-link  text-secondary "><Link className="font-weight-bolder text-decoration-none" to="/">Homepage</Link></li>
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
-          {/*
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
-          */}
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/dancer">Register Dancer</Link></li>
-          <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/login">Login</Link></li>
-        </ul>
+          <nav id="navBar" className="navbar navbar-expand navbar-light container-fluid border-black border-bottom shadow-sm bg-white">
+              <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span className="navbar-toggler-icon" />
+              </button>
+              <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <ul className="navbar-nav">
+                  <li className="nav-item nav-link  text-secondary "><Link className="font-weight-bolder text-decoration-none" to="/">Homepage</Link></li>
+                  <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
+                  {/*
+                  <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
+                  */}
+                  <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/dancer">Register Dancer</Link></li>
+                  <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/login">Login</Link></li>
+                  <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/dancepartner">Dance Partner</Link></li>
+                </ul>
 
-        <ul className="navbar-nav navbar-right">
-          <li className="nav-item nav-link text-secondary " onClick={handleLogout}><Link className="font-weight-bolder text-body text-decoration-none" to="/">Logout</Link></li>
-        </ul>
-      </div>
-      </nav>
+                <ul className="navbar-nav navbar-right">
+                  <li className="nav-item nav-link text-secondary " onClick={handleLogout}><Link className="font-weight-bolder text-body text-decoration-none" to="/">Logout</Link></li>
+                </ul>
+              </div>
+          </nav>
       </div>
     )
   }
@@ -53,6 +54,7 @@ const NavBar = ({state}) => {
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
           */}
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/dancer">Register Dancer</Link></li>
+          <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/dancepartner">Dance Partner</Link></li>
         </ul>
 
         <ul className="navbar-nav navbar-right">
