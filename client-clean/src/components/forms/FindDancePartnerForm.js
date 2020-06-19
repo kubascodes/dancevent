@@ -1,16 +1,22 @@
 import React from "react";
 
+
 class DancePartner extends React.Component {
 
-    state = {
-        data: []
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [],
+            prefgender: "female"
+        }
     }
 
     // to get dancers preferences for later
     // for now: get all dancer from backend
     // return dancer data of the dancer to the log
-     getDancer(){
-        let secret_token = window.sessionStorage.secret_token;
+     getDancer = () => {
+        var secret_token = window.sessionStorage.secret_token;
+        var component_scope = this;
 
         fetch('/dancepartner', {
             method: 'GET',
@@ -22,35 +28,10 @@ class DancePartner extends React.Component {
         ).then(function(res){
             console.log("Logging Response");
             console.log(res);
-
-            this.setState({
-                data: [...res]
+            component_scope.setState({
+               data: [...res]
             });
-        })
-           /* .then((resp) => {
-            //TODO: check authorization
-            let resp: resp
-            console.log("Try to Access Dancer");
-            console.log({resp.map( resp => {
-
-                    }
-
-                )} + "response")
-            if(resp.error) {
-                alert(resp.err)
-                console.log("Response Error");
-            }
-            else {
-                let data = resp.json()
-                this.setState(
-                    {
-                        data: [...data]
-                    }
-
-                )
-                console.log({resp} + "response")
-            }
-        })*/.catch(err => alert(err));
+        }).catch(err => alert(err));
 
     }
 
@@ -59,9 +40,27 @@ class DancePartner extends React.Component {
     }
 
     render(){
+
+        const dancerProfile = this.state.data ? (
+            <div className="dancer">
+            <h4 className="center">{this.state.data.name}</h4>
+            <p>{this.state.data.proficiencyLevel}</p>
+            </div>
+        ) : (
+            <div className="center">No dancers found! </div>
+        )
+
         return(
-            <div className="form-group">
-                <label htmlFor="name">Dancer</label>
+            <div>
+                    {this.state.data.filter(data => data.gender == this.state.prefgender).map(filteredData =>
+                            <form>
+                            <div className="collection-item" key={filteredData.id}>
+                        <h4 >{filteredData.name}</h4>
+                        <p>{filteredData.yearOfBirth}</p>
+                        </div>
+                        </form>
+                    )}
+
             </div>
         )
     }
