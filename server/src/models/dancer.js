@@ -9,7 +9,7 @@ A nice read on discriminators used below: https://dev.to/helenasometimes/getting
 const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
     gender: {
         type: String,
-        enum: ['female', 'male', 'unspecified'],
+        enum: ['female', 'male', 'other'],
         required: true
     },
     height: { type: Number, required: false },
@@ -26,11 +26,12 @@ const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
         default: 'beginner',
         required: false //not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
     },
-    prefAgeOffset: { type: Number, required: false },
+    prefAgeMin: { type: Number, required: false },
+    prefAgeMax: { type: Number, required: false },
     prefGender: {
         type: String,
         enum: ['female', 'male', 'unspecified'],
-        required: false ///not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
+        required: false //not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
     },
     interestedInEvents: [{
         type: mongoose.Schema.Types.ObjectId,

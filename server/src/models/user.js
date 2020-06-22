@@ -15,7 +15,7 @@ const UserSchema  = new mongoose.Schema({
     },
     name: { type: String, required: true },
     city: { type: String, required: true },
-    postalCode: { type: Number, required: false },
+    postalCode: { type: Number, required: false }, //would delete this
     picture: { type: Buffer, required: false }
 }, options); //pass the options variable to allow for inheritance
 

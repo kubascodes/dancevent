@@ -19,10 +19,10 @@ const NavBar = ({state}) => {
       <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
         <ul className="navbar-nav">
           <li className="nav-item nav-link  text-secondary "><Link className="font-weight-bolder text-decoration-none" to="/">Homepage</Link></li>
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           {/*
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
+          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           */}
+          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/dancer">Register Dancer</Link></li>
           <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/login">Login</Link></li>
         </ul>
@@ -48,10 +48,10 @@ const NavBar = ({state}) => {
 
         <ul className="navbar-nav">
           <li className="nav-item nav-link"><Link className="font-weight-bolder text-body text-decoration-none" to="/">Homepage</Link></li>
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           {/*
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
+          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           */}
+          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/dancer">Register Dancer</Link></li>
         </ul>
 

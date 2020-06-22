@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import NavBar from './components/NavBar';
 import Homepage from './components/Homepage';
-import RegistrationForm from './components/forms/RegistrationForm';
+/*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from './components/forms/RegistrationFormDancer';
-
-/*
-import RegistrationFormOrganizer from './components/RegistrationFormOrganizer';
-*/
+import RegistrationFormOrganizer from './components/forms/RegistrationFormOrganizer';
 import LoginForm from './components/forms/LoginForm';
 import { Route, Link, BrowserRouter } from 'react-router-dom';
 
@@ -18,7 +15,7 @@ export default class App extends Component {
     login: false,
     username: ''
   }
-  
+
   addUser = (User) => {
     console.log(User);
   }
@@ -61,10 +58,10 @@ export default class App extends Component {
           <BrowserRouter>
           <NavBar state={this.state}/>
           <div className="container-fluid mt-4 mb-4">
-          {/*<Route path='/register/organizer'render={(props) => <RegistrationFormOrganizer {...props} auth_token={this.secret_token} />} />*/}
           <Route exact path='/'render={(props) => <Homepage {...props} state={this.state} auth_token={this.auth_token} secret_token={this.state.secret_token} />} />
+          <Route path='/register/organizer'render={(props) => <RegistrationFormOrganizer {...props} auth_token={this.secret_token} />} />
           <Route exact path='/register/dancer'render={(props) => <RegistrationFormDancer {...props} auth_token={this.secret_token} />} />
-          <Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />
+          {/*<Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />*/}
           <Route path='/login'render={(props) => <LoginForm {...props} auth_token={this.auth_token} />} />
           </div>
           </BrowserRouter>
