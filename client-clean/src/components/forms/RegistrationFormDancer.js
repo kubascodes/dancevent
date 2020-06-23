@@ -113,7 +113,7 @@ class RegistrationFormDancer extends React.Component {
       <div className="form-group">
         <label htmlFor="rating">Password</label>
         <input type="password" className="form-control" id="password" name="password" onChange={this.onChange} placeholder="Required" value={this.password}/>
-      </div>
+      </div>hz
 
       <div className="form-group">
         <label htmlFor="city">Year of Birth</label>

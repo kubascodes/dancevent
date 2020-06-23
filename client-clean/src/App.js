@@ -3,7 +3,7 @@ import NavBar from './components/NavBar';
 import Homepage from './components/Homepage';
 import RegistrationForm from './components/forms/RegistrationForm';
 import RegistrationFormDancer from './components/forms/RegistrationFormDancer';
-import FindDancePartnerForm from './components/forms/FindDancePartnerForm';
+import FindDancePartnerForm from './components/forms/FindDancePartnerView';
 
 /*
 import RegistrationFormOrganizer from './components/RegistrationFormOrganizer';
