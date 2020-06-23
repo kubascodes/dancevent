@@ -1,8 +1,9 @@
 import React from "react";
-import {Card, CardGroup, Button} from 'react-bootstrap'
+import {Card, CardDeck, Container} from 'react-bootstrap'
 
 const RequestForm = ({requests}) => {
 
+    //TODO: Add Popup of request - with modal?
  /*   handleCardClick = () => {
         const [show, setShow] = useState(false);
 
@@ -31,19 +32,31 @@ const RequestForm = ({requests}) => {
         return "hello"
     }*/
 
+
+    //Needed down, but not working otherwise for now
+    /*<Card style={{width:'18rem'}}>
+                //<Card.Img variant="top" src={request.dancer.picture} alt={defaultPicture} style={{objectFit:'cover',width:"286px",height:"180px"}}/> //TODO: not implemented yet - add default picture - add dancer link - add dancer picture - rework style
+                <Card.Body>
+                //<Card.Title> {request.dancer.name}</Card.Title> //TODO: add dancer link/ data
+                <Card.Title> Request Title</Card.Title>
+                <Card.Text>
+                    {request.listOfProficiencyLevels}
+                    //TODO: add modal link here
+                </Card.Text>
+                </Card.Body>
+                </Card>*/
+
     const requestList = requests.length ? (
         requests.map(request => {
             return(
-                <CardGroup>
-                <Card>
+                <Card style={{width:'18rem'}}>
                 <Card.Body>
                 <Card.Title> Request Title</Card.Title>
                 <Card.Text>
-                    {request.description}
+                    {request.listOfProficiencyLevels}
                 </Card.Text>
                 </Card.Body>
                 </Card>
-                </CardGroup>
             )
         })
     ) : (
@@ -51,9 +64,9 @@ const RequestForm = ({requests}) => {
     );
 
     return(
-        <div>
+        <CardDeck>
         {requestList}
-        </div>
+        </CardDeck>
     )
 }
 
