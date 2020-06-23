@@ -71,18 +71,6 @@ export default class App extends Component {
             )}
           />
           <Route
-            exact
-            path="/events"
-            render={(props) => (
-              <Events
-                {...props}
-                state={this.state}
-                auth_token={this.auth_token}
-                secret_token={this.state.secret_token}
-              />
-            )}
-          />
-          <Route
             path="/register/organizer"
             render={(props) => (
               <RegistrationFormOrganizer

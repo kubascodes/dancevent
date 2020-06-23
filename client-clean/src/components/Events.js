@@ -6,9 +6,7 @@ import Card from "react-bootstrap/Card";
 
 /*
     TODOs:
-    - add photos (mostly backend changes)
     - check for date Range (mostly backend changes)
-    - sorting option
     - Design
 */
 
@@ -38,6 +36,7 @@ class Events extends React.Component {
       city: "Munich",
       startDate: formatDate(Date.now()),
       endDate: Date.now(),
+      sorting: "date",
     };
   }
 
@@ -63,6 +62,30 @@ class Events extends React.Component {
     */
     this.setState({ [event.target.name]: event.target.value });
     console.log(this.state);
+  };
+
+  sortingChanged = (event) => {
+    /*
+        If Events should be sorted based on parameter 'sorting' this function is called
+    */
+
+    //set the new state
+    this.setState({ sorting: event.target.value });
+
+    //sort after prefered sortingmethods
+
+    //sort date old to new
+    if (this.state.sorting == "date") {
+      this.state.events.sort((a, b) =>
+        a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
+      );
+    }
+    //sort date new to old
+    else if (this.state.sorting == "dateDesc") {
+      this.state.events.sort((a, b) =>
+        a.startDate < b.startDate ? 1 : a.startDate > b.startDate ? -1 : 0
+      );
+    }
   };
 
   submitFilter = (event) => {
@@ -97,11 +120,15 @@ class Events extends React.Component {
       url += "listOfProficiencyLevels=" + this.state.danceLevel;
       previous = true;
     }
-    if (previous) {
-      url += "&";
+    if (this.state.city) {
+      if (previous) {
+        url += "&";
+      }
+      url += "city=" + this.state.city;
+      previous = true;
     }
-    url += "city=" + this.state.city;
 
+    //TODO implement in backend:
     //url+='&startDate=' + this.state.startDate
 
     //fetch events from backend
@@ -160,7 +187,12 @@ class Events extends React.Component {
     const eventCard = function (event) {
       return (
         <Card id={event._id} style={{ width: "18rem" }}>
-          <Card.Img variant="top" src="holder.js/100px180" />
+          <Card.Img
+            variant="top"
+            src={event.picture}
+            alt={event.title}
+            style={{ objectFit: "cover", width: "286px", height: "180px" }}
+          />
           <Card.Body>
             <Card.Title>{event.title}</Card.Title>
             <Card.Text>{event.description}</Card.Text>
@@ -279,7 +311,15 @@ class Events extends React.Component {
           {/*    Events Part   */}
           <Col xs={10} id="page-content-wrapper">
             {/*    Sorting Navbar   */}
-            <Row> Sorting Opiton</Row>
+            <Row>
+              <div style={{ marginLeft: "auto" }}>
+                Sorting by:
+                <select name="sorting" onChange={this.sortingChanged}>
+                  <option value="date">Date</option>
+                  <option value="dateDesc">Date desc</option>
+                </select>
+              </div>
+            </Row>
 
             {/*    Event Cards   */}
             <Row> {this.state.events.map((event) => eventCard(event))} </Row>
