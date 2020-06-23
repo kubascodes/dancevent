@@ -3,6 +3,7 @@ import NavBar from './components/NavBar';
 import Homepage from './components/Homepage';
 /*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from './components/forms/RegistrationFormDancer';
+import FindDancePartnerForm from './components/forms/FindDancePartnerView';
 import RegistrationFormOrganizer from './components/forms/RegistrationFormOrganizer';
 import LoginForm from './components/forms/LoginForm';
 import { Route, Link, BrowserRouter } from 'react-router-dom';
@@ -63,6 +64,7 @@ export default class App extends Component {
           <Route exact path='/register/dancer'render={(props) => <RegistrationFormDancer {...props} auth_token={this.secret_token} />} />
           {/*<Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />*/}
           <Route path='/login'render={(props) => <LoginForm {...props} auth_token={this.auth_token} />} />
+          <Route exact path='/dancepartner'render={(props) => <FindDancePartnerForm {...props} auth_token={this.secret_token} />} />
           </div>
           </BrowserRouter>
 

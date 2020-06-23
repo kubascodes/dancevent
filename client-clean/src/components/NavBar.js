@@ -25,6 +25,7 @@ const NavBar = ({state}) => {
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/dancer">Register Dancer</Link></li>
           <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/login">Login</Link></li>
+      <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/dancepartner">Dance Partner</Link></li>
         </ul>
 
         <ul className="navbar-nav navbar-right">
@@ -53,6 +54,7 @@ const NavBar = ({state}) => {
           */}
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/organizer">Register Organizer</Link></li>
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register/dancer">Register Dancer</Link></li>
+          <li className="nav-item nav-link text-secondary text-decoration-none"><Link className="font-weight-bolder text-body text-decoration-none" to="/dancepartner">Dance Partner</Link></li>
         </ul>
 
         <ul className="navbar-nav navbar-right">

@@ -10,6 +10,7 @@ const config = require('../config'); //to access our Jwt Secret
 const User = require('../models/user'); //to access the user database
 const Dancer = require('../models/dancer'); //to create new dancers
 const Organizer = require('../models/organizer'); //to create new organizers
+const Request = require('../models/partnerrequest'); // to access the partner requests
 //Unsecured routes for anyone to access
 
 //access the /users homepage
@@ -31,6 +32,37 @@ router.get('/register/organizer', function(req, res){
 router.get('/register/dancer', function(req, res){
   res.send("Welcome to the dancer registration page");
 });
+
+//List all dancer on Dance Partner Page
+router.get('/dancepartner', async (req, res, next) => {
+    try {
+        //search in database based on the url-request-parameters
+        let dancer = await Dancer.find(req.query).exec();
+        //send the found result back
+        return res.status(200).json(dancer);
+    } catch(err) {
+        return res.status(500).json({
+            error: 'Internal server error',
+            message: err.message
+        });
+    }
+});
+
+//List all dance request on Dance Partner Page
+router.get('/dancepartner/request', async (req, res, next) => {
+    try {
+        //search in database based on the url-request-parameter
+        let request = await Request.find(req.query).exec();
+        //send the found result back
+        return res.status(200).json(request);
+    } catch(err) {
+        return res.status(500).json({
+            error: 'Internal server error',
+            message: err.message
+        });
+    }
+});
+
 
 //User Login
 router.post('/login', (req, res, next) => {
@@ -96,5 +128,26 @@ router.post('/register/dancer', async (req, res) => {
       });
     }
 });
+
+// create Request
+router.post('/dancepartner/request', async(req, res) => {
+    if(Object.keys(req.body).length === 0) return res.status(400).json({
+        error: 'Bad Request',
+        message: 'The request body is empty '
+    });
+
+    try {
+        let request = await Request.create(req.body);
+        return res.status(201).json(request);
+    }
+    catch (error) {
+        return res.status(500).json({
+            error: 'Internal server error',
+            message: error.message
+        });
+    }
+});
+
+
 
 module.exports = router;
