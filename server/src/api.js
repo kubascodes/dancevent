@@ -22,6 +22,8 @@ app.use(morgan('combined'));
 // Adding Basic Middlewares
 app.use(cors());
 app.use(helmet());
+//alows the access of the pictures of the events
+app.use('/pictures/events', express.static('pictures/events'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(passport.initialize());

@@ -18,7 +18,7 @@ const EventSchema  = new mongoose.Schema({
     duration: { type: Number, required: true },
     city: { type: String, required: true },
     location: { type: String, required: true },
-    picture: { type: Buffer, required: false },
+    picture: { type: String, required: false },//relative filepath. Possible to fetch picture with path
     listOfDanceStyles: [{
       type: String,
       enum: ['latin', 'cha-cha-cha', 'samba', 'jive', 'paso doble', 'boldero', 'rumba', 'mambo', 'east coast swing', 'standard', 'waltz', 'viennese waltz', 'tango', 'foxtrot', 'quickstep', 'hustle', 'west coast swing', 'salsa', 'bachata', 'various'],
