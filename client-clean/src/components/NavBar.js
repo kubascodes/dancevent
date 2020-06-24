@@ -36,7 +36,6 @@ const NavBar = ({ state }) => {
                   Homepage
                 </Link>
               </li>
-              {/* This Link is currently not shown, not sure what's the problem */}
               <li className="nav-item nav-link">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
@@ -115,6 +114,14 @@ const NavBar = ({ state }) => {
                   to="/"
                 >
                   Homepage
+                </Link>
+              </li>
+              <li className="nav-item nav-link">
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/events"
+                >
+                  Events
                 </Link>
               </li>
               {/*
