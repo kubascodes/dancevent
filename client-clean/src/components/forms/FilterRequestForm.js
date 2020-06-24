@@ -49,8 +49,9 @@ class FilterRequest extends React.Component {
     render(){
 
         const eventType=['all-Event-Types','ball', 'competition', 'course', 'party'];
-        const latinStyles = ['latin','cha-cha-cha','samba','jive','pasodoble','boldero','rumba','mambo','east-Coast-Swing'];
-        const standardStyles=['standard','waltz','viennese-Waltz','tango','foxtrot','quickstep','hustle','west-Coast-Swing','salsa','bachata'];
+        const latinStyles = ['latin/rythm','paso Doble', 'bolero', 'samba', 'rumba', 'mambo', 'cha-Cha-Cha', 'east-Cost-Swing', 'jive'];
+        const standardStyles=['standard/smooth', 'waltz','viennese-Waltz','tango','poxtrot','quickstep'];
+        const variousStyles = ['west-Cost-Swing', 'hustle', 'salsa', 'bachata']; //TODO: add
         const skillLevel = ['beginner', 'bronze', 'silver', 'gold', 'pre-tournament 1', 'pre-tournament 2'];
 
         return(
