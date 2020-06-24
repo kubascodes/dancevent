@@ -66,9 +66,9 @@ const NavBar = ({ state }) => {
               <li className="nav-item nav-link text-secondary text-decoration-none">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
-                  to="/login"
+                  to="/dancepartner"
                 >
-                  Login
+                  Dance Partner
                 </Link>
               </li>
             </ul>
@@ -141,6 +141,14 @@ const NavBar = ({ state }) => {
                   to="/register/dancer"
                 >
                   Register Dancer
+                </Link>
+              </li>
+              <li className="nav-item nav-link text-secondary text-decoration-none">
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/dancepartner"
+                >
+                  Dance Partner
                 </Link>
               </li>
             </ul>

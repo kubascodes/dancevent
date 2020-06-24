@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Route, Link, BrowserRouter } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Homepage from "./components/Homepage";
 import Events from "./components/Events";
@@ -6,7 +7,7 @@ import Events from "./components/Events";
 import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
 import LoginForm from "./components/forms/LoginForm";
-import { Route, Link, BrowserRouter } from "react-router-dom";
+import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 
 export default class App extends Component {
   state = {
@@ -100,6 +101,13 @@ export default class App extends Component {
             path="/events"
             render={(props) => (
               <Events {...props} auth_token={this.auth_token} />
+            )}
+          />
+          <Route
+            exact
+            path="/dancepartner"
+            render={(props) => (
+              <FindDancePartnerView {...props} auth_token={this.secret_token} />
             )}
           />
         </div>
