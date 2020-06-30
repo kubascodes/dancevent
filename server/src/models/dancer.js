@@ -22,7 +22,8 @@ const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
       }],
     proficiencyLevel: {
         type: String,
-        enum: ['beginner', 'bronze', 'silver', 'gold', 'pre-tournament 1', 'pre-tournament 2'],
+        //enum: ['beginner', 'bronze', 'silver', 'gold', 'pre-tournament 1', 'pre-tournament 2'],
+        enum: ['beginner', 'intermediate', 'advanced'],
         default: 'beginner',
         required: false //not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
     },

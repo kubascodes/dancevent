@@ -46,30 +46,33 @@ class LoginForm extends React.Component {
     }) //create a get request which is a Promise
     .then(res => res.json(res))
     .then(function(res){
+
+      //store the token in the browser's session storage
       window.sessionStorage.setItem('secret_token', res.token);
 
-      console.log(res.token);
+      //console.log(res.token);
       //this.setState({ secret_token: res.token});
-      var token = res.token;
+      //var token = res.token;
        //setting the app's token to secret_token
       //component_scope.props.auth_token(token);
       //component_scope.setState({token: token});
       //alert("Data uploaded!");
-      console.log(res);
+      //console.log(res);
       document.getElementById("loginForm").reset();
       component_scope.setState({
         password: null,
-        email: null
+        email: null,
       });
+      var data = {
+        token: res.token,
+        email: res.email,
+        login: true
+      };
+      component_scope.props.logIn(data);
       //component_scope.setState({isLoggedIn: true});
       //this.forceUpdate();
     })
     .catch(err => alert(err));
-  }
-
-  dataToParent (data) {
-    console.log(data);
-    this.props.auth(data);
   }
 
 /*

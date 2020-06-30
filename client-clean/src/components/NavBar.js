@@ -1,11 +1,13 @@
 import React from "react";
 import { Route, Link, BrowserRouter } from "react-router-dom";
 
-const NavBar = ({ state }) => {
+const NavBar = ({ state, logOut }) => {
+  /*
   const handleLogout = (event) => {
     console.log("clicked logout");
     window.sessionStorage.removeItem("secret_token");
   };
+  */
 
   /*When you're logged in, display a different NavBar*/
   if (window.sessionStorage.secret_token != null) {
@@ -64,19 +66,19 @@ const NavBar = ({ state }) => {
                 </Link>
               </li>
               <li className="nav-item nav-link text-secondary text-decoration-none">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/login"
-                >
-                  Login
-                </Link>
+              <Link
+                className="font-weight-bolder text-body text-decoration-none"
+                to="/profile"
+              >
+                {state.email}
+              </Link>
               </li>
             </ul>
 
             <ul className="navbar-nav navbar-right">
               <li
                 className="nav-item nav-link text-secondary "
-                onClick={handleLogout}
+                onClick={logOut}
               >
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"

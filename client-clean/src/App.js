@@ -5,15 +5,15 @@ import Events from "./components/Events";
 /*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
+import Profile from "./components/forms/Profile";
 import LoginForm from "./components/forms/LoginForm";
 import { Route, Link, BrowserRouter } from "react-router-dom";
 
 export default class App extends Component {
   state = {
-    users: [],
     secret_token: null,
     login: false,
-    username: "",
+    email: null,
   };
 
   addUser = (User) => {
@@ -26,6 +26,8 @@ export default class App extends Component {
   deleteUser = (User) => {
     console.log(User);
   };
+
+
   /*
   componentDidMount() {
     if (window.sessionStorage.secret_token) {
@@ -45,18 +47,32 @@ export default class App extends Component {
   }
   */
 
-  auth_token = (data) => {
+  logIn = (data) => {
     this.setState({
-      secret_token: data,
+      secret_token: data.token,
+      email: data.email,
+      login: true
     });
     console.log(this.state);
     console.log("main state");
   };
 
+  logOut = (data) => {
+    this.setState({
+      secret_token: null,
+      email: null,
+      login: false
+    });
+    window.sessionStorage.removeItem("secret_token");
+    console.log(this.state);
+    console.log("main state");
+    console.log(window.sessionStorage.secret_token);
+  };
+
   render() {
     return (
       <BrowserRouter>
-        <NavBar state={this.state} />
+        <NavBar state={this.state} logOut={this.logOut} />
         <div className="container-fluid mt-4 mb-4">
           <Route
             exact
@@ -65,8 +81,6 @@ export default class App extends Component {
               <Homepage
                 {...props}
                 state={this.state}
-                auth_token={this.auth_token}
-                secret_token={this.state.secret_token}
               />
             )}
           />
@@ -75,7 +89,16 @@ export default class App extends Component {
             render={(props) => (
               <RegistrationFormOrganizer
                 {...props}
-                auth_token={this.secret_token}
+                state={this.state}
+              />
+            )}
+          />
+          <Route
+            path="/profile"
+            render={(props) => (
+              <Profile
+                {...props}
+                state={this.state}
               />
             )}
           />
@@ -85,7 +108,7 @@ export default class App extends Component {
             render={(props) => (
               <RegistrationFormDancer
                 {...props}
-                auth_token={this.secret_token}
+                state={this.state}
               />
             )}
           />
@@ -93,13 +116,18 @@ export default class App extends Component {
           <Route
             path="/login"
             render={(props) => (
-              <LoginForm {...props} auth_token={this.auth_token} />
+              <LoginForm {...props}
+              state={this.state}
+              logIn={this.logIn}
+               />
             )}
           />
           <Route
             path="/events"
             render={(props) => (
-              <Events {...props} auth_token={this.auth_token} />
+              <Events {...props}
+              state={this.state}
+            />
             )}
           />
         </div>

@@ -12,9 +12,27 @@ const Dancer = require('../models/dancer'); //to create new dancers
 const Organizer = require('../models/organizer'); //to create new organizers
 //Unsecured routes for anyone to access
 
-//access the /users homepage
-router.get('/user', function(req, res){
-  res.send("Welcome to the user's homepage");
+//access the /profile of the user
+router.post('/profile', passport.authenticate('jwt', {session: false}), async (req, res, next) => {
+  /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
+  //console.log(req.user);
+  try {
+    let user = await User.findOne({_id: req.user._id});
+    //TODO: REMOVE THESE PROPERTIES BELOW ALTOGETHER!
+    user.password = null;
+    user._id = null;
+    user.__v = null;
+
+    console.log(user);
+
+    return res.status(200).json(user);
+  }
+  catch (error) {
+    return res.status(500).json({
+      error: 'Internal server error',
+      message: error.message
+    });
+  }
 });
 
 //access login form
@@ -48,7 +66,7 @@ router.post('/login', (req, res, next) => {
         //Sign the JWT token and populate the payload with the user email and id
         const token = jwt.sign({ user : body }, config.JwtSecret);
         //Send back the token to the user
-        return res.json({ token: token, id: body._id });
+        return res.json({ token: token, email: body.email });
       });
     } catch (error) {
       return next(error);
