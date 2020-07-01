@@ -25,19 +25,19 @@ content-type: application/json
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmI5YzBmZDFiOTcxM2Y5YzdjMzJjYyIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU0ODg4MX0.FBxfTDuTCFUhq8iGpvyWoAkio7qxSK1c_0epKyijnY0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmMxZjA1NWI3ZWQzNTllM2MwMzBiYSIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU4MzI1MH0.tck2Tw_TvEe6QTd97iPWXMvIcq6ZO4ajz9PKCYQPOPk
 
 {
     "title": "Dance Party Neubeck",
     "type": "party",
-    "organizer": "5efb9c0fd1b9713f9c7c32cc",
+    "organizer": "5efc1f055b7ed359e3c030ba",
     "description": "Come to our great party!",
     "startDate": "2020-06-12T19:00:00",
     "duration": 120,
     "city": "Munich",
     "location": "some location",
     "listOfDanceStyles": ["mambo", "jive"],
-    "listOfProficiencyLevels": ["beginner", "bronze", "silver"],
+    "listOfProficiencyLevels": ["beginner"],
     "price": "7",
     "promoCode": "NEUBECK05"
 }
@@ -45,19 +45,19 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6I
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmI5YzBmZDFiOTcxM2Y5YzdjMzJjYyIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU0ODg4MX0.FBxfTDuTCFUhq8iGpvyWoAkio7qxSK1c_0epKyijnY0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmMxZjA1NWI3ZWQzNTllM2MwMzBiYSIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU4MzI1MH0.tck2Tw_TvEe6QTd97iPWXMvIcq6ZO4ajz9PKCYQPOPk
 
 {
-    "title": "mein dolla danzkurs",
+    "title": "1 nica dance course",
     "type": "course",
-    "organizer": "5efb9c0fd1b9713f9c7c32cc",
+    "organizer": "5efc1f055b7ed359e3c030ba",
     "description": "hier wird gedancet",
     "startDate": "2020-07-12T18:00:00",
     "duration": 90,
     "city": "Valencia",
     "location": "Akuarela Playa",
     "listOfDanceStyles": ["hustle", "various"],
-    "listOfProficiencyLevels": ["beginner", "bronze"],
+    "listOfProficiencyLevels": ["beginner", "intermediate"],
     "price": "9999",
     "promoCode": "TECHNOXXX",
     "endDate": "2020-07-15",

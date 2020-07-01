@@ -45,26 +45,30 @@ class EventCard extends React.Component {
 
   render() {
     return (
-      <Card id={this.props.event._id} style={{ width: "18rem" }}>
-        <Card.Img
-          variant="top"
-          src={this.props.event.picture}
-          alt={this.props.event.title}
-          style={{ objectFit: "cover", width: "286px", height: "180px" }}
-        />
-        <Card.Body>
-          <Card.Title>{this.props.event.title}</Card.Title>
-          <Card.Text>
-            {this.getType()} {this.getDate()}
-          </Card.Text>
-          <Card.Text>{this.state.organizer.name}</Card.Text>
-          <Link to={`/events/${this.props.event._id}`}>
-            <button variant="primary" className="btn btn-outline-dark">
-              Go to Event
-            </button>
-          </Link>
-        </Card.Body>
-      </Card>
+      <Link
+        to={`/events/${this.props.event._id}`}
+        style={{ textDecoration: "none", color: "black" }}
+      >
+        <Card
+          id={this.props.event._id}
+          style={{ width: "18rem" }}
+          className="m-2"
+        >
+          <Card.Img
+            variant="top"
+            src={this.props.event.picture}
+            alt={this.props.event.title}
+            style={{ objectFit: "cover", width: "286px", height: "180px" }}
+          />
+          <Card.Body>
+            <Card.Title>{this.props.event.title}</Card.Title>
+            <Card.Text>
+              {this.getType()} {this.getDate()}
+            </Card.Text>
+            <Card.Text>{this.state.organizer.name}</Card.Text>
+          </Card.Body>
+        </Card>
+      </Link>
     );
   }
 }

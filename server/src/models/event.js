@@ -53,14 +53,8 @@ const EventSchema = new mongoose.Schema(
     listOfProficiencyLevels: [
       {
         type: String,
-        enum: [
-          "beginner",
-          "bronze",
-          "silver",
-          "gold",
-          "pre-tournament 1",
-          "pre-tournament 2",
-        ],
+        enum: ["beginner", "intermediate", "advanced"],
+        // enum: ["beginner", "bronze", "silver", "gold", "pre-tournament 1", "pre-tournament 2"],
         default: "beginner",
         required: true,
       },
