@@ -2,7 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
-
+import ProcessImage from '../../services/imageProcessing';
 
 //TODO we'd want to use composition to define forms
 //1. Form Component
@@ -38,6 +38,31 @@ class RegistrationFormDancer extends React.Component {
         //console.log(this.state);
   };
 
+  onChangeFile = (event) => {
+    //setting the file to the input
+    if (event.target.files[0]) {
+      let file = event.target.files[0];
+      let fileUrl = URL.createObjectURL(file);
+      let component_scope = this;
+      //defining the function
+      async function processImage(file, fileUrl, component_scope) {
+        console.log(file);
+        try {
+          let image = await ProcessImage(file, fileUrl);
+          component_scope.setState({ picture: image });
+          console.log(component_scope.state);
+        }
+        catch (error) {
+          alert(error);
+        }
+      };
+
+      //calling the function
+      processImage(file, fileUrl, component_scope);
+    }
+
+  };
+
   onChangeCheckbox = (event) => {
     var checkboxName = event.target.name;
     var elements = document.getElementsByName(checkboxName);
@@ -65,13 +90,15 @@ class RegistrationFormDancer extends React.Component {
     console.log(checked);
     console.log(checkboxName);
     */
-    if (checked.length < 2) {
+    if (checked.length == 1) {
       //store as a string if only 1 preference
       this.setState({ [checkboxName]: checked[0] });
+      console.log(this.state);
     }
-    else {
+    else if (checked.length > 1) {
       //store as an array if multiple preferences
       this.setState({ [checkboxName]: checked });
+      console.log(this.state);
     }
 
   };
@@ -93,6 +120,7 @@ class RegistrationFormDancer extends React.Component {
         'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify({
+
         //user schema attributes
         name: this.state.name,
         email: this.state.email,
@@ -260,20 +288,12 @@ class RegistrationFormDancer extends React.Component {
           <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="beginner" />
           <label class="radio-inline mr-2">Beginner</label>
 
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="bronze" />
-          <label class="radio-inline mr-2">Bronze</label>
+          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="intermediate" />
+          <label class="radio-inline mr-2">Intermediate</label>
 
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="silver" />
-          <label class="radio-inline mr-2">Silver</label>
+          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="advanced" />
+          <label class="radio-inline mr-2">Advanced</label>
 
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="gold" />
-          <label class="radio-inline mr-2">Gold</label>
-
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="pre-tournament 1" />
-          <label class="radio-inline mr-2">Pre-tournament 1</label>
-
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="pre-tournament 2" />
-          <label class="radio-inline mr-2">Pre-tournament 2</label>
       </div>
 
       <div className="form-group">
@@ -303,11 +323,10 @@ class RegistrationFormDancer extends React.Component {
 
       <div class="form-group">
         <div class="custom-file">
-          <input type="file" class="custom-file-input" name="picture" onChange={this.onChangeInput} id="customFile" />
+          <input type="file" accept="image/*" class="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
           <label class="custom-file-label" for="customFile">Upload your profile picture</label>
         </div>
       </div>
-
 
       <div className="form-group">
         <input type="submit" className="btn btn-outline-dark" value="Submit"/>

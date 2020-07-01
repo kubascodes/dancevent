@@ -1,11 +1,13 @@
 import React from "react";
 import { Route, Link, BrowserRouter } from "react-router-dom";
 
-const NavBar = ({ state }) => {
+const NavBar = ({ state, logOut }) => {
+  /*
   const handleLogout = (event) => {
     console.log("clicked logout");
     window.sessionStorage.removeItem("secret_token");
   };
+  */
 
   /*When you're logged in, display a different NavBar*/
   if (window.sessionStorage.secret_token != null) {
@@ -44,6 +46,14 @@ const NavBar = ({ state }) => {
                   Events
                 </Link>
               </li>
+              <li className="nav-item nav-link">
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/dancepartner"
+                >
+                  Dance Partners
+                </Link>
+              </li>
               {/*
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           */}
@@ -66,9 +76,9 @@ const NavBar = ({ state }) => {
               <li className="nav-item nav-link text-secondary text-decoration-none">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
-                  to="/dancepartner"
+                  to="/profile"
                 >
-                  Dance Partner
+                  {state.email}
                 </Link>
               </li>
             </ul>
@@ -76,7 +86,7 @@ const NavBar = ({ state }) => {
             <ul className="navbar-nav navbar-right">
               <li
                 className="nav-item nav-link text-secondary "
-                onClick={handleLogout}
+                onClick={logOut}
               >
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
@@ -124,6 +134,14 @@ const NavBar = ({ state }) => {
                   Events
                 </Link>
               </li>
+              <li className="nav-item nav-link">
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/dancepartner"
+                >
+                  Dance Partners
+                </Link>
+              </li>
               {/*
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           */}
@@ -141,14 +159,6 @@ const NavBar = ({ state }) => {
                   to="/register/dancer"
                 >
                   Register Dancer
-                </Link>
-              </li>
-              <li className="nav-item nav-link text-secondary text-decoration-none">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/dancepartner"
-                >
-                  Dance Partner
                 </Link>
               </li>
             </ul>

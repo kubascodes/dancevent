@@ -6,15 +6,18 @@ import Events from "./components/Events";
 /*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
+import Profile from "./components/forms/Profile";
 import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 
 export default class App extends Component {
   state = {
-    users: [],
     secret_token: null,
     login: false,
-    username: "",
+    email: null,
+    name: null,
+    userType: null,
+    profilePicture: null, //TODO
   };
 
   addUser = (User) => {
@@ -27,29 +30,47 @@ export default class App extends Component {
   deleteUser = (User) => {
     console.log(User);
   };
-  /*
-  componentDidMount() {
-    if (window.sessionStorage.secret_token) {
-      this.setState({
-        login: true,
-        username: null,
-        secret_token: window.sessionStorage.secret_token,
-      })
-    }
-    else {
-      this.setState({
-        login: false,
-        username: null,
-        secret_token: null
-      })
-    }
-  }
-  */
 
-  auth_token = (data) => {
+  // Fetches the user data that did not come with the login as the login just retrieves email and token
+  getFurtherUserData = () => {
+    var component_scope = this;
+    fetch("/profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: "Bearer " + window.sessionStorage.secret_token,
+      },
+    })
+      .then((res) => res.json(res))
+      .then(function (res) {
+        console.log(res);
+        component_scope.setState({
+          name: res.name,
+          userType: res.userType,
+          profilePicture: res.picture,
+        });
+      })
+      .catch((err) => alert(err));
+  };
+
+  logIn = (data) => {
     this.setState({
-      secret_token: data,
+      secret_token: data.token,
+      email: data.email,
+      login: true,
     });
+    this.getFurtherUserData();
+    console.log(this.state);
+    console.log("main state");
+  };
+
+  logOut = (data) => {
+    this.setState({
+      secret_token: null,
+      email: null,
+      login: false,
+    });
+    window.sessionStorage.removeItem("secret_token");
     console.log(this.state);
     console.log("main state");
   };
@@ -57,51 +78,41 @@ export default class App extends Component {
   render() {
     return (
       <BrowserRouter>
-        <NavBar state={this.state} />
+        <NavBar state={this.state} logOut={this.logOut} />
         <div className="container-fluid mt-4 mb-4">
           <Route
             exact
             path="/"
-            render={(props) => (
-              <Homepage
-                {...props}
-                state={this.state}
-                auth_token={this.auth_token}
-                secret_token={this.state.secret_token}
-              />
-            )}
+            render={(props) => <Homepage {...props} state={this.state} />}
           />
           <Route
             path="/register/organizer"
             render={(props) => (
-              <RegistrationFormOrganizer
-                {...props}
-                auth_token={this.secret_token}
-              />
+              <RegistrationFormOrganizer {...props} state={this.state} />
             )}
           />
+          <Route
+            path="/profile"
+            render={(props) => <Profile {...props} state={this.state} />}
+          />
+
           <Route
             exact
             path="/register/dancer"
             render={(props) => (
-              <RegistrationFormDancer
-                {...props}
-                auth_token={this.secret_token}
-              />
+              <RegistrationFormDancer {...props} state={this.state} />
             )}
           />
           {/*<Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />*/}
           <Route
             path="/login"
             render={(props) => (
-              <LoginForm {...props} auth_token={this.auth_token} />
+              <LoginForm {...props} state={this.state} logIn={this.logIn} />
             )}
           />
           <Route
             path="/events"
-            render={(props) => (
-              <Events {...props} auth_token={this.auth_token} />
-            )}
+            render={(props) => <Events {...props} state={this.state} />}
           />
           <Route
             exact
