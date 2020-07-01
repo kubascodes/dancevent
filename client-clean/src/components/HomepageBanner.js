@@ -46,7 +46,9 @@ const HomepageBanner = () => {
       </div>
       <div className="row mt-2">
         <div className="col-4 text-center">
-          <button className="btn btn-secondary btn-lg">Find a partner</button>
+          <Link to="/dancepartner">
+            <button className="btn btn-secondary btn-lg">Find a partner</button>
+          </Link>
         </div>
         <div className="col-4 text-center">
           <Link to="/events">

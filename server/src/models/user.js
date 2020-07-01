@@ -17,6 +17,9 @@ const UserSchema = new mongoose.Schema(
     name: { type: String, required: true },
     city: { type: String, required: true },
     picture: { type: Buffer, required: false },
+    interestedInEvents: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "event", required: false },
+    ], // List of events the user is interested in, to be filled with update requests
   },
   options
 ); //pass the options variable to allow for inheritance

@@ -46,6 +46,14 @@ const NavBar = ({ state, logOut }) => {
                   Events
                 </Link>
               </li>
+              <li className="nav-item nav-link">
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/dancepartner"
+                >
+                  Dance Partners
+                </Link>
+              </li>
               {/*
           <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
           */}
@@ -66,12 +74,12 @@ const NavBar = ({ state, logOut }) => {
                 </Link>
               </li>
               <li className="nav-item nav-link text-secondary text-decoration-none">
-              <Link
-                className="font-weight-bolder text-body text-decoration-none"
-                to="/profile"
-              >
-                {state.email}
-              </Link>
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/profile"
+                >
+                  {state.email}
+                </Link>
               </li>
             </ul>
 
@@ -124,6 +132,14 @@ const NavBar = ({ state, logOut }) => {
                   to="/events"
                 >
                   Events
+                </Link>
+              </li>
+              <li className="nav-item nav-link">
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/dancepartner"
+                >
+                  Dance Partners
                 </Link>
               </li>
               {/*

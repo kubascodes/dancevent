@@ -15,9 +15,9 @@ export default class App extends Component {
     secret_token: null,
     login: false,
     email: null,
-    name: "John", //TODO
-    userType: "Dancer", //TODO
-    profilePicture: null //TODO
+    name: null,
+    userType: null,
+    profilePicture: null, //TODO
   };
 
   addUser = (User) => {
@@ -31,32 +31,35 @@ export default class App extends Component {
     console.log(User);
   };
 
-
-  /*
-  componentDidMount() {
-    if (window.sessionStorage.secret_token) {
-      this.setState({
-        login: true,
-        username: null,
-        secret_token: window.sessionStorage.secret_token,
+  // Fetches the user data that did not come with the login as the login just retrieves email and token
+  getFurtherUserData = () => {
+    var component_scope = this;
+    fetch("/profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: "Bearer " + window.sessionStorage.secret_token,
+      },
+    })
+      .then((res) => res.json(res))
+      .then(function (res) {
+        console.log(res);
+        component_scope.setState({
+          name: res.name,
+          userType: res.userType,
+          profilePicture: res.picture,
+        });
       })
-    }
-    else {
-      this.setState({
-        login: false,
-        username: null,
-        secret_token: null
-      })
-    }
-  }
-  */
+      .catch((err) => alert(err));
+  };
 
   logIn = (data) => {
     this.setState({
       secret_token: data.token,
       email: data.email,
-      login: true
+      login: true,
     });
+    this.getFurtherUserData();
     console.log(this.state);
     console.log("main state");
   };
@@ -65,12 +68,11 @@ export default class App extends Component {
     this.setState({
       secret_token: null,
       email: null,
-      login: false
+      login: false,
     });
     window.sessionStorage.removeItem("secret_token");
     console.log(this.state);
     console.log("main state");
-    console.log(window.sessionStorage.secret_token);
   };
 
   render() {
@@ -81,59 +83,36 @@ export default class App extends Component {
           <Route
             exact
             path="/"
-            render={(props) => (
-              <Homepage
-                {...props}
-                state={this.state}
-              />
-            )}
+            render={(props) => <Homepage {...props} state={this.state} />}
           />
           <Route
             path="/register/organizer"
             render={(props) => (
-              <RegistrationFormOrganizer
-                {...props}
-                state={this.state}
-              />
+              <RegistrationFormOrganizer {...props} state={this.state} />
             )}
           />
           <Route
             path="/profile"
-            render={(props) => (
-              <Profile
-                {...props}
-                state={this.state}
-              />
-            )}
+            render={(props) => <Profile {...props} state={this.state} />}
           />
 
           <Route
             exact
             path="/register/dancer"
             render={(props) => (
-              <RegistrationFormDancer
-                {...props}
-                state={this.state}
-              />
+              <RegistrationFormDancer {...props} state={this.state} />
             )}
           />
           {/*<Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />*/}
           <Route
             path="/login"
             render={(props) => (
-              <LoginForm {...props}
-              state={this.state}
-              logIn={this.logIn}
-               />
+              <LoginForm {...props} state={this.state} logIn={this.logIn} />
             )}
           />
           <Route
             path="/events"
-            render={(props) => (
-              <Events {...props}
-              state={this.state}
-            />
-            )}
+            render={(props) => <Events {...props} state={this.state} />}
           />
           <Route
             exact

@@ -152,8 +152,13 @@ router.post(
         //add picture path to the event
         req.body["picture"] = req.file.path;
 
-        //Save the event to the databas
-        let newEvent = await Event.create(req.body);
+        //Save the event to the database
+        let newEvent = null;
+        if (req.body["type"] === "course") {
+          newEvent = await DanceCourse.create(req.body);
+        } else {
+          newEvent = await Event.create(req.body);
+        }
 
         //old---add the event to the user (Organizer)
         //old  await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
