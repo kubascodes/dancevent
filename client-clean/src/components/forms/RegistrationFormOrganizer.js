@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
+import ProcessImage from '../../services/imageProcessing';
 
 class RegistrationFormOrganizer extends React.Component {
 
@@ -28,6 +29,31 @@ class RegistrationFormOrganizer extends React.Component {
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
         console.log(this.state);
+  };
+
+  onChangeFile = (event) => {
+    //setting the file to the input
+    if (event.target.files[0]) {
+      let file = event.target.files[0];
+      let fileUrl = URL.createObjectURL(file);
+      let component_scope = this;
+      //defining the function
+      async function processImage(file, fileUrl, component_scope) {
+        console.log(file);
+        try {
+          let image = await ProcessImage(file, fileUrl);
+          component_scope.setState({ picture: image });
+          console.log(component_scope.state);
+        }
+        catch (error) {
+          alert(error);
+        }
+      };
+
+      //calling the function
+      processImage(file, fileUrl, component_scope);
+    }
+
   };
 
   registerUser = (event) => {
@@ -58,7 +84,8 @@ class RegistrationFormOrganizer extends React.Component {
         description: this.state.description,
         publicEmail: this.state.publicEmail,
         phone: this.state.phone
-      }),
+      },
+      ),
     }) //create a get request which is a Promise
     .then(res => res.json(res))
     .then(function(res){
@@ -135,7 +162,7 @@ class RegistrationFormOrganizer extends React.Component {
 
       <div class="form-group">
         <div class="custom-file">
-          <input type="file" class="custom-file-input" name="picture" onChange={this.onChangeInput} id="customFile" />
+          <input type="file" accept="image/*" class="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
           <label class="custom-file-label" for="customFile">Upload your profile picture</label>
         </div>
       </div>

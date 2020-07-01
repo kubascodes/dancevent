@@ -47,7 +47,6 @@ class Profile extends React.Component {
 
           <div>
           <img width="42" height="42" src={this.state.user.picture} />
-          <p>Id: {this.state.user._id}</p>
           <p>Name: {this.state.user.name}</p>
           <p>Email: {this.state.user.email}</p>
           <p>City: {this.state.user.city}</p>

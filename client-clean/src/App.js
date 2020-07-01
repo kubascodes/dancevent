@@ -3,7 +3,6 @@ import { Route, Link, BrowserRouter } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Homepage from "./components/Homepage";
 import Events from "./components/Events";
-import Event from "./components/Event";
 /*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
@@ -16,6 +15,9 @@ export default class App extends Component {
     secret_token: null,
     login: false,
     email: null,
+    name: "John", //TODO
+    userType: "Dancer", //TODO
+    profilePicture: null //TODO
   };
 
   addUser = (User) => {
@@ -28,6 +30,7 @@ export default class App extends Component {
   deleteUser = (User) => {
     console.log(User);
   };
+
 
   /*
   componentDidMount() {
@@ -52,7 +55,7 @@ export default class App extends Component {
     this.setState({
       secret_token: data.token,
       email: data.email,
-      login: true,
+      login: true
     });
     console.log(this.state);
     console.log("main state");
@@ -62,7 +65,7 @@ export default class App extends Component {
     this.setState({
       secret_token: null,
       email: null,
-      login: false,
+      login: false
     });
     window.sessionStorage.removeItem("secret_token");
     console.log(this.state);
@@ -78,40 +81,59 @@ export default class App extends Component {
           <Route
             exact
             path="/"
-            render={(props) => <Homepage {...props} state={this.state} />}
+            render={(props) => (
+              <Homepage
+                {...props}
+                state={this.state}
+              />
+            )}
           />
           <Route
             path="/register/organizer"
             render={(props) => (
-              <RegistrationFormOrganizer {...props} state={this.state} />
+              <RegistrationFormOrganizer
+                {...props}
+                state={this.state}
+              />
             )}
           />
           <Route
             path="/profile"
-            render={(props) => <Profile {...props} state={this.state} />}
+            render={(props) => (
+              <Profile
+                {...props}
+                state={this.state}
+              />
+            )}
           />
+
           <Route
             exact
             path="/register/dancer"
             render={(props) => (
-              <RegistrationFormDancer {...props} state={this.state} />
+              <RegistrationFormDancer
+                {...props}
+                state={this.state}
+              />
             )}
           />
           {/*<Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />*/}
           <Route
             path="/login"
             render={(props) => (
-              <LoginForm {...props} state={this.state} logIn={this.logIn} />
+              <LoginForm {...props}
+              state={this.state}
+              logIn={this.logIn}
+               />
             )}
           />
           <Route
-            exact
             path="/events"
-            render={(props) => <Events {...props} state={this.state} />}
-          />
-          <Route
-            path="/events/:eventId"
-            render={(props) => <Event {...props} state={this.state} />}
+            render={(props) => (
+              <Events {...props}
+              state={this.state}
+            />
+            )}
           />
           <Route
             exact

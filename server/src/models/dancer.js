@@ -10,7 +10,7 @@ const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
     gender: {
         type: String,
         enum: ['female', 'male', 'other'],
-        required: true
+        required: false
     },
     height: { type: Number, required: false },
     yearOfBirth: { type: Number, required: true },
@@ -31,7 +31,7 @@ const DancerSchema = User.discriminator('Dancer', new mongoose.Schema({
     prefAgeMax: { type: Number, required: false },
     prefGender: {
         type: String,
-        enum: ['female', 'male', 'unspecified'],
+        enum: ['female', 'male', 'other'],
         required: false //not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
     },
     interestedInEvents: [{
