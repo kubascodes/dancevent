@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
+import EventCard from "./EventCard";
 
 /*
     TODOs:
@@ -183,25 +183,6 @@ class Events extends React.Component {
       "pre-tournament 2",
     ];
 
-    //A Card of an event
-    const eventCard = function (event) {
-      return (
-        <Card id={event._id} style={{ width: "18rem" }}>
-          <Card.Img
-            variant="top"
-            src={event.picture}
-            alt={event.title}
-            style={{ objectFit: "cover", width: "286px", height: "180px" }}
-          />
-          <Card.Body>
-            <Card.Title>{event.title}</Card.Title>
-            <Card.Text>{event.description}</Card.Text>
-            <button variant="primary">Go to Event</button>
-          </Card.Body>
-        </Card>
-      );
-    };
-
     return (
       <Container fluid>
         <Row>
@@ -322,7 +303,12 @@ class Events extends React.Component {
             </Row>
 
             {/*    Event Cards   */}
-            <Row> {this.state.events.map((event) => eventCard(event))} </Row>
+            <Row>
+              {" "}
+              {this.state.events.map((event) => (
+                <EventCard event={event} />
+              ))}{" "}
+            </Row>
           </Col>
         </Row>
       </Container>

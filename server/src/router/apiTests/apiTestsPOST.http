@@ -1,9 +1,36 @@
+###
+POST http://localhost:3000/register/organizer HTTP/1.1
+content-type: application/json
+
+{
+    "email": "test@test.de",
+    "password": "1234",
+    "name": "test organizer",
+    "city": "Munich",
+    "street": "Kaufinger Straße",
+    "description": "great organizer",
+    "publicEmail": "publictest@test.de",
+    "phone": "7654387"
+}
+
+###
+POST http://localhost:3000/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "test@test.de",
+    "password": "1234"
+}
+
+###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmI5YzBmZDFiOTcxM2Y5YzdjMzJjYyIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU0ODg4MX0.FBxfTDuTCFUhq8iGpvyWoAkio7qxSK1c_0epKyijnY0
 
 {
     "title": "Dance Party Neubeck",
     "type": "party",
+    "organizer": "5efb9c0fd1b9713f9c7c32cc",
     "description": "Come to our great party!",
     "startDate": "2020-06-12T19:00:00",
     "duration": 120,
@@ -13,4 +40,26 @@ content-type: application/json
     "listOfProficiencyLevels": ["beginner", "bronze", "silver"],
     "price": "7",
     "promoCode": "NEUBECK05"
+}
+
+###
+POST http://localhost:3000/events HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmI5YzBmZDFiOTcxM2Y5YzdjMzJjYyIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU0ODg4MX0.FBxfTDuTCFUhq8iGpvyWoAkio7qxSK1c_0epKyijnY0
+
+{
+    "title": "mein dolla danzkurs",
+    "type": "course",
+    "organizer": "5efb9c0fd1b9713f9c7c32cc",
+    "description": "hier wird gedancet",
+    "startDate": "2020-07-12T18:00:00",
+    "duration": 90,
+    "city": "Valencia",
+    "location": "Akuarela Playa",
+    "listOfDanceStyles": ["hustle", "various"],
+    "listOfProficiencyLevels": ["beginner", "bronze"],
+    "price": "9999",
+    "promoCode": "TECHNOXXX",
+    "endDate": "2020-07-15",
+    "interval": "daily"
 }

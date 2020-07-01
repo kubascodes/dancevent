@@ -1,13 +1,13 @@
 import React from "react";
 import LoginForm from "./forms/LoginForm";
-import Homepage_Banner from "./Homepage_Banner";
+import HomepageBanner from "./HomepageBanner";
 
 const Homepage = ({ state }) => {
   if (window.sessionStorage.secret_token != null) {
     /*Display personalized content when logged in*/
     return (
       <React.Fragment>
-        <Homepage_Banner />
+        <HomepageBanner />
         <hr />
         <div className="container">
           <h2 className="">Upcoming Events</h2>
@@ -21,7 +21,7 @@ const Homepage = ({ state }) => {
     );
   } else {
     /*Display public content not logged in*/
-    return <Homepage_Banner />;
+    return <HomepageBanner />;
   }
 };
 

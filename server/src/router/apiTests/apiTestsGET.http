@@ -14,3 +14,9 @@ GET http://localhost:3000/register/organizer
 
 ###
 GET http://localhost:3000/register/dancer
+
+###
+GET http://localhost:3000/users
+
+###
+GET http://localhost:3000/users/5efb9c0fd1b9713f9c7c32cc
