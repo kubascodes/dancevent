@@ -1,7 +1,7 @@
 import React from "react";
-import { Card, CardDeck, Container } from "react-bootstrap";
+import {Button, Card, CardDeck, Container} from "react-bootstrap";
 
-const RequestForm = ({ requests }) => {
+const RequestForm = ({ requests , deleteRequest}) => {
   //TODO: Add Popup of request - with modal?
   /*   handleCardClick = () => {
         const [show, setShow] = useState(false);
@@ -43,18 +43,28 @@ const RequestForm = ({ requests }) => {
 
    const requestList = requests.length ? (
     requests.map((request) => {
+        var dancer = request.dancerId;
+        if(dancer) {
+            dancer = dancer.name;
+        }
+        else {
+            dancer = "Title";
+        }
 
-        console.log(request);
         //var dancer = //Object.values(request.dancerId);
 
         return (
-        <Card style={{ width: "25rem" }}>
-          <Card.Body>
-            <Card.Title> {"Title"} </Card.Title>
-            <Card.Text>{request.listOfProficiencyLevels}</Card.Text>
-              <Card.Text>{request.description}</Card.Text>
-          </Card.Body>
-        </Card>
+        <div className="form-group" key={request._id}>
+            <Card style={{ width: "25rem" }} className="md-block-centered">
+              <Card.Body>
+                <Card.Title> {dancer} </Card.Title>
+                <Card.Text>{request.listOfProficiencyLevels}</Card.Text>
+                <Card.Text>{request.description}</Card.Text>
+                  {/*For testing and now detele button there.. TODO: make deletion somewhere else*/}
+                <Button id="deleteRequest" onClick={()=>{deleteRequest(request._id)}}>Delete Request</Button>
+              </Card.Body>
+            </Card>
+        </div>
       );
     })
   ) : (

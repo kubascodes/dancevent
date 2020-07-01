@@ -147,7 +147,8 @@ router.post("/createrequest", async (req, res) => {
   }
 });
 
-router.post("/createrequest/dancer", async(req, res)=>{
+// delete Request
+router.delete("/dancepartner/request/delete", async (req, res) => {
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
@@ -155,14 +156,16 @@ router.post("/createrequest/dancer", async(req, res)=>{
     });
 
   try {
-    let request = await Request.findByIdAndUpdate(req.body.requestId, {dancerId:req.body.dancerId});
-    return res.status(201).json(request);
+    await Request.findByIdAndRemove(req.body.id).exec();
+    return res.status(201).json({message: 'Request with id${req.body.id} was deleted'});
   } catch (error) {
     return res.status(500).json({
       error: "Internal server error",
       message: error.message,
     });
   }
-})
+});
+
+
 
 module.exports = router;

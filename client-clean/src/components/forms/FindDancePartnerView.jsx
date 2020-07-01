@@ -55,7 +55,7 @@ class FindDancePartnerView extends React.Component {
       .catch((err) => alert(err));
   };
 
-  // get all requests from backend
+  // get all requests from backend ---old
   getRequests = () => {
     var secret_token = window.sessionStorage.secret_token;
     var component_scope = this; // because this.setState wasn't working somehow
@@ -68,15 +68,41 @@ class FindDancePartnerView extends React.Component {
       },
     })
       .then((res) => res.json(res))
-      .then(function (res) {
-        component_scope.setState({
-          requests: [...res],
-        });
+      .then((requests) => {
+        console.log(requests);
+        this.setState({requests});
       })
       .catch((err) => alert(err));
   };
 
-  onChange = (e) => {
+
+  deleteRequest = (requestId) => {
+    /*delete requests*/
+
+    console.log(requestId);
+
+    var secret_token = window.sessionStorage.secret_token;
+    try{
+      fetch("/dancepartner/request/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: "Bearer " + secret_token,
+        },
+        body: JSON.stringify({id: requestId})
+      })
+          .then((res) => res.json(res))
+          .then(function (res) {
+            console.log(res);
+          })
+          .catch((err) => alert(err));
+    }catch(err){
+      console.log(err);
+    }
+    this.getRequests();
+  }
+
+      onChange = (e) => {
     e.preventDefault();
   };
 
@@ -151,7 +177,7 @@ class FindDancePartnerView extends React.Component {
             </Row>
             {/*InsertRequests*/}
             <Row>
-              <RequestForm requests={this.state.requests} />
+              <RequestForm requests={this.state.requests} deleteRequest={this.deleteRequest}/>
             </Row>
           </Col>
         </Row>
