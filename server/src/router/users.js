@@ -52,7 +52,7 @@ router.get("/dancepartner", async (req, res, next) => {
 router.get("/dancepartner/request", async (req, res, next) => {
   try {
     //search in database based on the url-request-parameter
-    let request = await Request.find(req.query).exec();
+    let request = await Request.find(req.query).populate("dancerId").exec();
     //send the found result back
     return res.status(200).json(request);
   } catch (err) {
@@ -128,7 +128,8 @@ router.post("/register/dancer", async (req, res) => {
 });
 
 // create Request
-router.post("/dancepartner/request", async (req, res) => {
+//TODO: new router for that?
+router.post("/createrequest", async (req, res) => {
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
@@ -145,5 +146,23 @@ router.post("/dancepartner/request", async (req, res) => {
     });
   }
 });
+
+router.post("/createrequest/dancer", async(req, res)=>{
+  if (Object.keys(req.body).length === 0)
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "The request body is empty ",
+    });
+
+  try {
+    let request = await Request.findByIdAndUpdate(req.body.requestId, {dancerId:req.body.dancerId});
+    return res.status(201).json(request);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: error.message,
+    });
+  }
+})
 
 module.exports = router;

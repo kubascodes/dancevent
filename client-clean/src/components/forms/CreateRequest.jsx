@@ -23,14 +23,74 @@ class CreateRequest extends React.Component{
         });
     }
 
-    createRequestPost = () => {
-        /*for posting the request to the backend should be called by submitRequest*/
+    getCurrentDancerId =()=>{
 
+    }
+
+    addDancerToRequest = (requestId, dancerId) => {
+        /**/
+
+        var secret_token = window.sessionStorage.secret_token;
+
+        fetch('/createrequest/dancer',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + secret_token
+            },
+            body: JSON.stringify({
+                requestId: requestId,
+                dancerID: dancerId
+            })
+        }).then(res=>res.json()).then(res=>{
+            if(res){
+                console.log("added dancer");
+            }
+        })
     }
 
     submitRequest = (e) => {
         /*submits the request, by changing the values and calling the createRequestPost to add it to the backend*/
         e.preventDefault();
+
+        // create request body
+        var newRequest = {
+            ageOffset: this.state.age,
+            //height: this.state.height,
+            danceStyle: this.state.danceStyle,
+            listOfProficiencyLevels: this.state.danceSkills,
+            listofGenders: this.state.prefGender,
+            //events: this.state.events,
+            description: this.state.description,
+            counterfeitEmail: 'ludmann.julia@gmail.com',
+            dancerId: '5ee8c5671d6b0d0a9646ad3d'
+        };
+
+        var secret_token = window.sessionStorage.secret_token;
+
+        fetch('/createrequest',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': 'Bearer ' + secret_token
+            },
+            body: JSON.stringify(newRequest)
+        }).then(res=>res.json()).then(res=>{
+            if(res){ // reset the states
+                this.setState({
+                    age: null,
+                    height: null,
+                    danceStyle: null,
+                    danceSkills: null,
+                    prefGender: null,
+                    events:[],
+                    description: ""
+                });
+                console.log(res._id);
+                //this.addDancerToRequest({{res._id}}, {"5ee8c5671d6b0d0a9646ad3d"});
+            }
+        })
+
 
     }
 
@@ -74,10 +134,10 @@ class CreateRequest extends React.Component{
                         </div>
 
                         {/*Events Type*/}
-                        <div className="form-group">
+                        {/*<div className="form-group">
                             <label htmlFor="events">Events</label>
                             <input type="events" className="form-control" id="events" name="events" onChange={this.onChange} placeholder="Required" value={this.events}/>
-                        </div>
+                        </div>*/}
 
                         {/*Description Type*/}
                         <div className="form-group">

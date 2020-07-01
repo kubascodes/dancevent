@@ -41,13 +41,18 @@ const RequestForm = ({ requests }) => {
                 </Card.Body>
                 </Card>*/
 
-  const requestList = requests.length ? (
+   const requestList = requests.length ? (
     requests.map((request) => {
-      return (
-        <Card style={{ width: "18rem" }}>
+
+        console.log(request);
+        //var dancer = //Object.values(request.dancerId);
+
+        return (
+        <Card style={{ width: "25rem" }}>
           <Card.Body>
-            <Card.Title> Request Title</Card.Title>
+            <Card.Title> {"Title"} </Card.Title>
             <Card.Text>{request.listOfProficiencyLevels}</Card.Text>
+              <Card.Text>{request.description}</Card.Text>
           </Card.Body>
         </Card>
       );
