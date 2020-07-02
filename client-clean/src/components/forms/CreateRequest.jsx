@@ -27,33 +27,12 @@ class CreateRequest extends React.Component{
 
     }
 
-    addDancerToRequest = (requestId, dancerId) => {
-        /**/
-
-        var secret_token = window.sessionStorage.secret_token;
-
-        fetch('/createrequest/dancer',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Authorization': 'Bearer ' + secret_token
-            },
-            body: JSON.stringify({
-                requestId: requestId,
-                dancerID: dancerId
-            })
-        }).then(res=>res.json()).then(res=>{
-            if(res){
-                console.log("added dancer");
-            }
-        })
-    }
-
     submitRequest = (e) => {
         /*submits the request, by changing the values and calling the createRequestPost to add it to the backend*/
         e.preventDefault();
 
         // create request body
+        //TODO: dancerId and counterfeitEmail at the moment hard coded!!!
         var newRequest = {
             ageOffset: this.state.age,
             //height: this.state.height,
@@ -86,8 +65,6 @@ class CreateRequest extends React.Component{
                     events:[],
                     description: ""
                 });
-                console.log(res._id);
-                //this.addDancerToRequest({{res._id}}, {"5ee8c5671d6b0d0a9646ad3d"});
             }
         })
 
