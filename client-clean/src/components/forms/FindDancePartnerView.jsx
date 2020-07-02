@@ -2,6 +2,7 @@ import React from "react";
 import FilterRequest from "./FilterRequestForm";
 import RequestForm from "./PartnerRequestForm";
 import { Row, Col, Container } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 class FindDancePartnerView extends React.Component {
   constructor(props) {
@@ -169,15 +170,17 @@ class FindDancePartnerView extends React.Component {
             </Row>
           </Container>
       );
+
     }
-    else{ //when not logged in, do not show all the requests
+    else{ //when not logged in, show only how many requests are open and add a link to the login page
 
       return(
-          <div className="center">
+          <div className="container">
             <h3>Dance Partner</h3>
-            <p>Currently there are {this.state.requests.length} requests open.</p>
-            <p>Please log in to see all the open requests.</p>
-            {/*TODO: Link to login page */}
+            <p>Currently there are <b>{this.state.requests.length} requests</b> open.</p>
+            <p>Please {<Link to={{pathname:'login'}}>login</Link>} to see all the open requests.</p>
+            {/* Alternative to link:
+            <Button onClick={()=>{{this.props.history.push('/login')}}}>Login</Button>*/}
           </div>
       );
     }
