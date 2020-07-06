@@ -1,5 +1,6 @@
 import React from "react";
 import {Container} from "react-bootstrap";
+import Select from 'react-select';
 
 class CreateRequest extends React.Component{
 
@@ -34,18 +35,21 @@ class CreateRequest extends React.Component{
         // create request body
         //TODO: dancerId and counterfeitEmail at the moment hard coded!!!
         var newRequest = {
-            ageOffset: this.state.age,
-            //height: this.state.height,
-            danceStyle: this.state.danceStyle,
-            listOfProficiencyLevels: this.state.danceSkills,
-            listofGenders: this.state.prefGender,
-            //events: this.state.events,
+            dancerId: '5ee8c5671d6b0d0a9646ad3d',
             description: this.state.description,
-            counterfeitEmail: 'ludmann.julia@gmail.com',
-            dancerId: '5ee8c5671d6b0d0a9646ad3d'
+            ageOffset: this.state.age,
+            listofGenders: this.state.prefGender,
+            listOfProficiencyLevels: this.state.danceSkills,
+            counterfeitEmail: 'ludmann.julia@gmail.com'
+
+            //not in the request body (part of the dancer body)
+            //height: this.state.height,
+            //danceStyle: this.state.danceStyle,
+            //events: this.state.events,
         };
 
         var secret_token = window.sessionStorage.secret_token;
+
 
         fetch('/createrequest',{
             method: 'POST',
@@ -95,19 +99,19 @@ class CreateRequest extends React.Component{
                         {/*Dance Style Type*/}
                         <div className="form-group">
                             <label htmlFor="dancestyle">Dance Style</label>
-                            <input type="dancestyle" className="form-control" id="dancestyle" name="dancestyle" onChange={this.onChange} placeholder="Required" value={this.danceStyle}/>
+                            <input type="dancestyle" className="form-control" id="dancestyle" name="danceStyle" onChange={this.onChange} placeholder="Required" value={this.danceStyle}/>
                         </div>
 
                         {/*Dance Skills Type*/}
                         <div className="form-group">
                             <label htmlFor="danceskills">Dance Skills</label>
-                            <input type="danceskills" className="form-control" id="danceskills" name="danceskills" onChange={this.onChange} placeholder="Required" value={this.danceSkills}/>
+                            <input type="danceskills" className="form-control" id="danceskills" name="danceSkills" onChange={this.onChange} placeholder="Required" value={this.danceSkills}/>
                         </div>
 
                         {/*Pref Gender Type*/}
                         <div className="form-group">
                             <label htmlFor="prefgender">Preffered Gender</label>
-                            <input type="prefgender" className="form-control" id="prefgender" name="prefgender" onChange={this.onChange} placeholder="Required" value={this.prefGender}/>
+                            <input type="prefgender" className="form-control" id="prefgender" name="prefGender" onChange={this.onChange} placeholder="Required" value={this.prefGender}/>
                         </div>
 
                         {/*Events Type*/}

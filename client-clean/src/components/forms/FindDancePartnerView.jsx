@@ -26,15 +26,18 @@ class FindDancePartnerView extends React.Component {
   componentDidMount() {
     /* The function call is in the buildup and loads all the requests */
     console.log(this.props);
-    this.getRequests();
+    //this.getRequests();
+    this.getRequests(window.location.pathname);
   }
 
   //TODO: depend on filter options
-  getRequests = () => {
+  getRequests = (url) => {
+  //getRequests = () => {
     /* fetches all requests from the backend*/
     var secret_token = window.sessionStorage.secret_token;
 
-    fetch("/dancepartner/request", {
+    fetch(url, {
+    //fetch("/dancepartner/request", {
       method: "GET",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
@@ -44,8 +47,11 @@ class FindDancePartnerView extends React.Component {
       .then((res) => res.json(res))
       .then((requests) => {
         this.setState({requests});
+        console.log(this.state.requests);
       })
       .catch((err) => alert(err));
+      console.log(this.state.requests);
+
   };
 
 
@@ -56,6 +62,7 @@ class FindDancePartnerView extends React.Component {
 
     try{
       fetch("/dancepartner/request/delete", {
+      //fetch("/dancepartner/delete", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
@@ -71,7 +78,8 @@ class FindDancePartnerView extends React.Component {
     }catch(err){
       console.log(err);
     }
-    this.getRequests();
+    //this.getRequests();
+    this.getRequests(window.location.pathname);
   }
 
   onChange = (e) => {
@@ -109,6 +117,13 @@ class FindDancePartnerView extends React.Component {
       .catch((err) => alert(err));
   };*/
 
+  filterRequestsNew = (requests) => {
+    this.setState({
+      requests,
+    });
+    console.log("filteres requests" + requests);
+  };
+
 
   // display requests, filtered
   //TODO: make dependent on filter option
@@ -128,6 +143,7 @@ class FindDancePartnerView extends React.Component {
                 <FilterRequest
                     filterRequests={this.filterRequests}
                     requests={this.state.requests}
+                    getRequests={this.getRequests}
                 />
               </Col>
               {/*RequestPart*/}

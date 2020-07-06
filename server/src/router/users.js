@@ -34,7 +34,7 @@ router.get("/register/dancer", function (req, res) {
 });
 
 //List all dancer on Dance Partner Page
-router.get("/dancepartner", async (req, res, next) => {
+/*router.get("/dancepartner", async (req, res, next) => {
   try {
     //search in database based on the url-request-parameters
     let dancer = await Dancer.find(req.query).exec();
@@ -46,10 +46,12 @@ router.get("/dancepartner", async (req, res, next) => {
       message: err.message,
     });
   }
-});
+});*/
 
 //List all dance request on Dance Partner Page
-router.get("/dancepartner/request", async (req, res, next) => {
+//TODO: sort is missing, events
+//router.get("/dancepartner", async (req, res, next) => {
+router.get("/dancepartner", async (req, res, next) => {
   try {
     //search in database based on the url-request-parameter
     let request = await Request.find(req.query).populate("dancerId").exec();
@@ -62,6 +64,29 @@ router.get("/dancepartner/request", async (req, res, next) => {
     });
   }
 });
+
+// List a specific request
+//id is number after .de/dancepartner/xxx
+/*router.get("/:id", (req, res, next) => {
+  //find request with id in database
+  var request = Request.findById(req.params.id, (err, request) => {
+    //error in step (will also be called if <id> has not correct the pattern)
+    if (err) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: err.message,
+      });
+    }
+    //Query is empty (event does not exist)
+    if (!request) {
+      return res.status(404).json({
+        error: "Request not found",
+      });
+    }
+    //successful query -> send found event
+    return res.status(200).json(request);
+  });
+});*/
 
 //User Login
 router.post("/login", (req, res, next) => {
@@ -127,8 +152,7 @@ router.post("/register/dancer", async (req, res) => {
   }
 });
 
-// create Request
-//TODO: new router for that?
+//Register as a Request
 router.post("/createrequest", async (req, res) => {
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
