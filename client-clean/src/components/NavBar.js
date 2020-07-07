@@ -169,15 +169,6 @@ const NavBar = ({ state, logOut }) => {
                   Register Dancer
                 </Link>
               </li>
-<<<<<<< HEAD
-              <li className="nav-item nav-link text-secondary text-decoration-none">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/dancepartner"
-                >
-                  Dance Partner
-                </Link>
-              </li>
               <li className="nav-item nav-link text-secondary text-decoration-none">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
@@ -186,8 +177,6 @@ const NavBar = ({ state, logOut }) => {
                   Create Event
                 </Link>
               </li>
-=======
->>>>>>> master
             </ul>
 
             <ul className="navbar-nav navbar-right">
