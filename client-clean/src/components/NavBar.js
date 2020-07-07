@@ -76,17 +76,17 @@ const NavBar = ({ state, logOut }) => {
               <li className="nav-item nav-link text-secondary text-decoration-none">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
-                  to="/profile"
+                  to="/events/create"
                 >
-                  {state.email}
+                  Create Event
                 </Link>
               </li>
               <li className="nav-item nav-link text-secondary text-decoration-none">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
-                  to="/events/create"
+                  to="/profile"
                 >
-                  Create Event
+                  {state.email}
                 </Link>
               </li>
             </ul>

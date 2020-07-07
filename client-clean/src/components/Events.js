@@ -175,12 +175,7 @@ class Events extends React.Component {
       "bachata",
     ];
     const eventLevels = [
-      "beginner",
-      "bronze",
-      "silver",
-      "gold",
-      "pre-tournament 1",
-      "pre-tournament 2",
+      "beginner", "intermediate", "advanced"
     ];
 
     return (
