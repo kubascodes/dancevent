@@ -306,7 +306,7 @@ class Events extends React.Component {
             <Row>
               {" "}
               {this.state.events.map((event) => (
-                <EventCard event={event} />
+                <EventCard event={event} state={this.props.state} />
               ))}{" "}
             </Row>
           </Col>

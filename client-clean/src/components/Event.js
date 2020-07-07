@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "react-bootstrap/Image";
 
 class Event extends React.Component {
   constructor(props) {
@@ -11,7 +12,7 @@ class Event extends React.Component {
       match: { params },
     } = this.props;
 
-    fetch(`/events/${params.eventId}`)
+    fetch(`/events/${params.id}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -23,7 +24,15 @@ class Event extends React.Component {
   render() {
     return (
       <>
-        {/**TODO: check whether there is a picture attached to the event and display it here */}
+        {this.state.event.picture ? (
+          <Image
+            src={this.state.event.picture}
+            alt={this.state.event.title}
+            fluid
+          />
+        ) : (
+          <span></span>
+        )}
         <h1>{this.state.event.title}</h1>
       </>
     );

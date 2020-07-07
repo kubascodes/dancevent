@@ -1,17 +1,12 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import HomepageBanner from "./HomepageBanner";
 import EventCard from "./EventCard";
 import Button from "react-bootstrap/Button";
 
-class Homepage extends React.Component {
+class MyEvents extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      savedEvents: [],
-      organizedEvents: [],
-      redirect: null,
-    };
+    this.state = { savedEvents: [], organizedEvents: [], redirect: null };
   }
 
   componentDidMount = () => {
@@ -57,9 +52,9 @@ class Homepage extends React.Component {
               component_scope.setState({
                 // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
 
-                savedEvents: interestedInEventsObjects
-                  .filter((event) => event.startDate.getTime() > now.getTime())
-                  .slice(0, 3),
+                savedEvents: interestedInEventsObjects.filter(
+                  (event) => event.startDate.getTime() > now.getTime()
+                ),
               });
             });
         })
@@ -108,13 +103,11 @@ class Homepage extends React.Component {
         console.log(organizedEvents);
 
         const now = new Date();
-        console.log(organizerId);
         component_scope.setState({
           // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
           organizedEvents: organizedEvents
             // TODO: filter event.organizer === organizerID, for this the userID must be fetched from the backend though in POST /profile above
-            .filter((event) => event.startDate.getTime() > now.getTime())
-            .slice(0, 3),
+            .filter((event) => event.startDate.getTime() > now.getTime()),
         });
       });
   };
@@ -138,19 +131,17 @@ class Homepage extends React.Component {
       return <Redirect push to={this.state.redirect} />;
     }
     if (window.sessionStorage.secret_token != null) {
-      /*Display personalized content when logged in*/
       return (
-        <React.Fragment>
-          {this.props.state.userType === "Dancer" ? (
-            <HomepageBanner />
-          ) : (
+        <>
+          <h1>Hi {this.props.state.name}, these are your events:</h1>
+          {this.props.state.userType === "Organizer" ? (
             <div className="container">
-              <h1>Hi {this.props.state.name}, welcome to dancevent!</h1>
+              <hr />
               <h2 className="">Events organized by you</h2>
               <div className="row">
                 {this.state.organizedEvents.map((event) => {
                   return (
-                    <div key={event._id} className="col">
+                    <div key={event._id} className="col-4">
                       <EventCard event={event} state={this.props.state} />
                     </div>
                   );
@@ -166,16 +157,18 @@ class Homepage extends React.Component {
                   ? "Create a new event!"
                   : "Nothing to see yet. Click here to create a new event!"}
               </Button>
+              <hr />
             </div>
+          ) : (
+            <hr />
           )}
 
-          <hr />
           <div className="container">
             <h2 className="">Saved Events</h2>
             <div className="row">
               {this.state.savedEvents.map((event) => {
                 return (
-                  <div key={event._id} className="col">
+                  <div key={event._id} className="col-4">
                     <EventCard event={event} state={this.props.state} />
                   </div>
                 );
@@ -183,35 +176,24 @@ class Homepage extends React.Component {
             </div>
             <div className="row">
               <div className="col">
-                {this.state.savedEvents.length > 0 ? (
-                  <Button
-                    variant="outline-dark"
-                    size="lg"
-                    block
-                    onClick={() => this.setState({ redirect: "/myevents" })}
-                  >
-                    Go to <i>My Events</i>
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline-dark"
-                    size="lg"
-                    block
-                    onClick={() => this.setState({ redirect: "/events" })}
-                  >
-                    Nothing to see yet. Click here to search for events!
-                  </Button>
-                )}
+                <Button
+                  variant="outline-dark"
+                  size="lg"
+                  block
+                  onClick={() => this.setState({ redirect: "/events" })}
+                >
+                  {this.state.savedEvents.length > 0
+                    ? "Search for more events!"
+                    : "Nothing to see yet. Click here to search for events!"}
+                </Button>
               </div>
             </div>
           </div>
-        </React.Fragment>
+        </>
       );
     } else {
-      /*Display public content not logged in*/
-      return <HomepageBanner />;
+      this.setState({ redirect: "/" });
     }
   }
 }
-
-export default Homepage;
+export default MyEvents;

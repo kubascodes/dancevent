@@ -46,7 +46,7 @@ content-type: application/json
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmMxZjA1NWI3ZWQzNTllM2MwMzBiYSIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU4MzI1MH0.tck2Tw_TvEe6QTd97iPWXMvIcq6ZO4ajz9PKCYQPOPk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5Mzg2NjQxN30.C4N3yx0zJWNFFDjIW_Vv28tPGorqDWTh3ruPDFDI4YE
 
 {
     "title": "Dance Party Neubeck",
@@ -66,7 +66,67 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6I
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmMxZjA1NWI3ZWQzNTllM2MwMzBiYSIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU4MzI1MH0.tck2Tw_TvEe6QTd97iPWXMvIcq6ZO4ajz9PKCYQPOPk
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5Mzg2NjQxN30.C4N3yx0zJWNFFDjIW_Vv28tPGorqDWTh3ruPDFDI4YE
+
+{
+    "title": "ein fancy tanzball",
+    "type": "ball",
+    "organizer": "5f0078518d3e4fbac2a81f5d",
+    "description": "Es gibt was zu feiern!",
+    "startDate": "2020-07-08T19:00:00",
+    "duration": 120,
+    "city": "Munich",
+    "location": "some location",
+    "listOfDanceStyles": ["mambo", "jive"],
+    "listOfProficiencyLevels": ["beginner"],
+    "price": "7",
+    "promoCode": "NEUBECK05"
+}
+
+###
+POST http://localhost:3000/events HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDE1NzAzNX0.BYQuWK8-iqg6vU6X7Jyv1j178SlkhyVmmZuj8yQ9nqU
+
+{
+    "title": "noch ein event",
+    "type": "ball",
+    "organizer": "5f0078518d3e4fbac2a81f5d",
+    "description": "Es gibt was zu feiern!",
+    "startDate": "2020-07-09T19:00:00",
+    "duration": 120,
+    "city": "Munich",
+    "location": "some location",
+    "listOfDanceStyles": ["mambo", "jive"],
+    "listOfProficiencyLevels": ["beginner"],
+    "price": "7",
+    "promoCode": "NEUBECK05"
+}
+
+###
+POST http://localhost:3000/events HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDE1NzAzNX0.BYQuWK8-iqg6vU6X7Jyv1j178SlkhyVmmZuj8yQ9nqU
+
+{
+    "title": "und noch eins",
+    "type": "party",
+    "organizer": "5f0078518d3e4fbac2a81f5d",
+    "description": "Es gibt was zu feiern!",
+    "startDate": "2020-07-08T03:00:00",
+    "duration": 120,
+    "city": "Munich",
+    "location": "some location",
+    "listOfDanceStyles": ["mambo", "jive"],
+    "listOfProficiencyLevels": ["beginner"],
+    "price": "7",
+    "promoCode": "NEUBECK05"
+}
+
+###
+POST http://localhost:3000/events HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5Mzg2NjQxN30.C4N3yx0zJWNFFDjIW_Vv28tPGorqDWTh3ruPDFDI4YE
 
 {
     "title": "1 nica dance course",
@@ -84,3 +144,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6I
     "endDate": "2020-07-15",
     "interval": "daily"
 }
+
+### Fetch the profile using a POST request
+POST http://localhost:3000/profile HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5Mzk1ODczN30.BolEpAMAp6g4ZBppvTIHsAnAwGfqwMk3pQ4N0MAqAcg
