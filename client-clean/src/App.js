@@ -8,6 +8,7 @@ import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
 import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
+import EventCreationForm from "./components/forms/EventCreationForm";
 
 export default class App extends Component {
   state = {
@@ -98,6 +99,7 @@ export default class App extends Component {
             )}
           />
           <Route
+            exact
             path="/events"
             render={(props) => (
               <Events {...props} auth_token={this.auth_token} />
@@ -108,6 +110,13 @@ export default class App extends Component {
             path="/dancepartner"
             render={(props) => (
               <FindDancePartnerView {...props} auth_token={this.secret_token} />
+            )}
+          />
+          <Route
+            exact
+            path="/events/create"
+            render={(props) => (
+              <EventCreationForm {...props} auth_token={this.secret_token} />
             )}
           />
         </div>
