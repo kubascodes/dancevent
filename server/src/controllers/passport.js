@@ -8,6 +8,7 @@ const User = require('../models/user'); //to access the User database
 
 
 //Create a passport middleware to handle user registration
+/*NOT USED
 passport.use('register', new localStrategy({
   usernameField: 'email', //specify the name of the Email property in the POST body request.
   passwordField: 'password' //specify the name of the Password property in the POST body request.
@@ -24,6 +25,7 @@ passport.use('register', new localStrategy({
     done(error);
   }
 }));
+*/
 
 //Configure a Passport Strategy Middleware to handle User login
 passport.use('login', new localStrategy({

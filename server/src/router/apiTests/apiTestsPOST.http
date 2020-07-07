@@ -1,16 +1,86 @@
+###
+POST http://localhost:3000/register/organizer HTTP/1.1
+content-type: application/json
+
+{
+    "email": "test@test.de",
+    "password": "1234",
+    "name": "test organizer",
+    "city": "Munich",
+    "street": "Kaufinger Straße",
+    "description": "great organizer",
+    "publicEmail": "publictest@test.de",
+    "phone": "7654387"
+}
+
+###
+POST http://localhost:3000/register/dancer HTTP/1.1
+content-type: application/json
+
+{
+    "email": "testdancer@test.de",
+    "password": "1234",
+    "name": "test dancer",
+    "city": "Munich",
+    "interestedInEvents": "5efc30b13499c85e90e4f858",
+    "gender": "male",
+    "height": 182,
+    "yearOfBirth": 1996,
+    "listOfDanceStyles": ["hustle", "mambo"],
+    "proficiencyLevel": "beginner",
+    "description": "great dancer",
+    "prefAgeMin": 20,
+    "prefAgeMax": 30,
+    "prefGender": "female"
+}
+
+###
+POST http://localhost:3000/login HTTP/1.1
+content-type: application/json
+
+{
+    "email": "test@test.de",
+    "password": "1234"
+}
+
+###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmMxZjA1NWI3ZWQzNTllM2MwMzBiYSIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU4MzI1MH0.tck2Tw_TvEe6QTd97iPWXMvIcq6ZO4ajz9PKCYQPOPk
 
 {
     "title": "Dance Party Neubeck",
     "type": "party",
+    "organizer": "5efc1f055b7ed359e3c030ba",
     "description": "Come to our great party!",
     "startDate": "2020-06-12T19:00:00",
     "duration": 120,
     "city": "Munich",
     "location": "some location",
     "listOfDanceStyles": ["mambo", "jive"],
-    "listOfProficiencyLevels": ["beginner", "bronze", "silver"],
+    "listOfProficiencyLevels": ["beginner"],
     "price": "7",
     "promoCode": "NEUBECK05"
+}
+
+###
+POST http://localhost:3000/events HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlZmMxZjA1NWI3ZWQzNTllM2MwMzBiYSIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5MzU4MzI1MH0.tck2Tw_TvEe6QTd97iPWXMvIcq6ZO4ajz9PKCYQPOPk
+
+{
+    "title": "1 nica dance course",
+    "type": "course",
+    "organizer": "5efc1f055b7ed359e3c030ba",
+    "description": "hier wird gedancet",
+    "startDate": "2020-07-12T18:00:00",
+    "duration": 90,
+    "city": "Valencia",
+    "location": "Akuarela Playa",
+    "listOfDanceStyles": ["hustle", "various"],
+    "listOfProficiencyLevels": ["beginner", "intermediate"],
+    "price": "9999",
+    "promoCode": "TECHNOXXX",
+    "endDate": "2020-07-15",
+    "interval": "daily"
 }

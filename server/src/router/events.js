@@ -8,6 +8,7 @@ const multer = require("multer");
 const User = require("../models/user");
 const Organizer = require("../models/organizer");
 const Event = require("../models/event");
+const DanceCourse = require("../models/dancecourse");
 
 // ------------- Define Parameters to save images -------------
 //define where to store
@@ -106,9 +107,13 @@ router.post(
       if (user && user.userType == "Organizer") {
         //add the user as foreign key to the event
         req.body["organizer"] = user._id;
-        //Save the event to the databas
-        let newEvent = await Event.create(req.body);
-
+        //Save the event to the database
+        let newEvent = null;
+        if (req.body["type"] === "course") {
+          newEvent = await DanceCourse.create(req.body);
+        } else {
+          newEvent = await Event.create(req.body);
+        }
         //old---add the event to the user (Organizer)
         //old  await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
 
@@ -147,8 +152,13 @@ router.post(
         //add picture path to the event
         req.body["picture"] = req.file.path;
 
-        //Save the event to the databas
-        let newEvent = await Event.create(req.body);
+        //Save the event to the database
+        let newEvent = null;
+        if (req.body["type"] === "course") {
+          newEvent = await DanceCourse.create(req.body);
+        } else {
+          newEvent = await Event.create(req.body);
+        }
 
         //old---add the event to the user (Organizer)
         //old  await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
@@ -189,12 +199,24 @@ router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   async (req, res, next) => {
-    try {
-      //here we want to delete an existing event
-      //TODO: check the user who must be an organizer and must own the event
-    } catch (error) {
-      next(error); //handle error by error handling middleware
-    }
+    const uid = req.params.id;
+    Event.findOneAndDelete({ _id: uid }, (err, event) => {
+      //error in step (will also be called if <id> has not correct the pattern)
+      if (err) {
+        return res.status(500).json({
+          error: "Internal server error",
+          message: err.message,
+        });
+      }
+      //Query is empty (event does not exist)
+      if (!event) {
+        return res.status(404).json({
+          error: "Event not found",
+        });
+      }
+      //successful query -> send deleted event
+      res.send(`Event deleted: ${event._id}`);
+    });
   }
 );
 

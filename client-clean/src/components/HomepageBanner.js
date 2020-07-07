@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Homepage_Banner = () => {
+const HomepageBanner = () => {
   return (
     <div className="container img-homepage">
       <h1 className="text-center">Find dance partners, events, and schools!</h1>
@@ -46,7 +46,9 @@ const Homepage_Banner = () => {
       </div>
       <div className="row mt-2">
         <div className="col-4 text-center">
-          <button className="btn btn-secondary btn-lg">Find a partner</button>
+          <Link to="/dancepartner">
+            <button className="btn btn-secondary btn-lg">Find a partner</button>
+          </Link>
         </div>
         <div className="col-4 text-center">
           <Link to="/events">
@@ -64,4 +66,4 @@ const Homepage_Banner = () => {
     </div>
   );
 };
-export default Homepage_Banner;
+export default HomepageBanner;
