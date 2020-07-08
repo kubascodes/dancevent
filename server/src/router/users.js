@@ -179,11 +179,8 @@ router.post("/register/dancer", async (req, res) => {
 //Register as a Request
 router.post("/createrequest", passport.authenticate("jwt", { session: false }), async (req, res) => {
 
-  console.log(JSON.stringify(req.user));
-
   //USER ID AVAILABLE HERE
-  let userId = req.user._id;
-
+  //let userId = req.user._id;
 
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
@@ -191,7 +188,7 @@ router.post("/createrequest", passport.authenticate("jwt", { session: false }), 
       message: "The request body is empty ",
     });
 
-  req.body.dancerId = userId;
+  req.body.dancerId = req.user._id;
 
   try {
     let request = await Request.create(req.body);

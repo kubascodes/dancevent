@@ -234,7 +234,7 @@ class FilterRequest extends React.Component {
         </div>
 
         {/*Age Slider */}
-        {/*TODO*/}
+        {/*TODO and change.. just trying out code
         <div className="form-group">
           <Form>
             <Form.Group controlId="formBasicRangeCustom">
@@ -257,7 +257,7 @@ class FilterRequest extends React.Component {
                  data-min={this.state.ageOffsetMin} data-max={this.state.ageOffsetMax}
                  onChange={this.onChangeSlider}/>
 
-        </div>
+        </div>*/}
 
 
         {/*Skill-Level Type */}
