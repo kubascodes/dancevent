@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
 const User = require("./user"); //we require the user model to extend it
+const options = { discriminatorKey: "eventType", collection: "events" };
 
 /*Note:
 A nice read on discriminators used below: https://dev.to/helenasometimes/getting-started-with-mongoose-discriminators-in-expressjs--22m9
+Changed to the method shown here: http://thecodebarbarian.com/2015/07/24/guide-to-mongoose-discriminators.html I didn't get the populate for events/ and events/:id to run otherwise
 */
 
 // Define the Dancer schema that extends User
-const DancerSchema = User.discriminator(
-  "Dancer",
-  new mongoose.Schema({
+const DancerSchema = new mongoose.Schema(
+  {
     gender: {
       type: String,
       enum: ["female", "male", "other"],
@@ -59,9 +60,10 @@ const DancerSchema = User.discriminator(
       enum: ["female", "male", "other"],
       required: false, //not necessary, dancers can create accounts to only follow events, not everyone is here to find partners
     },
-  })
+  },
+  options
 );
 
 // Export the Dancer model
 //module.exports = mongoose.model('Dancer', DancerSchema); //do not register the schema again, it won't work
-module.exports = mongoose.model("Dancer"); //save dancers to the user collection internally
+module.exports = User.discriminator("Dancer", DancerSchema); //save dancers to the user collection internally

@@ -2,7 +2,10 @@ import React from "react";
 import { Redirect } from "react-router-dom";
 import HomepageBanner from "./HomepageBanner";
 import EventCard from "./EventCard";
+import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 class Homepage extends React.Component {
   constructor(props) {
@@ -27,11 +30,9 @@ class Homepage extends React.Component {
       })
         .then((res) => res.json(res))
         .then(function (res) {
-          console.log("User fetched:");
-          console.log(res);
           if (res.userType === "Organizer") {
-            // At this moment we have access to the user (not the ID though, the ID is nullified in the backend for the POST /profile route).
-            component_scope.fetchOrganizedEvents(res._id);
+            // The user id is never given to the front-end. In fetchOrganizedEvents the email is used to filter for the events that belong to the currently logged in organizer
+            component_scope.fetchOrganizedEvents(res.email);
           }
 
           // We get an array of event-Ids from the user and fetch the event object for each of them -> handleEventFetching only returns when all events are fetched
@@ -39,8 +40,6 @@ class Homepage extends React.Component {
             .handleEventFetching(res.interestedInEvents)
             .then((events) => {
               // Only resolved promises of the fetched events end up in here
-              console.log("Events fetched and turned into json:");
-              console.log(events);
               let interestedInEventsObjects = [...events];
               // Sort the retrieved events by date (old to new)
               interestedInEventsObjects.sort((a, b) =>
@@ -50,9 +49,6 @@ class Homepage extends React.Component {
                   ? -1
                   : 0
               );
-              console.log("Sorted events:");
-              console.log(interestedInEventsObjects);
-
               const now = new Date();
               component_scope.setState({
                 // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
@@ -91,29 +87,27 @@ class Homepage extends React.Component {
     });
   };
 
-  fetchOrganizedEvents = (organizerId) => {
+  fetchOrganizedEvents = (organizerEmail) => {
     var component_scope = this;
     // Additionally fetch organized events: Fetch all events and filter for those that are organized by the logged in organizer
     fetch("/events")
       .then((res) => res.json())
       .then((events) => component_scope.convertStringToDate(events))
       .then((eventsConverted) => {
-        console.log(eventsConverted);
         let organizedEvents = [...eventsConverted];
         // Sort the retrieved events by date (old to new)
         organizedEvents.sort((a, b) =>
           a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
         );
-        console.log("Sorted events:");
-        console.log(organizedEvents);
-
         const now = new Date();
-        console.log(organizerId);
         component_scope.setState({
           // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
           organizedEvents: organizedEvents
-            // TODO: filter event.organizer === organizerID, for this the userID must be fetched from the backend though in POST /profile above
-            .filter((event) => event.startDate.getTime() > now.getTime())
+            .filter(
+              (event) =>
+                event.organizer.email === organizerEmail &&
+                event.startDate.getTime() > now.getTime()
+            )
             .slice(0, 3),
         });
       });
@@ -133,6 +127,22 @@ class Homepage extends React.Component {
     });
   };
 
+  onDeleteEvent = (event) => {
+    var component_scope = this;
+    // Interrupting the flow from the EventCard to App.js to ensure immediate rerendering of the Homepage when the deletion in App.js is done
+    component_scope.setState({
+      organizedEvents: component_scope.state.organizedEvents.filter(
+        (organizedEvent) => organizedEvent._id !== event._id
+      ),
+      savedEvents: component_scope.state.savedEvents.filter(
+        (savedEvent) => savedEvent._id !== event._id
+      ),
+    });
+
+    // After the Homepage is re-rendered the event is deleted from the backend
+    component_scope.props.onDeleteEvent(event);
+  };
+
   render() {
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
@@ -144,45 +154,61 @@ class Homepage extends React.Component {
           {this.props.state.userType === "Dancer" ? (
             <HomepageBanner />
           ) : (
-            <div className="container">
-              <h1>Hi {this.props.state.name}, welcome to dancevent!</h1>
-              <h2 className="">Events organized by you</h2>
-              <div className="row">
-                {this.state.organizedEvents.map((event) => {
-                  return (
-                    <div key={event._id} className="col">
-                      <EventCard event={event} state={this.props.state} />
-                    </div>
-                  );
-                })}
-              </div>
-              <Button
-                variant="outline-dark"
-                size="lg"
-                block
-                onClick={() => this.setState({ redirect: "/events" })}
-              >
-                {this.state.organizedEvents.length > 0
-                  ? "Create a new event!"
-                  : "Nothing to see yet. Click here to create a new event!"}
-              </Button>
-            </div>
+            <>
+              <Container>
+                <h1>Hi {this.props.state.name}, welcome to dancevent!</h1>
+                <h2 className="">Events organized by you</h2>
+                <Row>
+                  {this.state.organizedEvents.map((event) => {
+                    return (
+                      <Col
+                        key={event._id}
+                        className="d-flex justify-content-center"
+                      >
+                        <EventCard
+                          event={event}
+                          state={this.props.state}
+                          onDeleteEvent={() => this.onDeleteEvent(event)}
+                        />
+                      </Col>
+                    );
+                  })}
+                </Row>
+                <Button
+                  variant="outline-dark"
+                  size="lg"
+                  block
+                  onClick={() => this.setState({ redirect: "/events" })}
+                >
+                  {this.state.organizedEvents.length > 0
+                    ? "Create a new event!"
+                    : "Nothing to see yet. Click here to create a new event!"}
+                </Button>
+              </Container>
+            </>
           )}
 
           <hr />
-          <div className="container">
+          <Container>
             <h2 className="">Saved Events</h2>
-            <div className="row">
+            <Row>
               {this.state.savedEvents.map((event) => {
                 return (
-                  <div key={event._id} className="col">
-                    <EventCard event={event} state={this.props.state} />
-                  </div>
+                  <Col
+                    key={event._id}
+                    className="d-flex justify-content-center"
+                  >
+                    <EventCard
+                      onDeleteEvent={() => this.onDeleteEvent(event)}
+                      event={event}
+                      state={this.props.state}
+                    />
+                  </Col>
                 );
               })}
-            </div>
-            <div className="row">
-              <div className="col">
+            </Row>
+            <Row>
+              <Col className="col">
                 {this.state.savedEvents.length > 0 ? (
                   <Button
                     variant="outline-dark"
@@ -202,9 +228,9 @@ class Homepage extends React.Component {
                     Nothing to see yet. Click here to search for events!
                   </Button>
                 )}
-              </div>
-            </div>
-          </div>
+              </Col>
+            </Row>
+          </Container>
         </React.Fragment>
       );
     } else {

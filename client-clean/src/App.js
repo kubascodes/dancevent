@@ -75,6 +75,24 @@ export default class App extends Component {
     console.log("main state");
   };
 
+  // Propagated up from the EventCard
+  deleteEvent = (event) => {
+    // Delete the event from the backend
+    fetch(`/events/${event._id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: "Bearer " + window.sessionStorage.secret_token,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   componentDidMount = () => {
     // Otherwise each time App.js is re-rendered the state is set to the default values
     if (window.sessionStorage.secret_token != null) {
@@ -90,7 +108,13 @@ export default class App extends Component {
           <Route
             exact
             path="/"
-            render={(props) => <Homepage {...props} state={this.state} />}
+            render={(props) => (
+              <Homepage
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+              />
+            )}
           />
           <Route
             path="/register/organizer"
@@ -120,7 +144,13 @@ export default class App extends Component {
           <Route
             exact
             path="/events"
-            render={(props) => <Events {...props} state={this.state} />}
+            render={(props) => (
+              <Events
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+              />
+            )}
           />
           <Route
             path="/events/:id"
@@ -135,7 +165,13 @@ export default class App extends Component {
           />
           <Route
             path="/myevents"
-            render={(props) => <MyEvents {...props} state={this.state} />}
+            render={(props) => (
+              <MyEvents
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+              />
+            )}
           />
         </div>
       </BrowserRouter>

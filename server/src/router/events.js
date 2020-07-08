@@ -57,6 +57,7 @@ router.get("/", async (req, res, next) => {
     //sort based on the startDate
     //limit the results to 50 (the user probably doesn't need more)
     let event = await Event.find(req.query)
+      .populate("organizer", "-_id name email publicEmail")
       .sort({ startDate: "desc" })
       .limit(50)
       .exec();
@@ -75,23 +76,25 @@ router.get("/", async (req, res, next) => {
 //id is number after .de/events/xxx
 router.get("/:id", (req, res, next) => {
   //find event with id in database
-  var event = Event.findById(req.params.id, (err, event) => {
-    //error in step (will also be called if <id> has not correct the pattern)
-    if (err) {
-      return res.status(500).json({
-        error: "Internal server error",
-        message: err.message,
-      });
-    }
-    //Query is empty (event does not exist)
-    if (!event) {
-      return res.status(404).json({
-        error: "Event not found",
-      });
-    }
-    //successful query -> send found event
-    return res.status(200).json(event);
-  });
+  Event.findById(req.params.id)
+    .populate("organizer", "-_id name email publicEmail")
+    .exec((err, event) => {
+      //error in step (will also be called if <id> has not correct the pattern)
+      if (err) {
+        return res.status(500).json({
+          error: "Internal server error",
+          message: err.message,
+        });
+      }
+      //Query is empty (event does not exist)
+      if (!event) {
+        return res.status(404).json({
+          error: "Event not found",
+        });
+      }
+      //successful query -> send found event
+      return res.status(200).json(event);
+    });
 });
 
 //   --------- Secured event routes for manipulation which require authentication---------
@@ -199,6 +202,7 @@ router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   async (req, res, next) => {
+    // TODO: Check if the logged in user is an organizer and owns the event
     const uid = req.params.id;
     Event.findOneAndDelete({ _id: uid }, (err, event) => {
       //error in step (will also be called if <id> has not correct the pattern)
