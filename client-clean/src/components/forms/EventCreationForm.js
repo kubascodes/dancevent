@@ -10,45 +10,65 @@ class EventCreationForm extends React.Component {
     -only allow access when logedin as organizer
     -duration ...how?
     -restructuring (design)
-    -City autocomplete
+    
+    Update functionality:
+      -date, city, Checkboxes, photo(?)
+      -put function + backend
+
   */
 
 
 
   constructor(props) {
+    console.log(props)
     super(props);
-    if(props.update){
-      this.state = {
-        title: null,
-        type: "course",
-        description: "",
-        startDate: Date.now(),
-        duration: 10,
-        city: "Munich",
-        location: null,
-        listOfDanceStyles: null,
-        listOfProficiencyLevels: null,
-        price: null,
-        promoCode: null,
-        picture: null,
+    this.state = {
+      title: null,
+      type: "course",
+      description: "",
+      startDate: Date.now(),
+      duration: 10,
+      city: "Munich",
+      location: null,
+      listOfDanceStyles: null,
+      listOfProficiencyLevels: null,
+      price: null,
+      promoCode: null,
+      picture: null,
+
+    };
+  }
+  componentDidMount(){
+    if(this.props.update){
+      const {
+        match: { params },
+      } = this.props;
+      const event = null;
+      const component_scope = this;
   
-      };
-    }else{
-      this.state = {
-        title: null,
-        type: "course",
-        description: "",
-        startDate: Date.now(),
-        duration: 10,
-        city: "Munich",
-        location: null,
-        listOfDanceStyles: null,
-        listOfProficiencyLevels: null,
-        price: null,
-        promoCode: null,
-        picture: null,
-  
-      };
+      fetch(`/events/${params.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          component_scope.setState({
+            title: data.title,
+            type: data.type,
+            description: data.description,
+            startDate: new Date(data.startDate),
+            duration: data.duration,
+            city: data.city,
+            location: data.location,
+            listOfDanceStyles: data.listOfDanceStyles,
+            listOfProficiencyLevels: data.listOfProficiencyLevels,
+            price: data.price,
+            promoCode: data.promoCode,
+            picture: data.picture
+          })
+
+
+          console.log(component_scope.state)
+        })
+        .catch(console.log);
     }
   }
 
@@ -189,20 +209,6 @@ class EventCreationForm extends React.Component {
           'Authorization': "Bearer " + token
         },
         body: formData,
-        /*body: JSON.stringify({
-          title: this.state.title,
-          type: this.state.type,
-          description: this.state.description,
-          startDate: this.state.startDate,
-          duration: this.state.duration,
-          city: this.state.city,
-          location: this.state.location,
-          listOfDanceStyles: this.state.listOfDanceStyles,
-          listOfProficiencyLevels: this.state.listOfProficiencyLevels,
-          price: this.state.price,
-          promoCode: this.state.promoCode,
-          picture: this.state.picture
-        }),*/
       }) //create a post request which is a Promise
         .then(res => res.json(res))
         .then(function (res) {
@@ -268,13 +274,15 @@ class EventCreationForm extends React.Component {
       return (
 
 
-
+        //placeholder={this.props.update ? this.title : "Event Title" } 
         <div>
+
+          {(this.props.update && typeof(this.state.picture)=== "string" )? ( <img src={"/"+this.state.picture} alt="Picture"  height="600"/> ) : null}
           <form className="form-group" id="EventCreationForm" onSubmit={this.pushEvent}>
 
             <div className="form-group">
               <label className="label-bold" htmlFor="title">Title</label>
-              <input type="text" className="form-control" id="title" name="title" placeholder="Event Title" onChange={this.onChangeInput} value={this.title} required />
+              <input type="text" className="form-control" id="title" name="title" placeholder="Event Title" onChange={this.onChangeInput} value={this.state.title} required />
             </div>
             <div className="form-group">
               <label className="label-bold" htmlFor="type">Type</label>
@@ -282,6 +290,7 @@ class EventCreationForm extends React.Component {
                 className="form-control"
                 name="type"
                 onChange={this.onChangeInput}
+                value={this.state.type}
               >
                 <option value="course">Course</option>
                 <option value="ball">Ball</option>
@@ -320,7 +329,7 @@ class EventCreationForm extends React.Component {
 
             <div className="form-group">
               <label className="label-bold" htmlFor="location">Location</label>
-              <input type="text" className="form-control" id="location" placeholder="e.g. Steet and Room Number" name="location" onChange={this.onChangeInput} value={this.location} required />
+              <input type="text" className="form-control" id="location" placeholder="e.g. Steet and Room Number" name="location" onChange={this.onChangeInput} value={this.state.location} required />
             </div>
             <div className="form-group">
               <label className="mr-2 label-bold" htmlFor="listOfDanceStyles">Dance Styles</label>
@@ -334,7 +343,7 @@ class EventCreationForm extends React.Component {
             </div>
             <div className="form-group">
               <label className="mr-2 label-bold" htmlFor="listOfProficiencyLevels">Profiency Level</label>
-              <select multiple className="form-control" id="listOfProficiencyLevels" name="listOfProficiencyLevels" onChange={this.onChangeMultipleSelect} required>
+              <select multiple className="form-control" id="listOfProficiencyLevels" name="listOfProficiencyLevels" onChange={this.onChangeMultipleSelect} value={this.state.listOfProficiencyLevels} required>
                 {eventLevels.map((level) => (
                   <option value={level}>
                     {level.charAt(0).toUpperCase() +
@@ -346,7 +355,7 @@ class EventCreationForm extends React.Component {
             <div className="form-group">
               <label className="label-bold" htmlFor="price">Price</label>
               <div className="form-row">
-                <input type="number" className="form-control col" id="price" min="0" step="0.01" placeholder="10.00" name="price" onChange={this.onChangeInput} value={this.price} required />
+                <input type="number" className="form-control col" id="price" min="0" step="0.01" placeholder="10.00" name="price" onChange={this.onChangeInput} value={this.state.price} required />
 
                 <div className="input-group-append">
                   <div className="input-group-text">
@@ -357,7 +366,7 @@ class EventCreationForm extends React.Component {
             </div>
             <div className="form-group">
               <label className="label-bold" htmlFor="promoCode">PromoCode</label>
-              <input type="text" className="form-control" id="promoCode" placeholder="e.g. Ball150" name="promoCode" onChange={this.onChangeInput} value={this.promoCode} />
+              <input type="text" className="form-control" id="promoCode" placeholder="e.g. Ball150" name="promoCode" onChange={this.onChangeInput} value={this.state.promoCode} />
             </div>
             <div className="form-group">
               <div className="custom-file">
@@ -368,7 +377,7 @@ class EventCreationForm extends React.Component {
 
             <div className="form-group">
               <label className="label-bold">Description</label>
-              <textarea className="form-control" name="description" id="description" onChange={this.onChangeInput} rows="4" />
+              <textarea className="form-control" name="description" id="description" onChange={this.onChangeInput} value={this.state.description} rows="4" />
             </div>
 
             <div className="form-group">
@@ -378,7 +387,7 @@ class EventCreationForm extends React.Component {
         </div>
 
       )
-    } else {
+    
       return (
         <div> You are not allowed to view this page. </div>
       )

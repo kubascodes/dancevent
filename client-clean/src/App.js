@@ -130,6 +130,12 @@ export default class App extends Component {
               <EventCreationForm {...props} auth_token={this.secret_token} />
             )}
           />
+          <Route
+            path="/events/update/:id"
+            render={(props) => (
+              <EventCreationForm update {...props} auth_token={this.secret_token} />
+            )}
+          />
         </div>
       </BrowserRouter>
     );
