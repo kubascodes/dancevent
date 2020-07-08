@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
+import EventCard from "./EventCard";
 
 /*
     TODOs:
@@ -149,6 +149,19 @@ class Events extends React.Component {
     });
   };
 
+  onDeleteEvent = (event) => {
+    var component_scope = this;
+    // Interrupting the flow from the EventCard to App.js to ensure immediate rerendering of the Homepage when the deletion in App.js is done
+    component_scope.setState({
+      events: component_scope.state.events.filter(
+        (shownEvent) => shownEvent._id !== event._id
+      ),
+    });
+
+    // After the Homepage is re-rendered the event is deleted from the backend
+    component_scope.props.onDeleteEvent(event);
+  };
+
   render() {
     //possible selector variables
     const latinStyles = [
@@ -182,25 +195,6 @@ class Events extends React.Component {
       "pre-tournament 1",
       "pre-tournament 2",
     ];
-
-    //A Card of an event
-    const eventCard = function (event) {
-      return (
-        <Card id={event._id} style={{ width: "18rem" }}>
-          <Card.Img
-            variant="top"
-            src={event.picture}
-            alt={event.title}
-            style={{ objectFit: "cover", width: "286px", height: "180px" }}
-          />
-          <Card.Body>
-            <Card.Title>{event.title}</Card.Title>
-            <Card.Text>{event.description}</Card.Text>
-            <button variant="primary">Go to Event</button>
-          </Card.Body>
-        </Card>
-      );
-    };
 
     return (
       <Container fluid>
@@ -322,7 +316,16 @@ class Events extends React.Component {
             </Row>
 
             {/*    Event Cards   */}
-            <Row> {this.state.events.map((event) => eventCard(event))} </Row>
+            <Row>
+              {" "}
+              {this.state.events.map((event) => (
+                <EventCard
+                  event={event}
+                  state={this.props.state}
+                  onDeleteEvent={() => this.onDeleteEvent(event)}
+                />
+              ))}{" "}
+            </Row>
           </Col>
         </Row>
       </Container>

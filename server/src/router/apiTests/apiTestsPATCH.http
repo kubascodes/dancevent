@@ -1,0 +1,6 @@
+### Need to send an array as that is expected from the api
+PUT http://localhost:3000/users/5f0078518d3e4fbac2a81f5d HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5Mzk1ODczN30.BolEpAMAp6g4ZBppvTIHsAnAwGfqwMk3pQ4N0MAqAcg
+
+[{"propName": "name", "value": "neua Name"}]

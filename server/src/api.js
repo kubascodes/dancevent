@@ -24,8 +24,8 @@ app.use(cors());
 app.use(helmet());
 //allows the access of the pictures of the events
 app.use("/pictures/events", express.static("pictures/events"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({limit:'50mb', extended: true }));
 app.use(passport.initialize());
 //app.use(middlewares.allowCrossDomain);
 

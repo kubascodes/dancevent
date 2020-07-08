@@ -10,12 +10,83 @@ const config = require("../config"); //to access our Jwt Secret
 const User = require("../models/user"); //to access the user database
 const Dancer = require("../models/dancer"); //to create new dancers
 const Organizer = require("../models/organizer"); //to create new organizers
-const Request = require("../models/partnerrequest"); // to access the partner requests
 //Unsecured routes for anyone to access
 
-//access the /users homepage
-router.get("/user", function (req, res) {
-  res.send("Welcome to the user's homepage");
+//access the /profile of the user
+router.post(
+  "/profile",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
+    //console.log(req.user);
+    try {
+      let user = await User.findOne({ _id: req.user._id });
+      //TODO: REMOVE THESE PROPERTIES BELOW ALTOGETHER!
+      user.password = null;
+      user._id = null;
+      user.__v = null;
+
+      console.log(user);
+
+      return res.status(200).json(user);
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: error.message,
+      });
+    }
+  }
+);
+
+// List all users
+router.get("/users", async (req, res, next) => {
+  try {
+    //search in database based on the url-request-parameters
+    let user = await User.find(req.query).exec();
+    //send the found result back
+    return res.status(200).json(user);
+  } catch (err) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: err.message,
+    });
+  }
+});
+
+//List all dance request on Dance Partner Page
+//TODO: sort is missing, events
+router.get("/dancepartner", async (req, res, next) => {
+  try {
+    //search in database based on the url-request-parameter
+    let request = await Request.find(req.query).populate("dancerId").exec();
+    //send the found result back
+    return res.status(200).json(request);
+  } catch (err) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: err.message,
+    });
+  }
+// Get specific user
+router.get("/users/:id", (req, res, next) => {
+  //find user with id in database
+  var user = User.findById(req.params.id, (err, user) => {
+    //error in step (will also be called if <id> has not correct the pattern)
+    if (err) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: err.message,
+      });
+    }
+    //Query is empty (user does not exist)
+    if (!user) {
+      return res.status(404).json({
+        error: "User not found",
+      });
+    }
+    //successful query -> send found user
+    return res.status(200).json(user);
+  });
 });
 
 //access login form
@@ -33,61 +104,6 @@ router.get("/register/dancer", function (req, res) {
   res.send("Welcome to the dancer registration page");
 });
 
-//List all dancer on Dance Partner Page
-/*router.get("/dancepartner", async (req, res, next) => {
-  try {
-    //search in database based on the url-request-parameters
-    let dancer = await Dancer.find(req.query).exec();
-    //send the found result back
-    return res.status(200).json(dancer);
-  } catch (err) {
-    return res.status(500).json({
-      error: "Internal server error",
-      message: err.message,
-    });
-  }
-});*/
-
-//List all dance request on Dance Partner Page
-//TODO: sort is missing, events
-//router.get("/dancepartner", async (req, res, next) => {
-router.get("/dancepartner", async (req, res, next) => {
-  try {
-    //search in database based on the url-request-parameter
-    let request = await Request.find(req.query).populate("dancerId").exec();
-    //send the found result back
-    return res.status(200).json(request);
-  } catch (err) {
-    return res.status(500).json({
-      error: "Internal server error",
-      message: err.message,
-    });
-  }
-});
-
-// List a specific request
-//id is number after .de/dancepartner/xxx
-/*router.get("/:id", (req, res, next) => {
-  //find request with id in database
-  var request = Request.findById(req.params.id, (err, request) => {
-    //error in step (will also be called if <id> has not correct the pattern)
-    if (err) {
-      return res.status(500).json({
-        error: "Internal server error",
-        message: err.message,
-      });
-    }
-    //Query is empty (event does not exist)
-    if (!request) {
-      return res.status(404).json({
-        error: "Request not found",
-      });
-    }
-    //successful query -> send found event
-    return res.status(200).json(request);
-  });
-});*/
-
 //User Login
 router.post("/login", (req, res, next) => {
   passport.authenticate("login", async (error, user, info) => {
@@ -100,11 +116,14 @@ router.post("/login", (req, res, next) => {
         if (error) return next(error);
         //We don't want to store the sensitive information such as the
         //user password in the token so we pick only the email and id
-        const body = { _id: user._id, email: user.email };
+        const body = {
+          _id: user._id,
+          email: user.email,
+        };
         //Sign the JWT token and populate the payload with the user email and id
         const token = jwt.sign({ user: body }, config.JwtSecret);
         //Send back the token to the user
-        return res.json({ token: token, id: body._id });
+        return res.json({ token: token, email: body.email });
       });
     } catch (error) {
       return next(error);
@@ -135,6 +154,7 @@ router.post("/register/organizer", async (req, res) => {
 //Register as a Dancer
 router.post("/register/dancer", async (req, res) => {
   //Validate the request body
+  console.log(req.body);
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
@@ -175,8 +195,33 @@ router.post("/createrequest", passport.authenticate("jwt", { session: false }), 
       error: "Internal server error",
       message: error.message,
     });
+// Update user via POST request
+router.post(
+  "/profile/update",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
+    //console.log(req.user);
+    // Expect an array as the req.body such as [{"propName": "name", "value": "new name"}, {"propName": "city", "value": "new city"}], loop through this array and construct an updateOps object that is used to execute the update
+    const updateOps = {};
+    for (const ops of req.body) {
+      updateOps[ops.propName] = ops.value;
+    }
+    // Update the user where the _id fits the one fetched from the token --> $set is a mongoose keywork
+    User.update(
+      { _id: req.user._id },
+      {
+        $set: updateOps,
+      }
+    )
+      .exec()
+      .then((result) => {
+        console.log(result);
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
   }
-});
+);
 
 // delete Request
 router.delete("/dancepartner/request/delete", async (req, res) => {
