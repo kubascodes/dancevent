@@ -49,18 +49,20 @@ class CreateRequest extends React.Component{
         e.preventDefault();
 
         // adding the dance category and the values of the styles (saved as [{value, label}]) together as one to send to the backend
-        var danceStyle = this.state.danceStyle.map(style => style.value).concat(this.state.danceCategory);
+        //const danceStyle = this.state.danceStyle ? {this.state.danceStyle.map(style => style.value).concat(this.state.danceCategory) }: {this.state.danceCategory} ;
+        // TODO: change
+        const danceStyle = this.state.danceCategory;
 
         // create request body
         //TODO: dancerId and counterfeitEmail at the moment hard coded!!!
         var newRequest = {
-            dancerId: '5ee8c5671d6b0d0a9646ad3d',
+            //dancerId: '5ee8c5671d6b0d0a9646ad3d',
             description: this.state.description,
             ageOffset: this.state.age,
             listofGenders: this.state.prefGender,
             listOfProficiencyLevels: this.state.danceSkills,
             counterfeitEmail: 'ludmann.julia@gmail.com',
-            listOfDanceStyles: danceStyle
+            listOfDanceStyles: danceStyle,
             //not in the request body (part of the dancer body)
             //height: this.state.height,
             //danceStyle: this.state.danceStyle,

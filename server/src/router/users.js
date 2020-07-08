@@ -158,11 +158,14 @@ router.post("/createrequest", passport.authenticate("jwt", { session: false }), 
   //USER ID AVAILABLE HERE
   let userId = req.user._id;
 
+
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body is empty ",
     });
+
+  req.body.dancerId = userId;
 
   try {
     let request = await Request.create(req.body);

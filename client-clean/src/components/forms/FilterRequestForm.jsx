@@ -1,5 +1,6 @@
 import React from "react";
 import Select from 'react-select';
+import Form from 'react-bootstrap/Form'
 
 class FilterRequest extends React.Component {
   constructor(props) {
@@ -13,8 +14,22 @@ class FilterRequest extends React.Component {
       eventType: "",
       danceCategory: "",
       danceStyle: "",
+      ageOffset:20,
+      ageOffsetMin:1,
+      ageOffsetMax: 100,
+
     };
   }
+
+   updatePriceLabels() { //avoids slider overlap
+     var sliders = document.querySelectorAll(".price-slider input");
+     var val1 = parseInt(sliders[0].value);
+     var val2 = parseInt(sliders[1].value);
+     if (val1 >= val2) { sliders[0].value = val2 - 3; return; }
+     if (val2 <= val1) { sliders[1].value = val1 + 3; return; }
+  }
+
+
 
   //TODO: write Submit
   //TODO: handle city
@@ -37,9 +52,9 @@ class FilterRequest extends React.Component {
   onChange = (e) => {
     /*This function is called if the user changes a variable of the filter options*/
     e.preventDefault();
-    /*this.setState({
+    this.setState({
             [e.target.name]: e.target.value
-        })*/
+        })
     console.log("Change value: " + e.target.value);
     console.log("Change name: " + e.target.name);
     console.log(this.state);
@@ -123,14 +138,7 @@ class FilterRequest extends React.Component {
 
 
   render() {
-    // old types
-    const eventType = [
-      "all-Event-Types",
-      "ball",
-       "competition",
-      "course",
-      "party",
-    ];
+
     // New Selection Types:
     //gender
     const gender = [
@@ -196,7 +204,7 @@ class FilterRequest extends React.Component {
     ];
 
     // Event Type - Multiple
-    const eventTypeNew = [
+    const eventType = [
       { value: 'ball', label: 'Ball' },
       { value: 'party', label: 'Party' },
       { value: 'course', label: 'Course' },
@@ -227,6 +235,30 @@ class FilterRequest extends React.Component {
 
         {/*Age Slider */}
         {/*TODO*/}
+        <div className="form-group">
+          <Form>
+            <Form.Group controlId="formBasicRangeCustom">
+              <Form.Label>In the age range of...</Form.Label>
+              <Form.Control type="range" custom />
+            </Form.Group>
+          </Form>
+
+          <label>Age Offset</label>
+          <input type="range" className="custom-range" id="ageOffset" name="ageOffset"
+                 min="0" max="100" step="5"
+                 value={this.state.ageOffset}
+                 onChange={this.onChange} />
+          <input type="range" className="custom-range" id="ageOffset" name="ageOffset"
+                 min="0" max="100" step="5"
+                 value={this.state.ageOffset}
+                 onChange={this.onChange} />
+
+          <input data-role="doubleslider" data-accuracy="5" data-hint-always="true"
+                 data-min={this.state.ageOffsetMin} data-max={this.state.ageOffsetMax}
+                 onChange={this.onChangeSlider}/>
+
+        </div>
+
 
         {/*Skill-Level Type */}
         <div className="form-group">
@@ -349,17 +381,17 @@ class FilterRequest extends React.Component {
         {/*<div className="form-group">
           <label>At a...</label>
 
-          <select
-            className="form-control"
-            name="prefDanceStyleDate"
-            onChange={this.onChange}
-          >
-            {eventType.map((eventType) => (
-              <option value={eventType}>
-                {eventType.charAt(0).toUpperCase() + eventType.slice(1)}
-              </option>
-            ))}
-          </select>
+          <Select
+              className="basic-single"
+              classNamePrefix="select"
+              defaultValue={this.state.eventType}
+              placeholder={"Event Type..."}
+              isClearable={true}
+              isSearchable={true}
+              onChange={this.handleChange}
+              name="eventType"
+              options={eventType}
+          />
         </div>*/}
 
         {/*    Submit button (if pressed events will be fetched from backend based on set parameters)   */}
