@@ -18,6 +18,12 @@ const PartnerRequestSchema  = new mongoose.Schema({
       default: 'beginner',
       required: true
     }], //array of proficiency levels strings
+    listOfDanceStyles: [{
+        type: String,
+        enum: ['latin','standard', 'various','jive', 'rumba', 'chaChaCha', 'samba', 'pasoDoble',  'bolero','mambo', 'eastCostSwing', 'waltz',  'vienneseWaltz', 'tango', 'foxtrot', 'qickstep','salsa', 'bachata', 'westCostSwing','hustle'],
+        default: 'standard',
+        required: false
+    }],
     counterfeitEmail: { type: String, required: true },
     timestamp: {
       type: Date,
@@ -27,3 +33,5 @@ const PartnerRequestSchema  = new mongoose.Schema({
 
 // Export the PartnerRequest model
 module.exports = mongoose.model('PartnerRequest', PartnerRequestSchema);
+
+

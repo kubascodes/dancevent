@@ -1,6 +1,7 @@
 import React from "react";
 import FilterRequest from "./FilterRequestForm";
 import RequestForm from "./PartnerRequestForm";
+
 import { Row, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
@@ -21,16 +22,14 @@ class FindDancePartnerView extends React.Component {
       sorting: "date",
       requests: [],
     };
-  }
+  }d
 
   componentDidMount() {
     /* The function call is in the buildup and loads all the requests */
-    console.log(this.props);
-    //this.getRequests();
     this.getRequests(window.location.pathname);
   }
 
-  //TODO: depend on filter options
+
   getRequests = (url) => {
   //getRequests = () => {
     /* fetches all requests from the backend*/
@@ -50,7 +49,6 @@ class FindDancePartnerView extends React.Component {
         console.log(this.state.requests);
       })
       .catch((err) => alert(err));
-      console.log(this.state.requests);
 
   };
 
@@ -93,37 +91,9 @@ class FindDancePartnerView extends React.Component {
     console.log("filteres requests" + requests);
   };
 
+  showRequestDetails = () => {
 
-  // to get dancers preferences for later           ----Old not used
-  // for now: get all dancer from backend
-  // return dancer data of the dancer to the log
-  /*getDancer = () => {
-    var secret_token = window.sessionStorage.secret_token;
-    var component_scope = this; // this.setState didn't worked somehow thstd
-
-    fetch("/dancepartner", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: "Bearer " + secret_token,
-      },
-    })
-      .then((res) => res.json(res))
-      .then(function (res) {
-        component_scope.setState({
-          dataDancer: [...res],
-        });
-      })
-      .catch((err) => alert(err));
-  };*/
-
-  filterRequestsNew = (requests) => {
-    this.setState({
-      requests,
-    });
-    console.log("filteres requests" + requests);
-  };
-
+  }
 
   // display requests, filtered
   //TODO: make dependent on filter option

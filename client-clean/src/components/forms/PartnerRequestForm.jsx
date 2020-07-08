@@ -14,7 +14,6 @@ const RequestForm = ({ requests , deleteRequest}) => {
             </Button>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
         <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
         <Modal.Footer>
@@ -41,6 +40,36 @@ const RequestForm = ({ requests , deleteRequest}) => {
                 </Card.Body>
                 </Card>*/
 
+
+    //const [show, setShow] = useState(false);
+
+    //const handleClose = () => setShow(false);
+    //const handleShow = () => setShow(true);
+
+    /*function RequestDetailsPopup(request) {
+        return (
+            <>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{request.dancerId.name}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <label>{request.description}</label>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={handleClose}>
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </>
+        );
+    }*/
+
+
    const requestList = requests.length ? (
     requests.map((request) => {
         var dancer = request.dancerId;
@@ -51,10 +80,9 @@ const RequestForm = ({ requests , deleteRequest}) => {
             dancer = "Title";
         }
 
-        //var dancer = //Object.values(request.dancerId);
 
         return (
-        <div className="form-group" key={request._id}>
+        <div className="form-group" key={request._id} >
             <Card style={{ width: "25rem" }} className="md-block-centered">
               <Card.Body>
                 <Card.Title> {dancer} </Card.Title>
@@ -65,10 +93,12 @@ const RequestForm = ({ requests , deleteRequest}) => {
               </Card.Body>
             </Card>
         </div>
+
+
       );
     })
   ) : (
-    <p>There are no reqiests open...</p>
+    <p>There are no requests open...</p>
   );
 
   return <CardDeck>{requestList}</CardDeck>;

@@ -59,6 +59,11 @@ class FilterRequest extends React.Component {
       }
   }
 
+  handleChangeMSelect = (danceStyle) => {
+    /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
+    this.setState({danceStyle});
+  }
+
   submitFilter = (e) => {
     /*
         This Method is the called if the user want to update
@@ -73,6 +78,7 @@ class FilterRequest extends React.Component {
     //To know if you need a '&' to concat the parameters
     let previous = false;
     let url = "/dancepartner/?";
+    const style = this.state.danceStyle ? this.state.danceStyle.map(style => style.value) : "";
     if (this.state.gender != "") {
       url += "listofGenders=" + this.state.gender;
       previous = true;
@@ -88,16 +94,14 @@ class FilterRequest extends React.Component {
       if (previous) {
         url += "&";
       }
-      url += "danceCategory=" + this.state.danceCategory;
+      url += "listOfDanceStyles=" + this.state.danceCategory;
       previous = true;
+      if (this.state.danceStyle != "") {
+        if(previous){
+          url += "&listOfDanceStyles=" + style;
+        }}
     }
-    if (this.state.danceStyle != "") {
-      if (previous) {
-        url += "&";
-      }
-      url += "danceStyle=" + this.state.danceStyle;
-      previous = true;
-    }
+
     if (this.state.city != "") {
       if (previous) {
         url += "&";
@@ -123,39 +127,10 @@ class FilterRequest extends React.Component {
     const eventType = [
       "all-Event-Types",
       "ball",
-      "competition",
+       "competition",
       "course",
       "party",
     ];
-    const latinStyles = [
-      "latin/rythm",
-      "paso Doble",
-      "bolero",
-      "samba",
-      "rumba",
-      "mambo",
-      "cha-Cha-Cha",
-      "east-Cost-Swing",
-      "jive",
-    ];
-    const standardStyles = [
-      "standard/smooth",
-      "waltz",
-      "viennese-Waltz",
-      "tango",
-      "foxtrot",
-      "quickstep",
-    ];
-    const variousStyles = ["west-Cost-Swing", "hustle", "salsa", "bachata"];
-    const skillLevel = [
-      "beginner",
-      "bronze",
-      "silver",
-      "gold",
-      "pre-tournament 1",
-      "pre-tournament 2",
-    ];
-
     // New Selection Types:
     //gender
     const gender = [
@@ -227,6 +202,8 @@ class FilterRequest extends React.Component {
       { value: 'course', label: 'Course' },
       { value: 'competition', label: 'Competition' },
     ];
+
+    const danceStyle = this.state.danceStyle;
 
     return (
       <form onSubmit={this.submitFilter}>
@@ -324,11 +301,13 @@ class FilterRequest extends React.Component {
                   <Select
                   className="basic-single"
                   classNamePrefix="select"
+                  onChange={this.handleChangeMSelect}
                   defaultValue={''}
+                  value={danceStyle}
+                  isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
                   isSearchable={true}
-                  onChange={this.handleChange}
                   name="danceStyle"
                   options={latin}
                   /> ,
@@ -336,11 +315,13 @@ class FilterRequest extends React.Component {
                   <Select
                   className="basic-single"
                   classNamePrefix="select"
+                  onChange={this.handleChangeMSelect}
                   defaultValue={''}
+                  value={danceStyle}
+                  isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
                   isSearchable={true}
-                  onChange={this.handleChange}
                   name="danceStyle"
                   options={standard}
                   /> ,
@@ -348,11 +329,13 @@ class FilterRequest extends React.Component {
                   <Select
                   className="basic-single"
                   classNamePrefix="select"
+                  onChange={this.handleChangeMSelect}
                   defaultValue={''}
+                  value={danceStyle}
+                  isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
                   isSearchable={true}
-                  onChange={this.handleChange}
                   name="danceStyle"
                   options={various}
                 />
