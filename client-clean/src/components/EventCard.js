@@ -2,15 +2,16 @@ import React from "react";
 import { Link, Redirect } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 class EventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      organizer: {},
       interestedInEvents: [],
       interestedIn: false,
       redirect: null,
+      showDialog: false,
     };
   }
 
@@ -60,15 +61,6 @@ class EventCard extends React.Component {
   };
 
   componentDidMount() {
-    var component_scope = this;
-    // Get the organizer corresponding to the event given in the props
-    fetch(`/users/${component_scope.props.event.organizer}`)
-      .then((res) => res.json())
-      .then((data) => {
-        component_scope.setState({ organizer: data });
-      })
-      .catch(console.log);
-
     // Get the events the currently logged in user is interested in and check if the event this EventCard belongs to is in there
     if (window.sessionStorage.secret_token != null) {
       this.fetchInterestedInEvents().then(() => {
@@ -78,26 +70,6 @@ class EventCard extends React.Component {
       });
     }
   }
-
-  // Currently not in use, not sure if we want that shown here
-  getType = () => {
-    var component_scope = this;
-    let type = component_scope.props.event.type;
-    switch (type) {
-      case "course":
-        type = "dance course";
-        break;
-      case "ball":
-        type = "dance ball";
-        break;
-      case "party":
-        type = "dance party";
-        break;
-      default:
-        alert("Unknown event type passed to EventCard");
-    }
-    return type;
-  };
 
   handleSave = () => {
     var component_scope = this;
@@ -173,52 +145,107 @@ class EventCard extends React.Component {
     });
   };
 
+  handleDelete = () => {
+    this.handleClose();
+    // This is propagated up to App.js where the actual deletion is happening. This way the EventCard can easily be removed from the Component containing it.
+    this.props.onDeleteEvent();
+  };
+
+  handleClose = () => {
+    this.setState({ showDialog: false });
+  };
+  handleShow = () => {
+    this.setState({ showDialog: true });
+  };
+
   render() {
     const date = new Date(this.props.event.startDate);
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
     }
     return (
-      <Card
-        id={this.props.event._id}
-        style={{ width: "18rem" }}
-        className="m-2"
-      >
-        <Link to={`/events/${this.props.event._id}`}>
-          <Card.Img
-            variant="top"
-            src={
-              this.props.event.picture
-                ? this.props.event.picture
-                : "img/placeholder2_1024x365.png"
-            }
-            alt={this.props.event.title}
-            style={{ objectFit: "cover", width: "286px", height: "180px" }}
-          />
-        </Link>
-        <Card.Body>
-          <Link
-            to={`/events/${this.props.event._id}`}
-            style={{ textDecoration: "none", color: "black" }}
-          >
-            <Card.Title>{this.props.event.title}</Card.Title>
+      <>
+        <Card
+          id={this.props.event._id}
+          style={{ width: "18rem" }}
+          className="m-2"
+        >
+          <Link to={`/events/${this.props.event._id}`}>
+            <Card.Img
+              variant="top"
+              src={
+                this.props.event.picture
+                  ? this.props.event.picture
+                  : "img/placeholder2_1024x365.png"
+              }
+              alt={this.props.event.title}
+              style={{ objectFit: "cover", width: "286px", height: "180px" }}
+            />
           </Link>
-          <Card.Subtitle className="mb-2 text-muted">
-            {this.days[date.getDay()]}, {date.getDate()}{" "}
-            {this.months[date.getMonth()]} {date.getFullYear()}
-          </Card.Subtitle>
-          <Card.Text>by {this.state.organizer.name}</Card.Text>
-          {this.state.interestedIn ? (
-            <Button variant="success" onClick={() => this.handleUnSave()}>
-              Saved
+          <Card.Body>
+            <Link
+              to={`/events/${this.props.event._id}`}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <Card.Title>{this.props.event.title}</Card.Title>
+            </Link>
+            <Card.Subtitle className="mb-2 text-muted">
+              {this.days[date.getDay()]}, {date.getDate()}{" "}
+              {this.months[date.getMonth()]} {date.getFullYear()}
+            </Card.Subtitle>
+            <Card.Text>by {this.props.event.organizer.name}</Card.Text>
+            {this.state.interestedIn ? (
+              <Button
+                className="m-2"
+                variant="success"
+                onClick={() => this.handleUnSave()}
+              >
+                Saved
+              </Button>
+            ) : (
+              <Button
+                className="m-2"
+                variant="secondary"
+                onClick={() => this.handleSave()}
+              >
+                Save in <i>My Events</i>
+              </Button>
+            )}
+            {this.props.state.email === this.props.event.organizer.email ? (
+              <Card.Link
+                href="#"
+                onClick={this.handleShow}
+                style={{ color: "#DC2029" }}
+                className=""
+              >
+                Delete
+              </Card.Link>
+            ) : (
+              <></>
+            )}
+          </Card.Body>
+        </Card>
+        <Modal
+          show={this.state.showDialog}
+          onHide={this.handleClose}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Body>
+            Are you sure you want to delete the event{" "}
+            <b>{this.props.event.title}</b>? It will not be visible to users of
+            the platform anymore. This cannot be undone.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleClose}>
+              Close
             </Button>
-          ) : (
-            <Button variant="secondary" onClick={() => this.handleSave()}>
-              Save in <i>My Events</i>
+            <Button variant="primary" onClick={this.handleDelete}>
+              Understood
             </Button>
-          )}
-        </Card.Body>
-      </Card>
+          </Modal.Footer>
+        </Modal>
+      </>
     );
   }
 }

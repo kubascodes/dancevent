@@ -1,7 +1,7 @@
 GET http://localhost:3000/events
 
 ###
-GET http://localhost:3000/events/1
+GET http://localhost:3000/events/5f0079278d3e4fbac2a81f61
 
 ###
 GET http://localhost:3000/user

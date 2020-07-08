@@ -1,69 +1,79 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Image from "react-bootstrap/Image";
+import Button from "react-bootstrap/Button";
 
 const HomepageBanner = () => {
   return (
-    <div className="container img-homepage">
+    <Container>
       <h1 className="text-center">Find dance partners, events, and schools!</h1>
       <hr />
-      <div className="row">
-        <div className="col-4">
-          <img
+      <Row className="">
+        <Col>
+          <Image
             src="img/dance-partners_800x800.jpg"
+            rounded
+            fluid
             alt="dance partners"
-            className="img-fluid"
           />
-        </div>
-        <div className="col-4">
-          <img
+        </Col>
+        <Col>
+          <Image
             src="img/dance-party_800x800.jpg"
+            rounded
+            fluid
             alt="dance party"
-            className="img-fluid"
           />
-        </div>
-        <div className="col-4">
-          <img
+        </Col>
+        <Col>
+          <Image
             src="img/dance-course_800x800.jpg"
+            rounded
+            fluid
             alt="dance course"
-            className="img-fluid"
           />
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col-4 text-center">
+        </Col>
+      </Row>
+      <Row className="mt-2">
+        <Col className="col-4 text-center">
           <span className="">
             Looking for a dance partner for the next ball?
           </span>
-        </div>
-        <div className="col-4 text-center">
+        </Col>
+        <Col className="col-4 text-center">
           <span className="">So what's happening on Friday night?</span>
-        </div>
-        <div className="col-4 text-center">
+        </Col>
+        <Col className="col-4 text-center">
           <span className="">
             If you're new to dancing, it's easy to learn!
           </span>
-        </div>
-      </div>
-      <div className="row mt-2">
-        <div className="col-4 text-center">
+        </Col>
+      </Row>
+      <Row className="mt-2">
+        <Col className="col-4 text-center">
           <Link to="/dancepartner">
-            <button className="btn btn-secondary btn-lg">Find a partner</button>
+            <Button variant="secondary" size="lg">
+              Find a partner
+            </Button>
           </Link>
-        </div>
-        <div className="col-4 text-center">
+        </Col>
+        <Col className="col-4 text-center">
           <Link to="/events">
-            <button className="btn btn-secondary btn-lg">
+            <Button variant="secondary" size="lg">
               Find upcoming events
-            </button>
+            </Button>
           </Link>
-        </div>
-        <div className="col-4 text-center">
-          <button className="btn btn-secondary btn-lg">
+        </Col>
+        <Col className="col-4 text-center">
+          <Button variant="secondary" size="lg">
             Find a dance school
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 export default HomepageBanner;

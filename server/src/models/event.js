@@ -13,11 +13,11 @@ const EventSchema = new mongoose.Schema(
     },
     organizer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "organizer",
+      ref: "Organizer",
     },
     description: { type: String, required: false },
     startDate: { type: Date, required: true },
-    duration: { type: Number, required: true },
+    endDate: { type: Date, required: true },
     city: { type: String, required: true },
     location: { type: String, required: true },
     picture: { type: String, required: false }, //relative filepath. Possible to fetch picture with path
