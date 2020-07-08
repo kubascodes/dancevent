@@ -153,7 +153,11 @@ router.post("/register/dancer", async (req, res) => {
 });
 
 //Register as a Request
-router.post("/createrequest", async (req, res) => {
+router.post("/createrequest", passport.authenticate("jwt", { session: false }), async (req, res) => {
+
+  //USER ID AVAILABLE HERE
+  let userId = req.user._id;
+
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
