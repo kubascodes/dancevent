@@ -10,6 +10,7 @@ const config = require("../config"); //to access our Jwt Secret
 const User = require("../models/user"); //to access the user database
 const Dancer = require("../models/dancer"); //to create new dancers
 const Organizer = require("../models/organizer"); //to create new organizers
+const Request = require("../models/partnerrequest");
 //Unsecured routes for anyone to access
 
 //access the /profile of the user
@@ -67,6 +68,9 @@ router.get("/dancepartner", async (req, res, next) => {
       message: err.message,
     });
   }
+
+});
+
 // Get specific user
 router.get("/users/:id", (req, res, next) => {
   //find user with id in database
@@ -175,6 +179,8 @@ router.post("/register/dancer", async (req, res) => {
 //Register as a Request
 router.post("/createrequest", passport.authenticate("jwt", { session: false }), async (req, res) => {
 
+  console.log(JSON.stringify(req.user));
+
   //USER ID AVAILABLE HERE
   let userId = req.user._id;
 
@@ -195,6 +201,11 @@ router.post("/createrequest", passport.authenticate("jwt", { session: false }), 
       error: "Internal server error",
       message: error.message,
     });
+
+  }
+});
+
+
 // Update user via POST request
 router.post(
   "/profile/update",
