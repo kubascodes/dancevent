@@ -158,4 +158,32 @@ router.post("/register/dancer", async (req, res) => {
   }
 });
 
+// Update user via POST request
+router.post(
+  "/profile/update",
+  passport.authenticate("jwt", { session: false }),
+  (req, res, next) => {
+    /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
+    //console.log(req.user);
+    // Expect an array as the req.body such as [{"propName": "name", "value": "new name"}, {"propName": "city", "value": "new city"}], loop through this array and construct an updateOps object that is used to execute the update
+    const updateOps = {};
+    for (const ops of req.body) {
+      updateOps[ops.propName] = ops.value;
+    }
+    // Update the user where the _id fits the one fetched from the token --> $set is a mongoose keywork
+    User.update(
+      { _id: req.user._id },
+      {
+        $set: updateOps,
+      }
+    )
+      .exec()
+      .then((result) => {
+        console.log(result);
+        res.status(200).json(result);
+      })
+      .catch((err) => next(err));
+  }
+);
+
 module.exports = router;

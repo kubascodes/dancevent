@@ -1,20 +1,12 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import HomepageBanner from "./HomepageBanner";
 import EventCard from "./EventCard";
-import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
-class Homepage extends React.Component {
+class MyEvents extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      savedEvents: [],
-      organizedEvents: [],
-      redirect: null,
-    };
+    this.state = { savedEvents: [], organizedEvents: [], redirect: null };
   }
 
   componentDidMount = () => {
@@ -53,9 +45,9 @@ class Homepage extends React.Component {
               component_scope.setState({
                 // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
 
-                savedEvents: interestedInEventsObjects
-                  .filter((event) => event.startDate.getTime() > now.getTime())
-                  .slice(0, 3),
+                savedEvents: interestedInEventsObjects.filter(
+                  (event) => event.startDate.getTime() > now.getTime()
+                ),
               });
             });
         })
@@ -102,13 +94,11 @@ class Homepage extends React.Component {
         const now = new Date();
         component_scope.setState({
           // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
-          organizedEvents: organizedEvents
-            .filter(
-              (event) =>
-                event.organizer.email === organizerEmail &&
-                event.startDate.getTime() > now.getTime()
-            )
-            .slice(0, 3),
+          organizedEvents: organizedEvents.filter(
+            (event) =>
+              event.organizer.email === organizerEmail &&
+              event.startDate.getTime() > now.getTime()
+          ),
         });
       });
   };
@@ -148,96 +138,77 @@ class Homepage extends React.Component {
       return <Redirect push to={this.state.redirect} />;
     }
     if (window.sessionStorage.secret_token != null) {
-      /*Display personalized content when logged in*/
       return (
-        <React.Fragment>
-          {this.props.state.userType === "Dancer" ? (
-            <HomepageBanner />
+        <>
+          <h1>Hi {this.props.state.name}, these are your events:</h1>
+          {this.props.state.userType === "Organizer" ? (
+            <div className="container">
+              <hr />
+              <h2 className="">Events organized by you</h2>
+              <div className="row">
+                {this.state.organizedEvents.map((event) => {
+                  return (
+                    <div key={event._id} className="col-4">
+                      <EventCard
+                        event={event}
+                        state={this.props.state}
+                        onDeleteEvent={() => this.onDeleteEvent(event)}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+              <Button
+                variant="outline-dark"
+                size="lg"
+                block
+                onClick={() => this.setState({ redirect: "/events" })}
+              >
+                {this.state.organizedEvents.length > 0
+                  ? "Create a new event!"
+                  : "Nothing to see yet. Click here to create a new event!"}
+              </Button>
+              <hr />
+            </div>
           ) : (
-            <>
-              <Container>
-                <h1>Hi {this.props.state.name}, welcome to dancevent!</h1>
-                <h2 className="">Events organized by you</h2>
-                <Row>
-                  {this.state.organizedEvents.map((event) => {
-                    return (
-                      <Col
-                        key={event._id}
-                        className="d-flex justify-content-center"
-                      >
-                        <EventCard
-                          event={event}
-                          state={this.props.state}
-                          onDeleteEvent={() => this.onDeleteEvent(event)}
-                        />
-                      </Col>
-                    );
-                  })}
-                </Row>
+            <hr />
+          )}
+
+          <div className="container">
+            <h2 className="">Saved Events</h2>
+            <div className="row">
+              {this.state.savedEvents.map((event) => {
+                return (
+                  <div key={event._id} className="col-4">
+                    <EventCard
+                      event={event}
+                      state={this.props.state}
+                      onDeleteEvent={() => this.onDeleteEvent(event)}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <div className="row">
+              <div className="col">
                 <Button
                   variant="outline-dark"
                   size="lg"
                   block
                   onClick={() => this.setState({ redirect: "/events" })}
                 >
-                  {this.state.organizedEvents.length > 0
-                    ? "Create a new event!"
-                    : "Nothing to see yet. Click here to create a new event!"}
+                  {this.state.savedEvents.length > 0
+                    ? "Search for more events!"
+                    : "Nothing to see yet. Click here to search for events!"}
                 </Button>
-              </Container>
-            </>
-          )}
-
-          <hr />
-          <Container>
-            <h2 className="">Saved Events</h2>
-            <Row>
-              {this.state.savedEvents.map((event) => {
-                return (
-                  <Col
-                    key={event._id}
-                    className="d-flex justify-content-center"
-                  >
-                    <EventCard
-                      onDeleteEvent={() => this.onDeleteEvent(event)}
-                      event={event}
-                      state={this.props.state}
-                    />
-                  </Col>
-                );
-              })}
-            </Row>
-            <Row>
-              <Col className="col">
-                {this.state.savedEvents.length > 0 ? (
-                  <Button
-                    variant="outline-dark"
-                    size="lg"
-                    block
-                    onClick={() => this.setState({ redirect: "/myevents" })}
-                  >
-                    Go to <i>My Events</i>
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline-dark"
-                    size="lg"
-                    block
-                    onClick={() => this.setState({ redirect: "/events" })}
-                  >
-                    Nothing to see yet. Click here to search for events!
-                  </Button>
-                )}
-              </Col>
-            </Row>
-          </Container>
-        </React.Fragment>
+              </div>
+            </div>
+          </div>
+        </>
       );
     } else {
-      /*Display public content not logged in*/
-      return <HomepageBanner />;
+      this.setState({ redirect: "/" });
     }
   }
 }
-
-export default Homepage;
+export default MyEvents;

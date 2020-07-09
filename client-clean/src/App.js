@@ -3,6 +3,7 @@ import { Route, Link, BrowserRouter } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Homepage from "./components/Homepage";
 import Events from "./components/Events";
+import Event from "./components/Event";
 /*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
@@ -10,6 +11,7 @@ import Profile from "./components/forms/Profile";
 import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
+import MyEvents from "./components/MyEvents";
 
 export default class App extends Component {
   state = {
@@ -33,7 +35,7 @@ export default class App extends Component {
   };
 
   // Fetches the user data that did not come with the login as the login just retrieves email and token
-  getFurtherUserData = () => {
+  getUserData = () => {
     var component_scope = this;
     fetch("/profile", {
       method: "POST",
@@ -46,6 +48,9 @@ export default class App extends Component {
       .then(function (res) {
         console.log(res);
         component_scope.setState({
+          secret_token: window.sessionStorage.secret_token,
+          login: true,
+          email: res.email,
           name: res.name,
           userType: res.userType,
           profilePicture: res.picture,
@@ -55,12 +60,7 @@ export default class App extends Component {
   };
 
   logIn = (data) => {
-    this.setState({
-      secret_token: data.token,
-      email: data.email,
-      login: true,
-    });
-    this.getFurtherUserData();
+    this.getUserData();
     console.log(this.state);
     console.log("main state");
   };
@@ -76,6 +76,31 @@ export default class App extends Component {
     console.log("main state");
   };
 
+  // Propagated up from the EventCard
+  deleteEvent = (event) => {
+    // Delete the event from the backend
+    fetch(`/events/${event._id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: "Bearer " + window.sessionStorage.secret_token,
+      },
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  componentDidMount = () => {
+    // Otherwise each time App.js is re-rendered the state is set to the default values
+    if (window.sessionStorage.secret_token != null) {
+      this.getUserData();
+    }
+  };
+
   render() {
     return (
       <BrowserRouter>
@@ -84,7 +109,13 @@ export default class App extends Component {
           <Route
             exact
             path="/"
-            render={(props) => <Homepage {...props} state={this.state} />}
+            render={(props) => (
+              <Homepage
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+              />
+            )}
           />
           <Route
             path="/register/organizer"
@@ -114,7 +145,17 @@ export default class App extends Component {
           <Route
             exact
             path="/events"
-            render={(props) => <Events {...props} state={this.state} />}
+            render={(props) => (
+              <Events
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+              />
+            )}
+          />
+          <Route
+            path="/events/:id"
+            render={(props) => <Event {...props} state={this.state} />}
           />
           <Route
             exact
@@ -134,6 +175,16 @@ export default class App extends Component {
             path="/events/update/:id"
             render={(props) => (
               <EventCreationForm update {...props} auth_token={this.secret_token} />
+            )}
+          />
+          <Route
+            path="/myevents"
+            render={(props) => (
+              <MyEvents
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+              />
             )}
           />
         </div>

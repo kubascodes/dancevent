@@ -149,6 +149,19 @@ class Events extends React.Component {
     });
   };
 
+  onDeleteEvent = (event) => {
+    var component_scope = this;
+    // Interrupting the flow from the EventCard to App.js to ensure immediate rerendering of the Homepage when the deletion in App.js is done
+    component_scope.setState({
+      events: component_scope.state.events.filter(
+        (shownEvent) => shownEvent._id !== event._id
+      ),
+    });
+
+    // After the Homepage is re-rendered the event is deleted from the backend
+    component_scope.props.onDeleteEvent(event);
+  };
+
   render() {
     //possible selector variables
     const latinStyles = [
@@ -301,7 +314,11 @@ class Events extends React.Component {
             <Row>
               {" "}
               {this.state.events.map((event) => (
-                <EventCard event={event} />
+                <EventCard
+                  event={event}
+                  state={this.props.state}
+                  onDeleteEvent={() => this.onDeleteEvent(event)}
+                />
               ))}{" "}
             </Row>
           </Col>
