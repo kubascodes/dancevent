@@ -6,10 +6,12 @@ const PartnerRequestSchema  = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Dancer'}, //reference dancer by his Id -≥ change to original schema
     description: { type: String, required: true }, //description of the partner request
-    ageOffset: { type: Number, required: true },
+    //ageOffset: { type: Number, required: true },
+    prefAgeMin: { type: Number, required: false },
+    prefAgeMax: { type: Number, required: false },
     listofGenders: [{
       type: String,
-      enum: ['female', 'male', 'unspecified'],
+      enum: ['female', 'male', 'other'],
       required: true
     }], //array of genders strings
     listOfProficiencyLevels: [{

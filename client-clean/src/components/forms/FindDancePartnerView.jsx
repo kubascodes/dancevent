@@ -1,8 +1,8 @@
 import React from "react";
 import FilterRequest from "./FilterRequestForm";
-import RequestForm from "./PartnerRequestForm";
+import RequestForm from "./PartnerRequestForm.jsx";
 
-import { Row, Col, Container } from "react-bootstrap";
+import {Row, Col, Container, CardDeck} from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 class FindDancePartnerView extends React.Component {
@@ -27,6 +27,14 @@ class FindDancePartnerView extends React.Component {
   componentDidMount() {
     /* The function call is in the buildup and loads all the requests */
     this.getRequests(window.location.pathname);
+    console.log(this.state.requests);
+    /*fetch("/dancepartner")
+        .then((res) => res.json())
+        .then((resp) => {
+          console.log(resp);
+          this.setState({ requests: resp });
+        })
+        .catch(console.log);*/
   }
 
 
@@ -102,6 +110,19 @@ class FindDancePartnerView extends React.Component {
 
     const sortSelect = ["date"];
 
+    {/*let requestCard;
+
+    if(this.state.requests.length != null) {
+      this.state.requests.mapmap(request => {
+              requestCard = <RequestForm requst={request} deleteRequest={this.deleteRequest}/>;
+        })
+    } else {
+      requestCard = <p className="center">There are no requests at the moment.</p>};
+    }*/}
+
+
+
+
     //when logged in display requests
     if (window.sessionStorage.secret_token != null){
       return (
@@ -148,9 +169,17 @@ class FindDancePartnerView extends React.Component {
                     </select>
                   </div>
                 </Row>
-                {/*InsertRequests*/}
+
                 <Row>
-                  <RequestForm requests={this.state.requests} deleteRequest={this.deleteRequest}/>
+                  <CardDeck>
+                    {this.state.requests.map((request) => (
+                        <RequestForm
+                      request={request}
+                      state={this.props.state}
+                      deleteRequest={this.deleteRequest}
+                      />
+                    ))}
+                    </CardDeck>
                 </Row>
               </Col>
             </Row>

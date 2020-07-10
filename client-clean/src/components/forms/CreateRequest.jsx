@@ -1,29 +1,66 @@
 import React from "react";
-import {Container} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import Select from 'react-select';
+
 
 class CreateRequest extends React.Component{
 
     constructor(props) {
         super(props);
         this.state = {
+
+            // old types
             age: null,
-            height: null,
-            danceCategory: null,
-            danceStyle: null,
-            danceSkills: null,
-            prefGender: null,
+
             events:[],
-            description: ""
+            description: "",
+
+            // user profile information
+            userImage: null,
+            userName: null,
+            userAge: null,
+            height: null,
+            userSkillLevel: null,
+            userStyle: null, //TODO: Define if needed or interested in ?
+
+            // Looking for information
+            prefGender: null,
+            prefAgeMin: 20,
+            prefAgeMax: 50,
+            danceCategory: null,
+            danceSkills: null,
+
+            // Event info
+            danceStyle: null,
+            event: null,
+
+            userDescription: null
+
         };
     }
 
     onChange = (e) => {
         /*this function handles the change of the input fields*/
         e.preventDefault();
-        this.setState({
-           [e.target.name]: e.target.value
-        });
+
+        var allow = true;
+        if(e.target.name == "prefAgeMin"  ){
+            if(e.target.value >= this.state.prefAgeMax){
+                allow = false;
+            }
+        }
+        if ( e.target.name == "prefAgeMax"){
+            if(e.target.value <= this.state.prefAgeMin){
+                allow = false;
+            }
+        }
+        if(allow){
+            this.setState({
+                [e.target.name]: e.target.value
+            });
+        }
+
+
     }
 
     handleChange = (selectedOption, action) => {
@@ -49,29 +86,25 @@ class CreateRequest extends React.Component{
         e.preventDefault();
 
         // adding the dance category and the values of the styles (saved as [{value, label}]) together as one to send to the backend
+        // TODO: fix dance style below.. problem: what if only dance category selected
         //const danceStyle = this.state.danceStyle ? {this.state.danceStyle.map(style => style.value).concat(this.state.danceCategory) }: {this.state.danceCategory} ;
-        // TODO: change
         const danceStyle = this.state.danceCategory;
 
         // create request body
-        //TODO: dancerId and counterfeitEmail at the moment hard coded!!!
+        //TODO: email from props
+        //TODO: change values
         var newRequest = {
-            //dancerId: '5ee8c5671d6b0d0a9646ad3d',
             description: this.state.description,
-            ageOffset: this.state.age,
+            prefAgeMin: this.state.prefAgeMin,
+            prefAgeMax: this.state.prefAgeMax,
             listofGenders: this.state.prefGender,
             listOfProficiencyLevels: this.state.danceSkills,
             counterfeitEmail: 'ludmann.julia@gmail.com',
             listOfDanceStyles: danceStyle,
-            //not in the request body (part of the dancer body)
-            //height: this.state.height,
-            //danceStyle: this.state.danceStyle,
-            //events: this.state.events,
+            //events: this.state.events, // TODO: needs event link and populate in backend?
         };
-        console.log(newRequest);
 
         var secret_token = window.sessionStorage.secret_token;
-
 
         fetch('/createrequest',{
             method: 'POST',
@@ -82,10 +115,9 @@ class CreateRequest extends React.Component{
             body: JSON.stringify(newRequest)
         }).then(res=>res.json()).then(res=>{
             console.log("reset");
-            if(res){ // reset the states
+            if(res){ // TODO: change Reset and reload => make sure they are really cleared (not just in the state.. also visible for the user)
                 this.setState({
                     age: null,
-                    //height: null,
                     danceCategory: null,
                     danceStyle: [""],
                     danceSkills: null,
@@ -94,21 +126,29 @@ class CreateRequest extends React.Component{
                     description: ""
                 });
             }
-            console.log(this.state);
         })
 
 
     }
+
+
+
+
+
+
+
+
 
     render(){
 
         //gender
         const gender = [
             { value: 'male', label: 'Male' },
-            { value: 'female', label: 'Female' }
+            { value: 'female', label: 'Female' },
+            { value: 'other', label: 'Other' }
         ];
 
-        // Skill level
+        // Skill level // TODO: define categories new
         const skillLevelNew = [
             { value: 'beginner', label: 'Beginner' },
             { value: 'bronze', label: 'Bronze' },
@@ -118,7 +158,7 @@ class CreateRequest extends React.Component{
             { value: 'pre-tournament2', label: 'Pre-Tournament 2' },
         ];
 
-        // Dance Styles
+        // Dance Styles //TODO: add more various
         const danceStyleCategory = [
             { value: 'latin', label: 'Latin/Rythm' },
             { value: 'standard', label: 'Standard/Smooth' },
@@ -152,140 +192,345 @@ class CreateRequest extends React.Component{
 
 
         const danceStyle = this.state.danceStyle;
+
+       // <Row>
+        //{/*Filter Sidebar*/}
+        // <Col xs={2} id="side-wrapper">
+
+
+
         return(
-            <Container>
+
+
+            <Container fluid>
                 <form onSubmit={this.submitRequest}>
-                    <div>
-                        <h4 htmlFor="test">Create Request</h4>
-                    </div>
 
-                    {/*Age Type*/}
-                    <div className="form-group">
-                        <label htmlFor="age">Age Difference </label>
-                        <input type="age" className="form-control" id="age" name="age" onChange={this.onChange} placeholder="Required" value={this.age}/>
-                    </div>
+                    {/* User Information_______________________*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            {/* TODO: User Name */}
+                        </Col>
 
-                    {/*Height Type
-                    <div className="form-group">
-                        <label htmlFor="height">Height</label>
-                        <input type="height" className="form-control" id="height" name="height" onChange={this.onChange} placeholder="Required" value={this.height}/>
-                    </div>*/}
+                        <Col >
+                            {/* TODO: User Image */}
+                        </Col>
+                    </Row>
 
-                    {/*Gender Type // TODO: clear unspecified*/}
-                    <div className="form-group">
-                        <label> I am looking for a... </label>
-                        <Select
-                            className="basic-single"
-                            classNamePrefix="select"
-                            defaultValue={this.state.prefGender}
-                            placeholder={"Prefered gender..."}
-                            isClearable={true}
-                            isSearchable={true}
-                            onChange={this.handleChange}
-                            name="gender"
-                            options={gender}
-                        />
-                    </div>
+                    {/* User - Age Information*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="form-group">
+                                <label>My age...</label>
+                            </div>
+                        </Col>
 
-                    {/*Skill-Level Type */}
-                    <div className="form-group">
-                        <label> Who is a... </label>
-                        <Select
-                            className="basic-single"
-                            classNamePrefix="select"
-                            defaultValue={this.state.danceSkills}
-                            placeholder={"All skill levels..."}
-                            isClearable={true}
-                            isSearchable={true}
-                            onChange={this.handleChange}
-                            name="danceSkills"
-                            options={skillLevelNew}
-                        />
-                    </div>
+                        <Col>
+                            {/* TODO: User Age Range */}
+                        </Col>
+                    </Row>
 
-                    <div className="form-group">
-                        <label> To dance... </label>
-                        <Select
-                            className="basic-single"
-                            classNamePrefix="select"
-                            defaultValue={this.state.danceCategory}
-                            placeholder={"Dance style category..."}
-                            isClearable={true}
-                            isSearchable={true}
-                            onChange={this.handleChange}
-                            name="danceCategory"
-                            options={danceStyleCategory}
-                        />
-                        {
-                            {
-                                'latin':
+                    {/* User - Height Information*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="from-group">
+                                <label>My height...</label>
+                            </div>
+                        </Col>
+
+                        <Col xs={2} id="side-wrapper">
+                            {/* TODO: User Height */}
+                        </Col>
+                    </Row>
+
+                    {/* User - Skill Information*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="form-group">
+                                <label>My dancing experience...</label>
+                            </div>
+                        </Col>
+
+                        <Col>
+                            {/* TODO: User Skill Level */}
+                        </Col>
+                    </Row>
+
+                    {/* User - Style Information*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="from-group">
+                                <label>I usually enjoy to dance...</label>
+                            </div>
+                        </Col>
+
+                        <Col xs={2} id="side-wrapper">
+                            {/* TODO: User Preferred Styles */}
+                        </Col>
+                    </Row>
+
+
+
+                    {/* Request Information_______________________*/}
+                    {/* Request  search "headline"*/}
+                    <Row>
+                        <div className="form-group">
+                            <label>I am looking for...</label>
+                        </div>
+                    </Row>
+                    {/* Preferred - Gender */}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="form-group">
+                                <label> Gender... </label>
+                            </div>
+                        </Col>
+
+                        <Col xs={4}>
+                            {/*Gender Type // TODO: clear unspecified/ other how to name it*/}
+                            <div className="form-group">
+                                <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
+                                    defaultValue={this.state.prefGender}
+                                    placeholder={"Preferred gender..."}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    onChange={this.handleChange}
+                                    name="gender"
+                                    options={gender}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+
+                    {/* Preferred - Age Range*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="form-group">
+                                <label>Age range...</label>
+                            </div>
+                        </Col>
+
+                        <Col xs={1}>
+
+                            <div className="form-group">
+                                <label>Min Age: </label>
+                                <label>Max Age: </label>
+                            </div>
+
+                        </Col>
+
+                        <Col xs={3}>
+                            {/* TODO: Age Slider */}
+
+                            {/*Age Type  // Old version
+                            <div className="form-group">
+                                <label htmlFor="age">Age Difference </label>
+                                <input type="age" className="form-control" id="age" name="age" onChange={this.onChange} placeholder="Required" value={this.age}/>
+                            </div>*/}
+                            <div className="form-group">
+                                <input type="range" className="custom-range" id="prefAgeMin" name="prefAgeMin"
+                                       min="0" max="100" step="5"
+                                       value={this.state.prefAgeMin}
+                                       onChange={this.onChange} />
+                                <input type="range" className="custom-range" id="prefAgeMax" name="prefAgeMax"
+                                       min="0" max="100" step="5"
+                                       value={this.state.prefAgeMax}
+                                       onChange={this.onChange} />
+                            </div>
+
+
+
+
+                        </Col>
+
+
+
+                        <Col >
+                            <div className="form-group">
+                                <input type="ageMin" className="form-control" id="prefAgeMin" name="prefAgeMin" style={{ width: "55px" }} onChange={this.onChange} placeholder="" value={this.state.prefAgeMin}/>
+                                <input type="ageMax" className="form-control" id="prefAgeMin" name="prefAgeMin" style={{ width: "55px" }} onChange={this.onChange} placeholder="" value={this.state.prefAgeMax}/>
+                            </div>
+                        </Col>
+
+
+
+
+
+
+
+                    </Row>
+
+                    {/* Preferred - Skill Level*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="form-group">
+                                <label>Dancing experience level...</label>
+                            </div>
+                        </Col>
+
+                        <Col xs={4}>
+                            <div className="form-group">
+                                <Select
+                                    className="basic-single"
+                                    classNamePrefix="select"
+                                    defaultValue={this.state.danceSkills}
+                                    placeholder={"All skill levels..."}
+                                    isClearable={true}
+                                    isSearchable={true}
+                                    onChange={this.handleChange}
+                                    name="danceSkills"
+                                    options={skillLevelNew}
+                                />
+                            </div>
+                        </Col>
+                    </Row>
+
+                    {/* Preferred - Dance Style //TODO: Prefill fix: Event style! */}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div>
+                                <label>To dance...</label>
+                            </div>
+                        </Col>
+                        <Col xs={4}>
+                            {/* The following are two selections, where the secound is depending on the first.
+                            Here are the dance style categories and depending on that the user can specify the dancing style in more details if wanted.
+                            This is solves by a switch case... */}
+                            <div>
+                                <div className="form-group">
                                     <Select
-                                        className="basic-multi-select"
+                                        className="basic-single"
                                         classNamePrefix="select"
-                                        onChange={this.handleChangeMSelect}
-                                        defaultValue={''}
-                                        value={danceStyle}
-                                        isMulti = {true}
-                                        placeholder={"Dance style..."}
+                                        defaultValue={this.state.danceCategory}
+                                        placeholder={"Dance style category..."}
                                         isClearable={true}
                                         isSearchable={true}
-                                        name="danceStyle"
-                                        options={latin}
-                                    />,
-                                'standard':
-                                    <Select
-                                        className="basic-multi-select"
-                                        classNamePrefix="select"
-                                        onChange={this.handleChangeMSelect}
-                                        defaultValue={''}
-                                        value={danceStyle}
-                                        isMulti = {true}
-                                        placeholder={"Dance style..."}
-                                        isClearable={true}
-                                        isSearchable={true}
-                                        name="danceStyle"
-                                        options={standard}
-                                    />,
-                                'various':
-                                    <Select
-                                        className="basic-multi-select"
-                                        classNamePrefix="select"
-                                        onChange={this.handleChangeMSelect}
-                                        defaultValue={''}
-                                        value={danceStyle}
-                                        isMulti= {true}
-                                        placeholder={"Dance style..."}
-                                        isClearable={true}
-                                        isSearchable={true}
-                                        name="danceStyle"
-                                        options={various}
+                                        onChange={this.handleChange}
+                                        name="danceCategory"
+                                        options={danceStyleCategory}
                                     />
+                                    {
+                                        {
+                                            'latin':
+                                                <Select
+                                                    className="basic-multi-select"
+                                                    classNamePrefix="select"
+                                                    onChange={this.handleChangeMSelect}
+                                                    defaultValue={''}
+                                                    value={danceStyle}
+                                                    isMulti = {true}
+                                                    placeholder={"Dance style..."}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    name="danceStyle"
+                                                    options={latin}
+                                                />,
+                                            'standard':
+                                                <Select
+                                                    className="basic-multi-select"
+                                                    classNamePrefix="select"
+                                                    onChange={this.handleChangeMSelect}
+                                                    defaultValue={''}
+                                                    value={danceStyle}
+                                                    isMulti = {true}
+                                                    placeholder={"Dance style..."}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    name="danceStyle"
+                                                    options={standard}
+                                                />,
+                                            'various':
+                                                <Select
+                                                    className="basic-multi-select"
+                                                    classNamePrefix="select"
+                                                    onChange={this.handleChangeMSelect}
+                                                    defaultValue={''}
+                                                    value={danceStyle}
+                                                    isMulti= {true}
+                                                    placeholder={"Dance style..."}
+                                                    isClearable={true}
+                                                    isSearchable={true}
+                                                    name="danceStyle"
+                                                    options={various}
+                                                />
 
-                            }[this.state.danceCategory]
-                        }
-                    </div>
+                                        }[this.state.danceCategory]
+                                    }
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
 
-                    {/*Events Type*/}
-                    {/*<div className="form-group">
-                        <label htmlFor="events">Events</label>
-                        <input type="events" className="form-control" id="events" name="events" onChange={this.onChange} placeholder="Required" value={this.events}/>
-                    </div>*/}
+                    {/* City - Event
+                    //TODO: If rquest only belong to one event: change text
+                    //TODO: add event link and display them*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="form-group">
+                                <label> In:  </label>
+                            </div>
+                        </Col>
 
-                    {/*Description Type*/}
-                    <div className="form-group">
-                        <label htmlFor="description">Description</label>
-                        <input type="description" className="form-control" id="description" name="description" onChange={this.onChange} placeholder="Required" value={this.description}/>
-                    </div>
+                        <Col>
+                            {/*TODO: add event city*/}
+                        </Col>
+                    </Row>
 
-                    <div className="form-group">
-                        <input
-                            type="submit"
-                            className="btn btn-outline-dark"
-                            value="Place Request"
-                        />
-                    </div>
+                    {/* Preferred - Events
+                    //TODO: If rquest only belong to one event: change text
+                    //TODO: add event link and display them*/}
+                    <Row>
+                        <Col xs={2} id="side-wrapper">
+                            <div className="form-group">
+                                <label>The events I am interested in are: </label>
+                            </div>
+                        </Col>
+
+                        <Col>
+
+                        </Col>
+                    </Row>
+
+                    {/*Request - Description */}
+                    <Row>
+                        <Col   xs={6}>
+                            <div className="form-group">
+                                <label htmlFor="description">Description</label>
+                                <textarea type="description" className="form-control" id="description" name="description" onChange={this.onChange} placeholder="Personal text to add to the request" value={this.description}/>
+                            </div>
+                        </Col>
+                    </Row>
+
+                    {/* Buttons */}
+                    <Row>
+
+                        {/* Cancel Request  // TODO: create and add*/}
+                        <Col  xs={4}>
+                            <div className="form-group">
+
+                            </div>
+                        </Col >
+
+
+                        {/* Place Request */}
+                        <Col>
+                            <div className="form-group">
+                                <input
+                                    type="submit"
+                                    className="btn btn-outline-dark"
+                                    value="Place Request"
+                                />
+                            </div>
+                        </Col>
+
+                    </Row>
+
+
+
                 </form>
             </Container>
+
 
         );
     }
