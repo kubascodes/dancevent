@@ -78,7 +78,7 @@ class RequestForm extends React.Component {
                         <Row>
                             <Col > <label>My height...</label> </Col>
 
-                            <Col> <label>{request.dancerId.height}</label> </Col>
+                            <Col> <label>{request.dancerId.height} cm</label> </Col>
                         </Row>
 
                         {/* Requesting User - Skill Information*/}

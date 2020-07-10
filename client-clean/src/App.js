@@ -178,7 +178,7 @@ export default class App extends Component {
             exact
             path="/createrequest"
             render={(props) => (
-            <CreateRequest {...props} auth_token={this.secret_token} />
+            <CreateRequest {...props} state={this.state} auth_token={this.secret_token} />
             )}
             />
         </div>

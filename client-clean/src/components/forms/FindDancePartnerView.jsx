@@ -99,9 +99,6 @@ class FindDancePartnerView extends React.Component {
     console.log("filteres requests" + requests);
   };
 
-  showRequestDetails = () => {
-
-  }
 
   // display requests, filtered
   //TODO: make dependent on filter option
@@ -109,19 +106,6 @@ class FindDancePartnerView extends React.Component {
   render() {
 
     const sortSelect = ["date"];
-
-    {/*let requestCard;
-
-    if(this.state.requests.length != null) {
-      this.state.requests.mapmap(request => {
-              requestCard = <RequestForm requst={request} deleteRequest={this.deleteRequest}/>;
-        })
-    } else {
-      requestCard = <p className="center">There are no requests at the moment.</p>};
-    }*/}
-
-
-
 
     //when logged in display requests
     if (window.sessionStorage.secret_token != null){
