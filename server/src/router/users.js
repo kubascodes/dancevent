@@ -10,6 +10,7 @@ const config = require("../config"); //to access our Jwt Secret
 const User = require("../models/user"); //to access the user database
 const Dancer = require("../models/dancer"); //to create new dancers
 const Organizer = require("../models/organizer"); //to create new organizers
+const Request = require("../models/partnerrequest");
 //Unsecured routes for anyone to access
 
 //access the /profile of the user
@@ -51,6 +52,23 @@ router.get("/users", async (req, res, next) => {
       message: err.message,
     });
   }
+});
+
+//List all dance request on Dance Partner Page
+//TODO: sort is missing, events
+router.get("/dancepartner", async (req, res, next) => {
+  try {
+    //search in database based on the url-request-parameter
+    let request = await Request.find(req.query).populate("dancerId").exec();
+    //send the found result back
+    return res.status(200).json(request);
+  } catch (err) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: err.message,
+    });
+  }
+
 });
 
 // Get specific user
@@ -158,6 +176,33 @@ router.post("/register/dancer", async (req, res) => {
   }
 });
 
+//Register as a Request
+router.post("/createrequest", passport.authenticate("jwt", { session: false }), async (req, res) => {
+
+  //USER ID AVAILABLE HERE
+  //let userId = req.user._id;
+
+  if (Object.keys(req.body).length === 0)
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "The request body is empty ",
+    });
+
+  req.body.dancerId = req.user._id;
+
+  try {
+    let request = await Request.create(req.body);
+    return res.status(201).json(request);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: error.message,
+    });
+
+  }
+});
+
+
 // Update user via POST request
 router.post(
   "/profile/update",
@@ -185,5 +230,26 @@ router.post(
       .catch((err) => next(err));
   }
 );
+
+// delete Request
+router.delete("/dancepartner/request/delete", async (req, res) => {
+  if (Object.keys(req.body).length === 0)
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "The request body is empty ",
+    });
+
+  try {
+    await Request.findByIdAndRemove(req.body.id).exec();
+    return res.status(201).json({message: 'Request with id${req.body.id} was deleted'});
+  } catch (error) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: error.message,
+    });
+  }
+});
+
+
 
 module.exports = router;

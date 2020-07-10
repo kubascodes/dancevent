@@ -9,8 +9,9 @@ import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
 import Profile from "./components/forms/Profile";
 import LoginForm from "./components/forms/LoginForm";
-import FindDancePartnerView from "./components/forms/FindDancePartnerView";
+import FindDancePartnerView from "./components/forms/FindDancePartnerView.jsx";
 import MyEvents from "./components/MyEvents";
+import CreateRequest from "./components/forms/CreateRequest";
 
 export default class App extends Component {
   state = {
@@ -173,6 +174,13 @@ export default class App extends Component {
               />
             )}
           />
+          <Route
+            exact
+            path="/createrequest"
+            render={(props) => (
+            <CreateRequest {...props} state={this.state} auth_token={this.secret_token} />
+            )}
+            />
         </div>
       </BrowserRouter>
     );
