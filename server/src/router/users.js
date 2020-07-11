@@ -59,6 +59,11 @@ router.get("/users", async (req, res, next) => {
 router.get("/dancepartner", async (req, res, next) => {
   try {
     //search in database based on the url-request-parameter
+    // filter dance styles in a listof dance styles selected in the filer
+    let danceStyles = req.query.listOfDanceStyles;
+    if (danceStyles) {
+      req.query.listOfDanceStyles = {$in: danceStyles};
+    }
     let request = await Request.find(req.query).populate("dancerId").exec();
     //send the found result back
     return res.status(200).json(request);
@@ -202,9 +207,6 @@ router.post("/register/dancer", async (req, res) => {
 
 //Register as a Request
 router.post("/createrequest", passport.authenticate("jwt", { session: false }), async (req, res) => {
-
-  //USER ID AVAILABLE HERE
-  //let userId = req.user._id;
 
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
