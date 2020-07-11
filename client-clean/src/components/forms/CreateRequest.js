@@ -17,7 +17,7 @@ class CreateRequest extends React.Component {
             prefProficiencyLevel: null,
             description: "",
             // Event info
-            danceCategory: null,
+            danceCategory: [],
             danceStyle: null,
             events: null, // TODO: not used at the moment => add if needed or delete
             showModal: false,
@@ -27,7 +27,7 @@ class CreateRequest extends React.Component {
     handleCancel = () => {
         /* this function is called, 1. when the modal is canceled and 2. when the request is submitted to reset the changes and close the modal*/
         this.setState({
-            danceCategory: null,
+            danceCategory: [],
             prefProficiencyLevel: null,
             description: null,
             // Event info
@@ -56,9 +56,9 @@ class CreateRequest extends React.Component {
 
 
     handleShow = () => {
+        /*show the modal*/
         this.setState({ showModal: true });
     }
-
 
     onChange = (e) => {
         /*this function handles the change of the input fields*/
@@ -80,8 +80,6 @@ class CreateRequest extends React.Component {
                 [e.target.name]: e.target.value
             });
         }
-
-
     }
 
     handleChange = (selectedOption, action) => {
@@ -108,8 +106,8 @@ class CreateRequest extends React.Component {
 
         // adding the dance category and the values of the styles (saved as [{value, label}]) together as one to send to the backend
         // TODO: fix dance style below.. problem: what if only dance category selected
-        //const danceStyle = this.state.danceStyle ? {this.state.danceStyle.map(style => style.value).concat(this.state.danceCategory) }: {this.state.danceCategory} ;
-        const danceStyle = this.state.danceCategory;
+
+        const danceStyle = this.state.danceStyle ? (this.state.danceStyle.map(style => style.value).concat(this.state.danceCategory)) : (this.state.danceCategory);
 
         // create request body
         //TODO: email from props
@@ -169,6 +167,21 @@ class CreateRequest extends React.Component {
         }
     }
 
+    calculate_age = (yearOfBrith) => {
+        //console.log("AGE_________");
+
+        var today = new Date();
+       // console.log("today "+ today);
+        var todayNum = Number(today.getFullYear());
+        //console.log("year" + todayNum);
+        var birthDate = new Date(yearOfBrith);
+        //console.log("birthdate "+ birthDate);
+        var age_now = today.getFullYear() - birthDate.getFullYear();
+        //console.log("AGE_________");
+        //console.log(age_now);
+        return age_now;
+    }
+
     render() {
 
         //gender
@@ -219,11 +232,14 @@ class CreateRequest extends React.Component {
         const danceStyle = this.state.danceStyle;
         const user = this.state.user;
 
+
         //when logged in display requests
         if (window.sessionStorage.secret_token != null) {
             //TODO(Bug?) getting the user takes time and the get ('POST') takes long and throws first []
-            if(user){return (
+            if(user){
+                const age = this.calculate_age(user.yearOfBirth);
 
+                return (
                 <div className="form-group">
                     <Button variant="primary" onClick={this.handleShow}> Create Request </Button>
 
@@ -249,13 +265,13 @@ class CreateRequest extends React.Component {
                                     {/* User-Age Information*/}
                                     <Row>
                                         <Col><label>My age...</label></Col>
-                                        <Col><label>{user.yearOfBirth}</label></Col>
+                                        <Col><label>{age}</label></Col>
                                     </Row>
 
                                     {/* User-Height Information*/}
                                     <Row>
                                         <Col><label>My height...</label></Col>
-                                        <Col><label>{user.height}</label></Col>
+                                        <Col><label>{user.height}cm</label></Col>
                                     </Row>
 
                                     {/* User-Skill Information*/}

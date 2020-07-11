@@ -85,7 +85,7 @@ class FilterRequest extends React.Component {
     //To know if you need a '&' to concat the parameters
     let previous = false;
     let url = "/dancepartner/?";
-    const style = this.state.danceStyle ? this.state.danceStyle.map(style => style.value) : "";
+
     if (this.state.gender != "") {
       url += "listofGenders=" + this.state.gender;
       previous = true;
@@ -105,7 +105,12 @@ class FilterRequest extends React.Component {
       previous = true;
       if (this.state.danceStyle != "") {
         if(previous){
-          url += "&listOfDanceStyles=" + style;
+            const style = this.state.danceStyle ? this.state.danceStyle.map(style => style.value) : "";
+            if (style){
+                style.map((styles) => (
+                    url += "&listOfDanceStyles=" + styles
+                ));
+            }
         }}
     }
 
@@ -160,35 +165,35 @@ class FilterRequest extends React.Component {
 
 
     // Dance Styles
-    const danceStyleCategory = [
-      { value: 'latin', label: 'Latin/Rythm' },
-      { value: 'standard', label: 'Standard/Smooth' },
-      { value: 'various', label: 'Various' },
-    ];
+      const danceStyleCategory = [
+          {value: 'latin', label: 'Latin/Rythm'},
+          {value: 'standard', label: 'Standard/Smooth'},
+          {value: 'various', label: 'Various'},
+      ];
 
-    const latin = [
-      { value: 'jive', label: 'Jive' },
-      { value: 'rumba', label: 'Rumba' },
-      { value: 'chaChaCha', label: 'Cha-Cha-Cha' },
-      { value: 'samba', label: 'Samba' },
-      { value: 'pasoDoble', label: 'Paso Doble' },
-      { value: 'bolero', label: 'Bolero' },
-      { value: 'mambo', label: 'Mambo' },
-      { value: 'eastCostSwing', label: 'East Cost Swing' },
-    ];
-    const standard = [
-      { value: 'waltz', label: 'Waltz' },
-      { value: 'vienneseWaltz', label: 'Viennese Waltz' },
-      { value: 'tango', label: 'Tango' },
-      { value: 'foxtrot', label: 'Foxtrot' },
-      { value: 'qickstep', label: 'Qickstep' },
-    ];
-    const various = [
-      { value: 'salsa', label: 'Salsa' },
-      { value: 'bachata', label: 'Bachata' },
-      { value: 'westCostSwing', label: 'West Cost Swing' },
-      { value: 'hustle', label: 'Hustle' },
-    ];
+      const latin = [
+          {value: 'jive', label: 'Jive'},
+          {value: 'rumba', label: 'Rumba'},
+          {value: 'cha-cha-cha', label: 'Cha-Cha-Cha'},
+          {value: 'samba', label: 'Samba'},
+          {value: 'paso doble', label: 'Paso Doble'},
+          {value: 'bolero', label: 'Bolero'},
+          {value: 'mambo', label: 'Mambo'},
+          {value: 'east coast swing', label: 'East Cost Swing'},
+      ];
+      const standard = [
+          {value: 'waltz', label: 'Waltz'},
+          {value: 'viennese waltz', label: 'Viennese Waltz'},
+          {value: 'tango', label: 'Tango'},
+          {value: 'foxtrot', label: 'Foxtrot'},
+          {value: 'qickstep', label: 'Qickstep'},
+      ];
+      const various = [
+          {value: 'salsa', label: 'Salsa'},
+          {value: 'bachata', label: 'Bachata'},
+          {value: 'west coast swing', label: 'West Cost Swing'},
+          {value: 'hustle', label: 'Hustle'},
+      ];
 
     // Event Type - Multiple
     const eventType = [
