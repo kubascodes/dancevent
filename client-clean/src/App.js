@@ -9,7 +9,7 @@ import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
 import Profile from "./components/forms/Profile";
 import LoginForm from "./components/forms/LoginForm";
-import FindDancePartnerView from "./components/forms/FindDancePartnerView.jsx";
+import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import MyEvents from "./components/MyEvents";
 import CreateRequest from "./components/forms/CreateRequest";
 

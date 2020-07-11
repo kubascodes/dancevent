@@ -1,6 +1,6 @@
 import React from "react";
 import FilterRequest from "./FilterRequestForm";
-import RequestForm from "./PartnerRequestForm.jsx";
+import RequestForm from "./PartnerRequestForm";
 
 import {Row, Col, Container, CardDeck} from "react-bootstrap";
 import { Link } from "react-router-dom";
@@ -22,7 +22,7 @@ class FindDancePartnerView extends React.Component {
       sorting: "date",
       requests: [],
     };
-  }d
+  }
 
   componentDidMount() {
     /* The function call is in the buildup and loads all the requests */
