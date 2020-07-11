@@ -7,26 +7,6 @@ const config = require('../config'); //to access JWT Secret
 const User = require('../models/user'); //to access the User database
 
 
-//Create a passport middleware to handle user registration
-/*NOT USED
-passport.use('register', new localStrategy({
-  usernameField: 'email', //specify the name of the Email property in the POST body request.
-  passwordField: 'password' //specify the name of the Password property in the POST body request.
-}, async (email, password, done) => {
-  try {
-    //Save the information provided by the user to the the database
-    const user = await User.create({
-      email,
-      password
-    });
-    //Send the user information to the next middleware
-    return done(null, user);
-  } catch (error) {
-    done(error);
-  }
-}));
-*/
-
 //Configure a Passport Strategy Middleware to handle User login
 passport.use('login', new localStrategy({
   usernameField: 'email', //specify the name of the Email property in the POST body request.

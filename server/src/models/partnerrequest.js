@@ -6,10 +6,12 @@ const PartnerRequestSchema  = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Dancer'}, //reference dancer by his Id -≥ change to original schema
     description: { type: String, required: true }, //description of the partner request
-    ageOffset: { type: Number, required: true },
+    //ageOffset: { type: Number, required: true },
+    prefAgeMin: { type: Number, required: false },
+    prefAgeMax: { type: Number, required: false },
     listofGenders: [{
       type: String,
-      enum: ['female', 'male', 'unspecified'],
+      enum: ['female', 'male', 'other'],
       required: true
     }], //array of genders strings
     listOfProficiencyLevels: [{
@@ -18,6 +20,12 @@ const PartnerRequestSchema  = new mongoose.Schema({
       default: 'beginner',
       required: true
     }], //array of proficiency levels strings
+    listOfDanceStyles: [{
+        type: String,
+        enum: ['latin','standard', 'various','jive', 'rumba', 'chaChaCha', 'samba', 'pasoDoble',  'bolero','mambo', 'eastCostSwing', 'waltz',  'vienneseWaltz', 'tango', 'foxtrot', 'qickstep','salsa', 'bachata', 'westCostSwing','hustle'],
+        default: 'standard',
+        required: false
+    }],
     counterfeitEmail: { type: String, required: true },
     timestamp: {
       type: Date,
@@ -27,3 +35,5 @@ const PartnerRequestSchema  = new mongoose.Schema({
 
 // Export the PartnerRequest model
 module.exports = mongoose.model('PartnerRequest', PartnerRequestSchema);
+
+

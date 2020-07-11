@@ -12,16 +12,22 @@ import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
 import MyEvents from "./components/MyEvents";
+import CreateRequest from "./components/forms/CreateRequest";
 
 export default class App extends Component {
-  state = {
-    secret_token: null,
-    login: false,
-    email: null,
-    name: null,
-    userType: null,
-    profilePicture: null, //TODO
+  constructor(props) {
+    super(props);
+    this.state = {
+      secret_token: null,
+      login: false,
+      email: null,
+      name: null,
+      userType: null,
+      profilePicture: null, //TODO
+    };
+    this.logIn = this.logIn.bind(this);
   };
+
 
   addUser = (User) => {
     console.log(User);
@@ -36,7 +42,7 @@ export default class App extends Component {
 
   // Fetches the user data that did not come with the login as the login just retrieves email and token
   getUserData = () => {
-    var component_scope = this;
+    var context = this;
     fetch("/profile", {
       method: "POST",
       headers: {
@@ -47,7 +53,7 @@ export default class App extends Component {
       .then((res) => res.json(res))
       .then(function (res) {
         console.log(res);
-        component_scope.setState({
+        context.setState({
           secret_token: window.sessionStorage.secret_token,
           login: true,
           email: res.email,
@@ -59,8 +65,15 @@ export default class App extends Component {
       .catch((err) => alert(err));
   };
 
-  logIn = (data) => {
-    this.getUserData();
+  logIn (data) {
+    console.log("Log in function!");
+    console.log(data);
+    this.setState({
+      secret_token: data.secret_token,
+      email: data.email,
+      login: data.login
+    });
+    //this.getUserData();
     console.log(this.state);
     console.log("main state");
   };
@@ -135,13 +148,15 @@ export default class App extends Component {
               <RegistrationFormDancer {...props} state={this.state} />
             )}
           />
-          {/*<Route exact path='/register'render={(props) => <RegistrationForm {...props} auth_token={this.secret_token} />} />*/}
+
           <Route
+            exact
             path="/login"
             render={(props) => (
-              <LoginForm {...props} state={this.state} logIn={this.logIn} />
+              <LoginForm {...props} logIn={this.logIn} />
             )}
           />
+
           <Route
             exact
             path="/events"
@@ -157,6 +172,7 @@ export default class App extends Component {
             path="/events/single/:id"
             render={(props) => <Event {...props} state={this.state} />}
           />
+
           <Route
             exact
             path="/dancepartner"
@@ -187,6 +203,13 @@ export default class App extends Component {
               />
             )}
           />
+          <Route
+            exact
+            path="/createrequest"
+            render={(props) => (
+            <CreateRequest {...props} state={this.state} auth_token={this.secret_token} />
+            )}
+            />
         </div>
       </BrowserRouter>
     );

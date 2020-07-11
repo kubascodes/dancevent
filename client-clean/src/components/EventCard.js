@@ -1,4 +1,4 @@
-import React from "react";
+ import React from "react";
 import { Link, Redirect } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
@@ -215,7 +215,7 @@ class EventCard extends React.Component {
               <Card.Link
                 href="#"
                 onClick={this.handleShow}
-                style={{ color: "#DC2029" }}
+                style={{ color: "#dc2029" }}
                 className=""
               >
                 Delete

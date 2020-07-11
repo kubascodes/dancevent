@@ -3,6 +3,8 @@ import { Redirect } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import ProcessImage from '../../services/imageProcessing';
+import RouteRedirect from '../../services/RouteRedirect';
+
 
 //TODO we'd want to use composition to define forms
 //1. Form Component
@@ -43,14 +45,15 @@ class RegistrationFormDancer extends React.Component {
     if (event.target.files[0]) {
       let file = event.target.files[0];
       let fileUrl = URL.createObjectURL(file);
-      let component_scope = this;
+      let context = this;
       //defining the function
-      async function processImage(file, fileUrl, component_scope) {
+      async function processImage(file, fileUrl, context) {
         console.log(file);
         try {
           let image = await ProcessImage(file, fileUrl);
-          component_scope.setState({ picture: image });
-          console.log(component_scope.state);
+          context.setState({ picture: image });
+          console.log(context.state.picture);
+          console.log(context.state);
         }
         catch (error) {
           alert(error);
@@ -58,7 +61,7 @@ class RegistrationFormDancer extends React.Component {
       };
 
       //calling the function
-      processImage(file, fileUrl, component_scope);
+      processImage(file, fileUrl, context);
     }
 
   };
@@ -103,47 +106,55 @@ class RegistrationFormDancer extends React.Component {
 
   };
 
-  registerUser = (event) => {
+  formCleaning = async () => {
+    //form inputs we want to upload
+    let keys = ["name", "email", "password", "city", "picture", "gender", "height", "yearOfBirth", "listOfDanceStyles", "proficiencyLevel", "prefAgeMin", "prefAgeMax", "prefGender"];
+    //output object
+    let output = {};
+    //loop over the inputs
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
+      //checking if the input is null, empty, undefined, NaN, false, 0
+      if (this.state[key]) {
+        //if it's not empty, then save the non-null property to output object
+        output[key] = this.state[key];
+      }
+    }
+    //return non-null values
+    console.log("Output form cleaning");
+    console.log(output);
+    return output;
+  };
+
+  registerUser =  async (event) => {
     //prevent default behavior
     event.preventDefault();
 
     //if no email or pwd on the form, return
     if (!this.state.email || !this.state.password) return;
 
-    //saving the component scope
-    var component_scope = this;
+    //saving the current component context
+    var context = this;
 
+    //deleting null values
+    let form = await this.formCleaning();
+    console.log("register user");
+    console.log(form);
     //post to dancer's registration api
+
     fetch('/register/dancer', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
-      body: JSON.stringify({
-
-        //user schema attributes
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
-        city: this.state.city,
-        picture: this.state.picture,
-        //dancer schema attributes
-        gender: this.state.gender,
-        height: this.state.height,
-        yearOfBirth: this.state.yearOfBirth,
-        listOfDanceStyles: this.state.listOfDanceStyles,
-        proficiencyLevel: this.state.proficiencyLevel,
-        prefAgeMin: this.state.prefAgeMin,
-        prefAgeMax: this.state.prefAgeMax,
-        prefGender: this.state.prefGender,
-      }),
+      body: JSON.stringify(form),
     })
     .then(res => res.json(res))
     .then(function(res){
-      //console.log("Logging Response");
       console.log(res);
+      alert("Successfully signed up!");
       document.getElementById("RegistrationFormDancer").reset();
-      component_scope.setState({
+      context.setState({
         //user schema attributes
         name: null,
         email: null,
@@ -162,12 +173,8 @@ class RegistrationFormDancer extends React.Component {
       });
     })
     .catch(err => alert(err));
-  };
 
-  dataToParent (data) {
-    console.log(data);
-    this.props.auth(data);
-  }
+  };
 
 
   render() {
@@ -339,4 +346,5 @@ class RegistrationFormDancer extends React.Component {
 
 }
 
-export default RegistrationFormDancer
+//TODO: Check the context binding on -> export default RouteRedirect(RegistrationFormDancer);
+export default RegistrationFormDancer;
