@@ -68,7 +68,7 @@ class Homepage extends React.Component {
       let eventPromises = [];
       // Fetch the event object for each event the logged in user is interested in as a promise
       eventIds.forEach((eventId) => {
-        eventPromises.push(fetch(`/events/${eventId}`));
+        eventPromises.push(fetch(`/events/single/${eventId}`));
       });
       Promise.all(eventPromises)
         .then((events) => {
@@ -178,7 +178,7 @@ class Homepage extends React.Component {
                   variant="outline-dark"
                   size="lg"
                   block
-                  onClick={() => this.setState({ redirect: "/events" })}
+                  onClick={() => this.setState({ redirect: "/events/create" })}
                 >
                   {this.state.organizedEvents.length > 0
                     ? "Create a new event!"

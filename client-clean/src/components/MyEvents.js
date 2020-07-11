@@ -162,7 +162,7 @@ class MyEvents extends React.Component {
                 variant="outline-dark"
                 size="lg"
                 block
-                onClick={() => this.setState({ redirect: "/events" })}
+                onClick={() => this.setState({ redirect: "/events/create" })}
               >
                 {this.state.organizedEvents.length > 0
                   ? "Create a new event!"

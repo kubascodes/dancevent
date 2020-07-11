@@ -1,19 +1,22 @@
 import React from 'react';
 import DatePicker from "react-datepicker";
+import Select from 'react-select'; 
+import cities from './cities'
 
 import "react-datepicker/dist/react-datepicker.css";
-import { Typeahead } from 'react-bootstrap-typeahead';
+import { Typeahead, TypeaheadInputSingle } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+
+import ProcessImage from '../../services/imageProcessing';
 
 class EventCreationForm extends React.Component {
   /*TODO:
     -only allow access when logedin as organizer
-    -duration ...how?
     -restructuring (design)
     
     Update functionality:
-      -date, city, Checkboxes, photo(?)
-      -put function + backend
+      -city, Checkboxes, photo(?)
+      
 
   */
 
@@ -26,8 +29,9 @@ class EventCreationForm extends React.Component {
       title: null,
       type: "course",
       description: "",
-      startDate: Date.now(),
-      duration: 10,
+      startDate: new Date(),
+      endDate: new Date().setDate((new Date()).getDate()+10),
+      //duration: 10,
       city: "Munich",
       location: null,
       listOfDanceStyles: null,
@@ -35,6 +39,7 @@ class EventCreationForm extends React.Component {
       price: null,
       promoCode: null,
       picture: null,
+      pictureChange: false
 
     };
   }
@@ -55,7 +60,8 @@ class EventCreationForm extends React.Component {
             type: data.type,
             description: data.description,
             startDate: new Date(data.startDate),
-            duration: data.duration,
+            endDate: new Date(data.startDate),
+            //duration: data.duration,
             city: data.city,
             location: data.location,
             listOfDanceStyles: data.listOfDanceStyles,
@@ -125,11 +131,12 @@ class EventCreationForm extends React.Component {
   }
 
   //Changes the state for calendar inputs
-  onChangeCalendar = date => {
-    this.setState({ startDate: date });
+  onChangeCalendar = (date, type) => {
+    console.log(this)
+    this.setState({ [type]: date });
   };
 
-  onChangeFile = (event) => {
+  onChangeFile2 = (event) => {
     //setting the file to the input
     const image = event.target.files[0]
     if (image) {
@@ -148,11 +155,41 @@ class EventCreationForm extends React.Component {
 
   };
 
+  onChangeFile = (event) => {
+    //setting the file to the input
+    if (event.target.files[0]) {
+      let file = event.target.files[0];
+      let fileUrl = URL.createObjectURL(file);
+      let component_scope = this;
+      //defining the function
+      async function processImage(file, fileUrl, component_scope) {
+        console.log(file);
+        try {
+          let image = await ProcessImage(file, fileUrl);
+          component_scope.setState({ 
+            picture: image,
+            pictureChange: true });
+          console.log(component_scope.state);
+        }
+        catch (error) {
+          alert(error);
+        }
+      };
+
+      //calling the function
+      processImage(file, fileUrl, component_scope);
+    }
+
+  };
+
+
+
+
   onChangeAuto = (event) => {
     console.log(event)
-    if(event[0] !== null){
-      this.setState({city : event[0]})
-    }
+    //if(event[0] !== null){
+      this.setState({city : event.value})
+    //}
   }
 
 
@@ -173,12 +210,14 @@ class EventCreationForm extends React.Component {
       //saving the auth token
       const token = window.sessionStorage.secret_token
 
+      /*
       const formData = new FormData();
       formData.append('title', this.state.title);
       formData.append('type', this.state.type);
       formData.append('description', this.state.description);
       formData.append('startDate', this.state.startDate);
-      formData.append('duration', this.state.duration);
+      formData.append('endDate', this.state.endDate);
+      //formData.append('duration', this.state.duration);
       formData.append('city', this.state.city);
       formData.append('location', this.state.location);
       this.state.listOfDanceStyles.map((style) => (
@@ -200,15 +239,46 @@ class EventCreationForm extends React.Component {
         address = "/events/pic"
       }
       console.log(formData)
+      */
+
+      var address = "/events/"
+
+      var body = {
+        title: this.state.title,
+        type: this.state.type,
+        description: this.state.description,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate,
+        city: this.state.city,
+        location: this.state.location,
+        listOfDanceStyles: this.state.listOfDanceStyles,
+        listOfProficiencyLevels: this.state.listOfProficiencyLevels,
+        price: this.state.price,
+        promoCode: this.state.promoCode,
+      }
+      if(this.state.pictureChange){
+        body['picture'] = this.state.picture
+      }
+
+      if(this.props.update){
+        const { match: { params }} = this.props;
+
+        var method = 'Put'
+        address = address + params.id
+      }else{
+        var method = 'POST'
+      }
 
       //post to organizer's registration api
       //   /events/pic
       fetch(address, {
-        method: 'POST',
+        method: method,
         headers: {
-          'Authorization': "Bearer " + token
+          'Authorization': "Bearer " + token,
+          'Content-Type': 'application/json; charset=utf-8'
         },
-        body: formData,
+        //body: formData,
+        body: JSON.stringify(body)
       }) //create a post request which is a Promise
         .then(res => res.json(res))
         .then(function (res) {
@@ -217,17 +287,18 @@ class EventCreationForm extends React.Component {
           document.getElementById("EventCreationForm").reset();
           component_scope.setState({
             title: null,
-            type: null,
-            description: null,
-            startDate: null,
-            duration: null,
-            city: null,
+            type: "course",
+            description: "",
+            startDate: new Date(),
+            endDate: new Date().setDate((new Date()).getDate()+10),
+            duration: 10,
+            city: "Munich",
             location: null,
             listOfDanceStyles: null,
             listOfProficiencyLevels: null,
             price: null,
             promoCode: null,
-            picture: null
+            picture: null,
           });
         })
         .catch(err => alert(err));
@@ -239,7 +310,7 @@ class EventCreationForm extends React.Component {
 
   render() {
 
-    const cities = ["Berlin", "Stuttgart", "Frankfurt", "Mannheim", "Hamburg", "Essen", "Duisburg", "Munich", "Düsseldorf", "Cologne", "Wuppertal", "Saarbrücken", "Marienberg", "Bremen", "Hannover", "Bonn", "Dresden", "Wiesbaden", "Dortmund", "Leipzig", "Heidelberg", "Karlsruhe", "Augsburg", "Bielefeld", "Koblenz", "Altchemnitz", "Kassel", "Münster", "Kiel", "Freiburg", "Braunschweig", "Fürth", "Lübeck", "Osnabrück", "Magdeburg", "Potsdam", "Erfurt", "Rostock", "Mainz", "Ulm", "Würzburg", "Oldenburg", "Regensburg", "Ingolstadt", "Göttingen", "Bremerhaven", "Cottbus", "Jena", "Gera", "Flensburg", "Schwerin", "Rosenheim", "Gießen", "Stralsund", "Coburg", "Hofeck", "Emden", "Detmold", "Meißen", "Kitzingen", "Dingolfing", "Heppenheim", "Torgau", "Hanau", "Husum", "Schwandorf", "Bitburg", "Cham", "Traunstein", "Lüchow", "Gifhorn", "Biberach", "Bad Reichenhall", "Künzelsau", "Weißenburg", "Regen", "Nuremberg", "Aurich", "Nordhorn", "Aichach", "Marburg", "Görlitz", "Vechta", "Trier", "Pirmasens", "Pirna", "Neustadt", "Beeskow", "Westerstede", "Verden", "Worms", "Düren", "Landsberg", "Ludwigsburg", "Meiningen", "Siegen", "Deggendorf", "Peine", "Frankfurt (Oder)", "Nienburg", "Brake", "Memmingen", "Kirchheimbolanden", "Tauberbischofsheim", "Emmendingen", "Warendorf", "Bad Segeberg", "Rotenburg", "Kronach", "Darmstadt", "Mindelheim", "Bergheim", "Donauwörth", "Korbach", "Herzberg", "Hameln", "Suhl", "Friedberg", "Hof", "Neuburg", "Bad Kissingen", "Viersen", "Birkenfeld", "Bad Fallingbostel", "Halle", "Bamberg", "Fürstenfeldbruck", "Neuss", "Bad Kreuznach", "Heilbronn", "Bad Ems", "Schwäbisch Hall", "Offenburg", "Saalfeld", "Wolfenbüttel", "Altenkirchen", "Pforzheim", "Günzburg", "Euskirchen", "Chemnitz", "Rendsburg", "Tirschenreuth", "Offenbach", "Uelzen", "Zwickau", "Schwabach", "Gelsenkirchen", "Mettmann", "Ravensburg", "Leer", "Wittmund", "Ingelheim", "Höxter", "Oranienburg", "Erbach", "Freising", "Landau", "Stendal", "Balingen", "Reutlingen", "Eisenach", "Tuttlingen", "Neumünster", "Neu-Ulm", "Köthen", "Schleiz", "Garmisch-Partenkirchen", "Baden-Baden", "Bayreuth", "Wunsiedel", "Osterode", "Sankt Wendel", "Lüdenscheid", "Plauen", "Forst", "Pfaffenhofen", "Bochum", "Weimar", "Wilhelmshaven", "Limburg", "Freyung", "Merseburg", "Halberstadt", "Dessau-Roßlau", "Weiden", "Altenburg", "Heide", "Böblingen", "Kulmbach", "Homberg", "Perleberg", "Mülheim", "Northeim", "Salzwedel", "Cuxhaven", "Plön", "Mühlhausen", "Kempten", "Güstrow", "Lichtenfels", "Bad Salzungen", "Weilheim", "Jever", "Arnstadt", "Lüneburg", "Delmenhorst", "Neubrandenburg", "Bad Dürkheim", "Greiz", "Altötting", "Erding", "Lübben", "Holzminden", "Wetzlar", "Soest", "Mosbach", "Heilbad Heiligenstadt", "Neustadt", "Calw", "Kleve", "Annaberg-Buchholz", "Wismar", "Aachen", "Tübingen", "Freiberg", "Mönchengladbach", "Nordhausen", "Krefeld", "Stadthagen", "Hildesheim", "Celle", "Eberswalde", "Recklinghausen", "Eisenberg", "Kaufbeuren", "Sömmerda", "Remscheid", "Greifswald", "Rastatt", "Naumburg", "Lauf", "Amberg", "Ratzeburg", "Bad Homburg", "Neustadt", "Herne", "Sangerhausen", "Forchheim", "Eutin", "Bad Oldesloe", "Kelheim", "Bad Neustadt", "Helmstedt", "Heinsberg", "Zweibrücken", "Hagen", "Montabaur", "Haßfurt", "Pinneberg", "Apolda", "Bad Schwalbach", "Marktoberdorf", "Winsen", "Wesel", "Landshut", "Alzey", "Homburg", "Passau", "Cloppenburg", "Miesbach", "Gotha", "Schwelm", "Kusel", "Meschede", "Steinfurt", "Aschaffenburg", "Paderborn", "Karlstadt", "Waiblingen", "Villingen-Schwenningen", "Rottweil", "Göppingen", "Eichstätt", "Freudenstadt", "Schleswig", "Erlangen", "Olpe", "Lörrach", "Ansbach", "Wittlich", "Neuruppin", "Sonneberg", "Bottrop", "Ludwigshafen", "Borken", "Starnberg", "Gummersbach", "Lauterbach", "Herford", "Rathenow", "Solingen", "Speyer", "Siegburg", "Burg", "Leverkusen", "Unna", "Coesfeld", "Cochem", "Eschwege", "Bad Hersfeld", "Bad Neuenahr-Ahrweiler", "Sondershausen", "Dachau", "Meppen", "Wolfsburg", "Brandenburg", "Sigmaringen", "Sonthofen", "Itzehoe", "Bergisch Gladbach", "Dillingen", "Saarlouis", "Groß-Gerau", "Oberhausen", "Goslar", "Neustadt", "Germersheim", "Hofheim", "Ebersberg", "Prenzlau", "Bad Tölz", "Parchim", "Luckenwalde", "Bernburg", "Osterholz-Scharmbeck", "Stade", "Neumarkt", "Salzgitter", "Bautzen", "Hildburghausen", "Heidenheim", "Wittenberg", "Kaiserslautern", "Miltenberg", "Coburg", "Fulda", "Senftenberg", "Mühldorf", "Merzig", "Seelow", "Minden", "Waldshut-Tiengen", "Neunkirchen", "Neuwied", "Daun", "Esslingen", "Simmern", "Gütersloh", "Diepholz", "Frankenthal", "Straubing", "Pfarrkirchen", "Hamm", "Haldensleben", "Aalen" ];
+    const cities2 = ["Berlin", "Stuttgart", "Frankfurt", "Mannheim", "Hamburg", "Essen", "Duisburg", "Munich", "Düsseldorf", "Cologne", "Wuppertal", "Saarbrücken", "Marienberg", "Bremen", "Hannover", "Bonn", "Dresden", "Wiesbaden", "Dortmund", "Leipzig", "Heidelberg", "Karlsruhe", "Augsburg", "Bielefeld", "Koblenz", "Altchemnitz", "Kassel", "Münster", "Kiel", "Freiburg", "Braunschweig", "Fürth", "Lübeck", "Osnabrück", "Magdeburg", "Potsdam", "Erfurt", "Rostock", "Mainz", "Ulm", "Würzburg", "Oldenburg", "Regensburg", "Ingolstadt", "Göttingen", "Bremerhaven", "Cottbus", "Jena", "Gera", "Flensburg", "Schwerin", "Rosenheim", "Gießen", "Stralsund", "Coburg", "Hofeck", "Emden", "Detmold", "Meißen", "Kitzingen", "Dingolfing", "Heppenheim", "Torgau", "Hanau", "Husum", "Schwandorf", "Bitburg", "Cham", "Traunstein", "Lüchow", "Gifhorn", "Biberach", "Bad Reichenhall", "Künzelsau", "Weißenburg", "Regen", "Nuremberg", "Aurich", "Nordhorn", "Aichach", "Marburg", "Görlitz", "Vechta", "Trier", "Pirmasens", "Pirna", "Neustadt", "Beeskow", "Westerstede", "Verden", "Worms", "Düren", "Landsberg", "Ludwigsburg", "Meiningen", "Siegen", "Deggendorf", "Peine", "Frankfurt (Oder)", "Nienburg", "Brake", "Memmingen", "Kirchheimbolanden", "Tauberbischofsheim", "Emmendingen", "Warendorf", "Bad Segeberg", "Rotenburg", "Kronach", "Darmstadt", "Mindelheim", "Bergheim", "Donauwörth", "Korbach", "Herzberg", "Hameln", "Suhl", "Friedberg", "Hof", "Neuburg", "Bad Kissingen", "Viersen", "Birkenfeld", "Bad Fallingbostel", "Halle", "Bamberg", "Fürstenfeldbruck", "Neuss", "Bad Kreuznach", "Heilbronn", "Bad Ems", "Schwäbisch Hall", "Offenburg", "Saalfeld", "Wolfenbüttel", "Altenkirchen", "Pforzheim", "Günzburg", "Euskirchen", "Chemnitz", "Rendsburg", "Tirschenreuth", "Offenbach", "Uelzen", "Zwickau", "Schwabach", "Gelsenkirchen", "Mettmann", "Ravensburg", "Leer", "Wittmund", "Ingelheim", "Höxter", "Oranienburg", "Erbach", "Freising", "Landau", "Stendal", "Balingen", "Reutlingen", "Eisenach", "Tuttlingen", "Neumünster", "Neu-Ulm", "Köthen", "Schleiz", "Garmisch-Partenkirchen", "Baden-Baden", "Bayreuth", "Wunsiedel", "Osterode", "Sankt Wendel", "Lüdenscheid", "Plauen", "Forst", "Pfaffenhofen", "Bochum", "Weimar", "Wilhelmshaven", "Limburg", "Freyung", "Merseburg", "Halberstadt", "Dessau-Roßlau", "Weiden", "Altenburg", "Heide", "Böblingen", "Kulmbach", "Homberg", "Perleberg", "Mülheim", "Northeim", "Salzwedel", "Cuxhaven", "Plön", "Mühlhausen", "Kempten", "Güstrow", "Lichtenfels", "Bad Salzungen", "Weilheim", "Jever", "Arnstadt", "Lüneburg", "Delmenhorst", "Neubrandenburg", "Bad Dürkheim", "Greiz", "Altötting", "Erding", "Lübben", "Holzminden", "Wetzlar", "Soest", "Mosbach", "Heilbad Heiligenstadt", "Neustadt", "Calw", "Kleve", "Annaberg-Buchholz", "Wismar", "Aachen", "Tübingen", "Freiberg", "Mönchengladbach", "Nordhausen", "Krefeld", "Stadthagen", "Hildesheim", "Celle", "Eberswalde", "Recklinghausen", "Eisenberg", "Kaufbeuren", "Sömmerda", "Remscheid", "Greifswald", "Rastatt", "Naumburg", "Lauf", "Amberg", "Ratzeburg", "Bad Homburg", "Neustadt", "Herne", "Sangerhausen", "Forchheim", "Eutin", "Bad Oldesloe", "Kelheim", "Bad Neustadt", "Helmstedt", "Heinsberg", "Zweibrücken", "Hagen", "Montabaur", "Haßfurt", "Pinneberg", "Apolda", "Bad Schwalbach", "Marktoberdorf", "Winsen", "Wesel", "Landshut", "Alzey", "Homburg", "Passau", "Cloppenburg", "Miesbach", "Gotha", "Schwelm", "Kusel", "Meschede", "Steinfurt", "Aschaffenburg", "Paderborn", "Karlstadt", "Waiblingen", "Villingen-Schwenningen", "Rottweil", "Göppingen", "Eichstätt", "Freudenstadt", "Schleswig", "Erlangen", "Olpe", "Lörrach", "Ansbach", "Wittlich", "Neuruppin", "Sonneberg", "Bottrop", "Ludwigshafen", "Borken", "Starnberg", "Gummersbach", "Lauterbach", "Herford", "Rathenow", "Solingen", "Speyer", "Siegburg", "Burg", "Leverkusen", "Unna", "Coesfeld", "Cochem", "Eschwege", "Bad Hersfeld", "Bad Neuenahr-Ahrweiler", "Sondershausen", "Dachau", "Meppen", "Wolfsburg", "Brandenburg", "Sigmaringen", "Sonthofen", "Itzehoe", "Bergisch Gladbach", "Dillingen", "Saarlouis", "Groß-Gerau", "Oberhausen", "Goslar", "Neustadt", "Germersheim", "Hofheim", "Ebersberg", "Prenzlau", "Bad Tölz", "Parchim", "Luckenwalde", "Bernburg", "Osterholz-Scharmbeck", "Stade", "Neumarkt", "Salzgitter", "Bautzen", "Hildburghausen", "Heidenheim", "Wittenberg", "Kaiserslautern", "Miltenberg", "Coburg", "Fulda", "Senftenberg", "Mühldorf", "Merzig", "Seelow", "Minden", "Waldshut-Tiengen", "Neunkirchen", "Neuwied", "Daun", "Esslingen", "Simmern", "Gütersloh", "Diepholz", "Frankenthal", "Straubing", "Pfarrkirchen", "Hamm", "Haldensleben", "Aalen" ];
 
 
     //Valid Dancestyle choices
@@ -265,9 +336,16 @@ class EventCreationForm extends React.Component {
       "bachata",
     ];
 
+    const gender = [
+      { value: 'male', label: 'Male' },
+      { value: 'female', label: 'Female' }
+  ];
+
     const eventLevels = [
       "beginner", "intermediate", "advanced"
     ];
+
+    
 
     //must be chnaged to 
     if (window.sessionStorage.secret_token != null) {
@@ -300,12 +378,12 @@ class EventCreationForm extends React.Component {
             </div>
 
             <div className="form-group">
-              <label className="label-bold">Startdate</label>
+              <label className="label-bold"> Startdate </label>
               <DatePicker
                 className="form-control"
-                name="startdate"
+                name="startDate"
                 selected={this.state.startDate}
-                onChange={this.onChangeCalendar}
+                onChange={date => this.onChangeCalendar(date, "startDate")}
                 showTimeSelect
                 timeFormat="HH:mm"
                 timeIntervals={15}
@@ -313,10 +391,22 @@ class EventCreationForm extends React.Component {
                 dateFormat="MMMM d, yyyy h:mm aa"
                 minDate={new Date()}
               />
+              <label className="label-bold"> Enddate </label>
+              <DatePicker
+                className="form-control"
+                name="endDate"
+                selected={this.state.endDate}
+                onChange={date => this.onChangeCalendar(date, "endDate")}
+                showTimeSelect
+                timeFormat="HH:mm"
+                timeIntervals={15}
+                timeCaption="time"
+                dateFormat="MMMM d, yyyy h:mm aa"
+                minDate={this.state.startDate}
+              />
             </div>
-
-            {/*TODO: Duration*/}
-
+            
+            {/*
             <div className="form-group">
               <label className="label-bold" htmlFor="city">City</label>
               <Typeahead
@@ -324,7 +414,23 @@ class EventCreationForm extends React.Component {
                   onChange={this.onChangeAuto}
                   options={cities}
                   placeholder="Choose a city..."
+                  defaultSelected={[this.state.city]}
                 />
+            </div>
+            */}
+
+            <div className="form-group">
+              <label className="label-bold" htmlFor="city">City</label>
+              <Select
+                className="basic-single"
+                classNamePrefix="select"
+                defaultValue={{label: this.state.city, value: this.state.city}}
+                placeholder={"Choose a city..."}
+                onChange={this.onChangeAuto}
+                name="city"
+                options={cities}
+                
+                        />
             </div>
 
             <div className="form-group">
@@ -373,8 +479,7 @@ class EventCreationForm extends React.Component {
                 <input type="file" className="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
                 <label className="custom-file-label" htmlFor="customFile">Upload your event picture</label>
               </div>
-            </div>
-
+            </div>            
             <div className="form-group">
               <label className="label-bold">Description</label>
               <textarea className="form-control" name="description" id="description" onChange={this.onChangeInput} value={this.state.description} rows="4" />
@@ -387,11 +492,12 @@ class EventCreationForm extends React.Component {
         </div>
 
       )
-    
+    }
+    else{
       return (
         <div> You are not allowed to view this page. </div>
       )
-    }
+      }
 
   }
 

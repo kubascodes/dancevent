@@ -154,7 +154,7 @@ export default class App extends Component {
             )}
           />
           <Route
-            path="/events/:id"
+            path="/events/single/:id"
             render={(props) => <Event {...props} state={this.state} />}
           />
           <Route

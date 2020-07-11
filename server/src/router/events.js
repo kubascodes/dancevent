@@ -191,8 +191,23 @@ router.put(
     try {
       //here we want to update an existing event
       //TODO: check the user who must be an organizer and must own the event
+      
+      const uid = req.params.id
+      let event = await Event.findById(uid).exec();
+      
+      if(event && event.organizer == req.user._id){
+        var updatedEvent = await Event.findByIdAndUpdate(uid, req.body);
+        return res.status(201).json(updatedEvent);
+      }else{
+        return res.status(403).json({
+          error: "User has no Authority to change the Event",
+        })
+      };
     } catch (error) {
-      next(error); //handle error by error handling middleware
+      return res.status(500).json({
+        error: "Internal server error",
+        message: error.message,
+      });
     }
   }
 );
@@ -202,25 +217,33 @@ router.delete(
   "/:id",
   passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   async (req, res, next) => {
-    // TODO: Check if the logged in user is an organizer and owns the event
+    // Check if the logged in user owns the event
     const uid = req.params.id;
-    Event.findOneAndDelete({ _id: uid }, (err, event) => {
-      //error in step (will also be called if <id> has not correct the pattern)
-      if (err) {
-        return res.status(500).json({
-          error: "Internal server error",
-          message: err.message,
-        });
-      }
-      //Query is empty (event does not exist)
-      if (!event) {
-        return res.status(404).json({
-          error: "Event not found",
-        });
-      }
-      //successful query -> send deleted event
-      res.send(`Event deleted: ${event._id}`);
-    });
+    let event = await Event.findById(uid).exec();
+      
+    if(event && event.organizer == req.user._id){
+      Event.findOneAndDelete({ _id: uid }, (err, event) => {
+        //error in step (will also be called if <id> has not correct the pattern)
+        if (err) {
+          return res.status(500).json({
+            error: "Internal server error",
+            message: err.message,
+          });
+        }
+        //Query is empty (event does not exist)
+        if (!event) {
+          return res.status(404).json({
+            error: "Event not found",
+          });
+        }
+        //successful query -> send deleted event
+        res.send(`Event deleted: ${event._id}`);
+      });
+    }else{
+      return res.status(403).json({
+        error: "User has no Authority to change the Event",
+      })
+    };
   }
 );
 

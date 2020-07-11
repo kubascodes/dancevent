@@ -170,7 +170,7 @@ class EventCard extends React.Component {
           style={{ width: "18rem" }}
           className="m-2"
         >
-          <Link to={`/events/${this.props.event._id}`}>
+          <Link to={`/events/single/${this.props.event._id}`}>
             <Card.Img
               variant="top"
               src={
@@ -184,7 +184,7 @@ class EventCard extends React.Component {
           </Link>
           <Card.Body>
             <Link
-              to={`/events/${this.props.event._id}`}
+              to={`/events/single/${this.props.event._id}`}
               style={{ textDecoration: "none", color: "black" }}
             >
               <Card.Title>{this.props.event.title}</Card.Title>
