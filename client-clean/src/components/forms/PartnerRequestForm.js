@@ -81,9 +81,9 @@ class RequestForm extends React.Component {
                             <Col> <label>{request.dancerId.height} cm</label> </Col>
                         </Row>
 
-                        {/* Requesting User - Skill Information*/}
+                        {/* Requesting User - Proficiency Information*/}
                         <Row>
-                            <Col > <label>My dancing experience...</label> </Col>
+                            <Col > <label>My proficiency experience...</label> </Col>
                             <Col> <label>{request.dancerId.proficiencyLevel}</label> </Col>
                         </Row>
 
@@ -112,9 +112,9 @@ class RequestForm extends React.Component {
                             <Col> <label> {request.prefAgeMin} - {request.prefAgeMax}</label> </Col>
                         </Row>
 
-                        {/* Preferred - Skill Level*/}
+                        {/* Preferred - Proficiency Level*/}
                         <Row>
-                            <Col > <label>Dancing experience level...</label> </Col>
+                            <Col > <label>Dancing proficiency level...</label> </Col>
                             <Col> <label>{request.listOfProficiencyLevels}</label> </Col>
                         </Row>
 

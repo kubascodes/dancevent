@@ -14,12 +14,12 @@ class CreateRequest extends React.Component {
             prefGender: null,
             prefAgeMin: 20,
             prefAgeMax: 50,
-            danceSkills: null, //TODO: change in prefDanceSkills as it is exactly that
+            prefProficiencyLevel: null,
             description: "",
             // Event info
             danceCategory: null,
             danceStyle: null,
-            events: null,
+            events: null, // TODO: not used at the moment => add if needed or delete
             showModal: false,
         };
     }
@@ -28,7 +28,7 @@ class CreateRequest extends React.Component {
         /* this function is called, 1. when the modal is canceled and 2. when the request is submitted to reset the changes and close the modal*/
         this.setState({
             danceCategory: null,
-            danceSkills: null,
+            prefProficiencyLevel: null,
             description: null,
             // Event info
             danceStyle: null,
@@ -119,7 +119,7 @@ class CreateRequest extends React.Component {
             prefAgeMin: this.state.prefAgeMin,
             prefAgeMax: this.state.prefAgeMax,
             listofGenders: this.state.prefGender,
-            listOfProficiencyLevels: this.state.danceSkills,
+            listOfProficiencyLevels: this.state.prefProficiencyLevel,
             counterfeitEmail: this.props.state.email,
             listOfDanceStyles: danceStyle,
             //events: this.state.events, // TODO: needs event link and populate in backend?
@@ -179,16 +179,13 @@ class CreateRequest extends React.Component {
         ];
 
         // Skill level // TODO: define categories new
-        const skillLevelNew = [
+        const prefProficiencyLevels = [
             {value: 'beginner', label: 'Beginner'},
-            {value: 'bronze', label: 'Bronze'},
-            {value: 'silver', label: 'Silver'},
-            {value: 'gold', label: 'Gold'},
-            {value: 'pre-tournament1', label: 'Pre-Tournament 1'},
-            {value: 'pre-tournament2', label: 'Pre-Tournament 2'},
+            {value: 'intermediate', label: 'Intermediate'},
+            {value: 'advanced', label: 'Advanced'},
         ];
 
-        // Dance Styles //TODO: add more various
+        // Dance Styles //TODO (optional): add more various
         const danceStyleCategory = [
             {value: 'latin', label: 'Latin/Rythm'},
             {value: 'standard', label: 'Standard/Smooth'},
@@ -198,16 +195,16 @@ class CreateRequest extends React.Component {
         const latin = [
             {value: 'jive', label: 'Jive'},
             {value: 'rumba', label: 'Rumba'},
-            {value: 'chaChaCha', label: 'Cha-Cha-Cha'},
+            {value: 'cha-cha-cha', label: 'Cha-Cha-Cha'},
             {value: 'samba', label: 'Samba'},
-            {value: 'pasoDoble', label: 'Paso Doble'},
+            {value: 'paso doble', label: 'Paso Doble'},
             {value: 'bolero', label: 'Bolero'},
             {value: 'mambo', label: 'Mambo'},
-            {value: 'eastCostSwing', label: 'East Cost Swing'},
+            {value: 'east coast swing', label: 'East Cost Swing'},
         ];
         const standard = [
             {value: 'waltz', label: 'Waltz'},
-            {value: 'vienneseWaltz', label: 'Viennese Waltz'},
+            {value: 'viennese waltz', label: 'Viennese Waltz'},
             {value: 'tango', label: 'Tango'},
             {value: 'foxtrot', label: 'Foxtrot'},
             {value: 'qickstep', label: 'Qickstep'},
@@ -215,7 +212,7 @@ class CreateRequest extends React.Component {
         const various = [
             {value: 'salsa', label: 'Salsa'},
             {value: 'bachata', label: 'Bachata'},
-            {value: 'westCostSwing', label: 'West Cost Swing'},
+            {value: 'west coast swing', label: 'West Cost Swing'},
             {value: 'hustle', label: 'Hustle'},
         ];
 
@@ -224,7 +221,7 @@ class CreateRequest extends React.Component {
 
         //when logged in display requests
         if (window.sessionStorage.secret_token != null) {
-            //TODO: Fix Bug! Getting the user takes time, so this prevents an error if the user is still not there
+            //TODO(Bug?) getting the user takes time and the get ('POST') takes long and throws first []
             if(user){return (
 
                 <div className="form-group">
@@ -284,7 +281,7 @@ class CreateRequest extends React.Component {
                                     {/* Request  search "headline"*/}
                                     <Row> <label>I am looking for...</label> </Row>
                                     {/* Preferred - Gender */}
-                                    {/*Gender Type // TODO: clear unspecified/ other how to name it*/}
+                                    {/*Gender Type // TODO (optional): clear unspecified/ other how to name it*/}
                                     <Row>
                                         <Col> <label> Gender... </label> </Col>
                                         <Col>
@@ -345,13 +342,13 @@ class CreateRequest extends React.Component {
                                                 <Select
                                                     className="basic-single"
                                                     classNamePrefix="select"
-                                                    defaultValue={this.state.danceSkills}
-                                                    placeholder={"All skill levels..."}
+                                                    defaultValue={this.state.prefProficiencyLevel}
+                                                    placeholder={"Proficiency levels..."}
                                                     isClearable={true}
                                                     isSearchable={true}
                                                     onChange={this.handleChange}
-                                                    name="danceSkills"
-                                                    options={skillLevelNew}
+                                                    name="prefProficiencyLevel"
+                                                    options={prefProficiencyLevels}
                                                 />
                                             </div>
                                         </Col>

@@ -8,7 +8,7 @@ class FilterRequest extends React.Component {
     this.state = {
       city: "",
       gender: "",
-      skillLevel: "",
+        proficiencyLevel: "",
       prefEventDate: "",
       prefDateSelection: "",
       eventType: "",
@@ -43,21 +43,14 @@ class FilterRequest extends React.Component {
       return request;
     });
     this.props.filterRequests(this.state); //TODO: change
-
-    console.log("Submit value: " + e.target.value);
-    console.log("submit name: " + e.target.name);
   };
 
-  //TODO: add onChange of the Filter
   onChange = (e) => {
     /*This function is called if the user changes a variable of the filter options*/
     e.preventDefault();
     this.setState({
             [e.target.name]: e.target.value
         })
-    console.log("Change value: " + e.target.value);
-    console.log("Change name: " + e.target.name);
-    console.log(this.state);
   };
 
   handleChange = (selectedOption, action) => {
@@ -65,7 +58,6 @@ class FilterRequest extends React.Component {
       this.setState({
         [action.name]: selectedOption ? selectedOption.value : ""
       });
-      console.log(action.name);
 
       if(action.name == 'danceCategory'){
         this.setState({
@@ -98,11 +90,11 @@ class FilterRequest extends React.Component {
       url += "listofGenders=" + this.state.gender;
       previous = true;
     }
-    if (this.state.skillLevel != "") {
+    if (this.state.proficiencyLevel != "") {
       if (previous) {
         url += "&";
       }
-      url += "listOfProficiencyLevels=" + this.state.skillLevel;
+      url += "listOfProficiencyLevels=" + this.state.proficiencyLevel;
       previous = true;
     }
     if (this.state.danceCategory != "") {
@@ -131,9 +123,6 @@ class FilterRequest extends React.Component {
 
     //fetch requests from backend
     this.props.getRequests(url);
-    console.log(this.props.requests);
-
-
   };
 
 
@@ -143,20 +132,18 @@ class FilterRequest extends React.Component {
     //gender
     const gender = [
       { value: 'male', label: 'Male' },
-      { value: 'female', label: 'Female' }
+      { value: 'female', label: 'Female'},
+        { value: 'other', label: 'Other'},
     ];
 
-    // Age - slider
+    // Age - slider //TODO: add age slider
 
 
     // Skill level
-    const skillLevelNew = [
+    const proficiencyLevels = [
       { value: 'beginner', label: 'Beginner' },
-      { value: 'bronze', label: 'Bronze' },
-      { value: 'silver', label: 'Silver' },
-      { value: 'gold', label: 'Gold' },
-      { value: 'pre-tournament1', label: 'Pre-Tournament 1' },
-      { value: 'pre-tournament2', label: 'Pre-Tournament 2' },
+      { value: 'intermediate', label: 'Intermediate' },
+      { value: 'advanced', label: 'Advanced' },
     ];
 
     // City - input + autofill
@@ -217,7 +204,7 @@ class FilterRequest extends React.Component {
       <form onSubmit={this.submitFilter}>
         <h4>Filter Requests</h4>
 
-        {/*Gender Type // TODO: clear unspecified*/}
+        {/*Gender Type // TODO (optional): clear unspecified*/}
         <div className="form-group">
         <label> I am looking for a... </label>
         <Select
@@ -234,30 +221,8 @@ class FilterRequest extends React.Component {
         </div>
 
         {/*Age Slider */}
-        {/*TODO and change.. just trying out code
-        <div className="form-group">
-          <Form>
-            <Form.Group controlId="formBasicRangeCustom">
-              <Form.Label>In the age range of...</Form.Label>
-              <Form.Control type="range" custom />
-            </Form.Group>
-          </Form>
-
-          <label>Age Offset</label>
-          <input type="range" className="custom-range" id="ageOffset" name="ageOffset"
-                 min="0" max="100" step="5"
-                 value={this.state.ageOffset}
-                 onChange={this.onChange} />
-          <input type="range" className="custom-range" id="ageOffset" name="ageOffset"
-                 min="0" max="100" step="5"
-                 value={this.state.ageOffset}
-                 onChange={this.onChange} />
-
-          <input data-role="doubleslider" data-accuracy="5" data-hint-always="true"
-                 data-min={this.state.ageOffsetMin} data-max={this.state.ageOffsetMax}
-                 onChange={this.onChangeSlider}/>
-
-        </div>*/}
+        {/*TODO add
+        */}
 
 
         {/*Skill-Level Type */}
@@ -266,13 +231,13 @@ class FilterRequest extends React.Component {
           <Select
               className="basic-single"
               classNamePrefix="select"
-              defaultValue={this.state.skillLevel}
-              placeholder={"All skill levels..."}
+              defaultValue={this.state.proficiencyLevel}
+              placeholder={"All proficiency levels..."}
               isClearable={true}
               isSearchable={true}
               onChange={this.handleChange}
-              name="skillLevel"
-              options={skillLevelNew}
+              name="proficiencyLevel"
+              options={proficiencyLevels}
           />
         </div>
 

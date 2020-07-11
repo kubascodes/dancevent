@@ -16,13 +16,34 @@ const PartnerRequestSchema  = new mongoose.Schema({
     }], //array of genders strings
     listOfProficiencyLevels: [{
       type: String,
-      enum: ['beginner', 'bronze', 'silver', 'gold', 'pre-tournament 1', 'pre-tournament 2'],
+      enum: ["beginner", "intermediate", "advanced"],
       default: 'beginner',
       required: true
     }], //array of proficiency levels strings
     listOfDanceStyles: [{
         type: String,
-        enum: ['latin','standard', 'various','jive', 'rumba', 'chaChaCha', 'samba', 'pasoDoble',  'bolero','mambo', 'eastCostSwing', 'waltz',  'vienneseWaltz', 'tango', 'foxtrot', 'qickstep','salsa', 'bachata', 'westCostSwing','hustle'],
+        enum: [
+            "latin",
+            "cha-cha-cha",
+            "samba",
+            "jive",
+            "paso doble",
+            "boldero",
+            "rumba",
+            "mambo",
+            "east coast swing",
+            "standard",
+            "waltz",
+            "viennese waltz",
+            "tango",
+            "foxtrot",
+            "quickstep",
+            "hustle",
+            "west coast swing",
+            "salsa",
+            "bachata",
+            "various",
+        ],
         default: 'standard',
         required: false
     }],
