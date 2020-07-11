@@ -93,12 +93,7 @@ router.get("/users/:id", (req, res, next) => {
   });
 });
 
-//access login form
-router.get("/login", function (req, res) {
-  res.send("Welcome to the user's login page");
-});
-
-//User Login
+//User Login Route
 router.post("/login", (req, res, next) => {
   passport.authenticate("login", async (error, user, info) => {
     try {
@@ -112,12 +107,19 @@ router.post("/login", (req, res, next) => {
         //user password in the token so we pick only the email and id
         const body = {
           _id: user._id,
-          email: user.email,
+          email: user.email
         };
         //Sign the JWT token and populate the payload with the user email and id
         const token = await jwt.sign({ user: body }, config.JwtSecret);
         //Send back the token to the user
-        return res.json({ token: token, email: body.email });
+        const response = {
+          name: user.name,
+          email: user.email,
+          picture: user.picture,
+          userType: user.userType,
+          token: token
+        }
+        return res.json(response);
       });
     } catch (error) {
       return next(error);
@@ -145,7 +147,14 @@ router.post("/register/organizer", async (req, res) => {
     //sign the JWT token and populate the payload with the user email and id
     const token = await jwt.sign({ user: body }, config.JwtSecret);
     //return the token to the user (redirect to homepage will happen on the client);
-    return res.status(201).json({token: token, email: body.email});
+    const response = {
+      name: organizer.name,
+      email: organizer.email,
+      picture: organizer.picture,
+      userType: organizer.userType,
+      token: token
+    }
+    return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
       error: "Internal server error",
@@ -175,7 +184,14 @@ router.post("/register/dancer", async (req, res) => {
     //sign the JWT token and populate the payload with the user email and id
     const token = await jwt.sign({ user: body }, config.JwtSecret);
     //return the token to the user (redirect to homepage will happen on the client);
-    return res.status(201).json({token: token, email: body.email});
+    const response = {
+      name: dancer.name,
+      email: dancer.email,
+      picture: dancer.picture,
+      userType: dancer.userType,
+      token: token
+    }
+    return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
       error: "Internal server error",

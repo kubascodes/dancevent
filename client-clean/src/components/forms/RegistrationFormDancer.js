@@ -171,6 +171,22 @@ class RegistrationFormDancer extends React.Component {
         prefAgeMax: null,
         prefGender: null
       });
+
+      //populate login data
+      let data = {
+        login: true,
+        name: res.name,
+        email: res.email,
+        profilePicture: res.picture,
+        userType: res.userType,
+        secret_token: res.token
+      };
+
+      //call the app component and login the user
+      console.log(context);
+      console.log(context.props);
+      context.props.logIn(data);
+      
     })
     .catch(err => alert(err));
 
@@ -346,5 +362,4 @@ class RegistrationFormDancer extends React.Component {
 
 }
 
-//TODO: Check the context binding on -> export default RouteRedirect(RegistrationFormDancer);
-export default RegistrationFormDancer;
+export default RouteRedirect(RegistrationFormDancer);

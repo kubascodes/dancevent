@@ -56,18 +56,20 @@ class LoginForm extends React.Component {
           login: true,
           secret_token: res.token
         });
-        //populate login data
 
+        //populate login data
         let data = {
-          secret_token: res.token,
-          email: res.email,
           login: true,
+          name: res.name,
+          email: res.email,
+          profilePicture: res.picture,
+          userType: res.userType,
+          secret_token: res.token
         };
 
         //call the app component and login the user
         console.log(context);
         console.log(context.props);
-        console.log(context.props.test);
         context.props.logIn(data);
 
         //context.setState({isLoggedIn: true});
@@ -144,4 +146,5 @@ class LoginForm extends React.Component {
   }
 
 //TODO: Check the context binding on -> export default RouteRedirect(LoginForm);
-export default LoginForm;
+//export default LoginForm;
+export default RouteRedirect(LoginForm);

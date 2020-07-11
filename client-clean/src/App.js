@@ -24,7 +24,6 @@ export default class App extends Component {
       userType: null,
       profilePicture: null, //TODO
     };
-    this.logIn = this.logIn.bind(this);
   };
 
 
@@ -64,13 +63,17 @@ export default class App extends Component {
       .catch((err) => alert(err));
   };
 
-  logIn (data) {
+  logIn = (data) => {
     console.log("Log in function!");
     console.log(data);
     this.setState({
       secret_token: data.secret_token,
       email: data.email,
-      login: data.login
+      login: data.login,
+      name: data.name,
+      userType: data.userType,
+      profilePicture: data.profilePicture
+
     });
     //this.getUserData();
     console.log(this.state);
@@ -132,7 +135,7 @@ export default class App extends Component {
           <Route
             path="/register/organizer"
             render={(props) => (
-              <RegistrationFormOrganizer {...props} state={this.state} />
+              <RegistrationFormOrganizer {...props} logIn={this.logIn} state={this.state} />
             )}
           />
           <Route
@@ -144,7 +147,7 @@ export default class App extends Component {
             exact
             path="/register/dancer"
             render={(props) => (
-              <RegistrationFormDancer {...props} state={this.state} />
+              <RegistrationFormDancer {...props} logIn={this.logIn} state={this.state} />
             )}
           />
 

@@ -95,6 +95,4 @@ class Profile extends React.Component {
 
 }
 
-//making sure that the profile route is only available if you have a valid token
-//TODO: Check the context binding on -> export default RouteAuthentication(Profile);
-export default Profile;
+export default RouteAuthentication(Profile);

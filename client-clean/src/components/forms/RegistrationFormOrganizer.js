@@ -114,6 +114,22 @@ class RegistrationFormOrganizer extends React.Component {
         publicEmail: null,
         phone: null
       });
+
+      //populate login data
+      let data = {
+        login: true,
+        name: res.name,
+        email: res.email,
+        profilePicture: res.picture,
+        userType: res.userType,
+        secret_token: res.token
+      };
+
+      //call the app component and login the user
+      console.log(context);
+      console.log(context.props);
+      context.props.logIn(data);
+      
     })
     .catch(err => alert(err));
   };
@@ -187,5 +203,4 @@ class RegistrationFormOrganizer extends React.Component {
 
 }
 
-//TODO: Check the context binding on -> export default RouteRedirect(RegistrationFormOrganizer);
-export default RegistrationFormOrganizer;
+export default RouteRedirect(RegistrationFormOrganizer);
