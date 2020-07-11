@@ -218,7 +218,7 @@ class Event extends React.Component {
       <>
         {this.state.event.picture ? (
           <Image
-            src={`/${this.state.event.picture}`}
+            src={this.state.event.picture}
             alt={this.state.event.title}
             style={{
               objectFit: "cover",

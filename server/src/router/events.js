@@ -4,45 +4,11 @@ const express = require("express");
 const router = express.Router();
 const middlewares = require("../middlewares");
 const passport = require("passport");
-const multer = require("multer");
 const User = require("../models/user");
 const Organizer = require("../models/organizer");
 const Event = require("../models/event");
 const DanceCourse = require("../models/dancecourse");
 
-// ------------- Define Parameters to save images -------------
-//define where to store
-const storage = multer.diskStorage({
-  //define the relative folder
-  destination: function (req, file, cb) {
-    //null is the catch
-    cb(null, "./pictures/events/");
-  },
-  //define the filename
-  filename: function (req, file, cb) {
-    //filename is the userID + EventTitle
-    cb(null, req.user._id + "_" + req.body.title);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  //files can only be pictures with extensions .jpg and .png
-  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
-    //file will be stored on disk
-    cb(null, true);
-  } else {
-    //file will not be stored but also no catching
-    cb(null, false);
-  }
-};
-
-//define all previously set parameters to the multer
-const upload = multer({
-  storage: storage,
-  //max filesize
-  limits: { filesize: 1024 * 1024 * 5 },
-  fileFilter: fileFilter,
-});
 
 //   ---------Public event routes for viewing events---------
 
@@ -117,54 +83,6 @@ router.post(
         } else {
           newEvent = await Event.create(req.body);
         }
-        //old---add the event to the user (Organizer)
-        //old  await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
-
-        //return the new Event with status Code: 201 - Created
-        return res.status(201).json(newEvent);
-      } else {
-        //403 -> Forbidden request  (user did not have the right to post events)
-        res.status(403).json({
-          error: "Current user is not an Oranizer",
-        });
-      }
-    } catch (error) {
-      return res.status(500).json({
-        error: "Internal server error",
-        message: error.message,
-      });
-    }
-  }
-);
-
-//1. Create a new event with picture
-//after authentication the multer middleware is called which save the picture to the filesystem
-router.post(
-  "/pic",
-  passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
-  upload.single("picture"),
-  async (req, res, next) => {
-    try {
-      console.log(req.file);
-
-      //get user to check if it is an organizer (authentication)
-      let user = await User.findById(req.user._id).exec();
-      if (user && user.userType == "Organizer") {
-        //add the user as foreign key to the event
-        req.body["organizer"] = user._id;
-        //add picture path to the event
-        req.body["picture"] = req.file.path;
-
-        //Save the event to the database
-        let newEvent = null;
-        if (req.body["type"] === "course") {
-          newEvent = await DanceCourse.create(req.body);
-        } else {
-          newEvent = await Event.create(req.body);
-        }
-
-        //old---add the event to the user (Organizer)
-        //old  await Organizer.updateOne( { _id: req.user._id}, { $push: { events: newEvent._id } } );
 
         //return the new Event with status Code: 201 - Created
         return res.status(201).json(newEvent);
@@ -189,13 +107,14 @@ router.put(
   passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   async (req, res, next) => {
     try {
-      //here we want to update an existing event
-      //TODO: check the user who must be an organizer and must own the event
       
+      //get Event ID from URL Param
       const uid = req.params.id
+      //get the event
       let event = await Event.findById(uid).exec();
-      
+      //Check if Event is owned by the Organizer (got from JWT Token)
       if(event && event.organizer == req.user._id){
+        //update event with the body
         var updatedEvent = await Event.findByIdAndUpdate(uid, req.body);
         return res.status(201).json(updatedEvent);
       }else{

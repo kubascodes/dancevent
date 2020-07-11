@@ -21,7 +21,7 @@ const EventSchema = new mongoose.Schema(
     city: { type: String, required: true },
     location: { type: String, required: true },
     //picture: { type: String, required: false }, //relative filepath. Possible to fetch picture with path
-    picture: { type: Buffer, required: false },
+    picture: { type: String, required: false },
     listOfDanceStyles: [
       {
         type: String,
