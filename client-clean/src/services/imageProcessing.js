@@ -10,6 +10,7 @@ function ProcessImage (image, imageUrl) {
                   image.resize(Jimp.AUTO, 400)
                   .quality(70)
                   .getBase64(Jimp.MIME_JPEG, function (err, result) {
+                    console.log(result);
                     resolve(result);
                 });})
                 .catch(function (err) {

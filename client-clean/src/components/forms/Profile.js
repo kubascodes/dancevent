@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect } from 'react-router-dom';
+import RouteAuthentication from '../../services/RouteAuthentication';
 
 //TODO we'd want to use composition to define forms
 //1. Form Component
@@ -20,7 +21,7 @@ class Profile extends React.Component {
   }
 
   getUserData() {
-    const component_scope = this; //binding this context to the current component
+    const context = this; //binding context to current this context
     fetch('/profile', {
       method: 'POST',
       headers: {
@@ -31,8 +32,8 @@ class Profile extends React.Component {
     .then(res => res.json(res))
     .then(function(res){
       console.log(res);
-      component_scope.setState({user: res});
-      component_scope.setState({loaded: true});
+      context.setState({user: res});
+      context.setState({loaded: true});
     })
     .catch(err => alert(err));
 
@@ -94,4 +95,6 @@ class Profile extends React.Component {
 
 }
 
-export default Profile
+//making sure that the profile route is only available if you have a valid token
+//TODO: Check the context binding on -> export default RouteAuthentication(Profile);
+export default Profile;

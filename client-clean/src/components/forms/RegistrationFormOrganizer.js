@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import ProcessImage from '../../services/imageProcessing';
+import RouteRedirect from '../../services/RouteRedirect';
 
 class RegistrationFormOrganizer extends React.Component {
 
@@ -36,14 +37,14 @@ class RegistrationFormOrganizer extends React.Component {
     if (event.target.files[0]) {
       let file = event.target.files[0];
       let fileUrl = URL.createObjectURL(file);
-      let component_scope = this;
+      let context = this;
       //defining the function
-      async function processImage(file, fileUrl, component_scope) {
+      async function processImage(file, fileUrl, context) {
         console.log(file);
         try {
           let image = await ProcessImage(file, fileUrl);
-          component_scope.setState({ picture: image });
-          console.log(component_scope.state);
+          context.setState({ picture: image });
+          console.log(context.state);
         }
         catch (error) {
           alert(error);
@@ -51,12 +52,30 @@ class RegistrationFormOrganizer extends React.Component {
       };
 
       //calling the function
-      processImage(file, fileUrl, component_scope);
+      processImage(file, fileUrl, context);
     }
 
   };
 
-  registerUser = (event) => {
+  formCleaning = async () => {
+    //form inputs we want to upload
+    let keys = ["name", "email", "password", "city", "picture", "gender", "street", "description", "publicEmail", "phone"];
+    //output object
+    let output = {};
+    //loop over the inputs
+    for (let i = 0; i < keys.length; i++) {
+      let key = keys[i];
+      //checking if the input is null, empty, undefined, NaN, false, 0
+      if (this.state[key]) {
+        //if it's not empty, then save the non-null property to output object
+        output[key] = this.state[key];
+      }
+    }
+    //return non-null values
+    return output;
+  };
+
+  registerUser = async (event) => {
     //prevent default behavior
     event.preventDefault();
 
@@ -64,7 +83,10 @@ class RegistrationFormOrganizer extends React.Component {
     if (!this.state.email || !this.state.password) return;
 
     //saving the component scope
-    var component_scope = this;
+    var context = this;
+
+    //deleting null values
+    let form = await this.formCleaning();
 
     //post to organizer's registration api
     fetch('/register/organizer', {
@@ -72,27 +94,14 @@ class RegistrationFormOrganizer extends React.Component {
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
-      body: JSON.stringify({
-        //user schema attributes
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
-        city: this.state.city,
-        picture: this.state.picture,
-        //organizer schema attributes
-        street: this.state.street,
-        description: this.state.description,
-        publicEmail: this.state.publicEmail,
-        phone: this.state.phone
-      },
-      ),
+      body: JSON.stringify(form),
     }) //create a get request which is a Promise
     .then(res => res.json(res))
     .then(function(res){
       //console.log("Logging Response");
       console.log(res);
       document.getElementById("RegistrationFormOrganizer").reset();
-      component_scope.setState({
+      context.setState({
         //user schema attributes
         name: null,
         email: null,
@@ -178,4 +187,5 @@ class RegistrationFormOrganizer extends React.Component {
 
 }
 
-export default RegistrationFormOrganizer
+//TODO: Check the context binding on -> export default RouteRedirect(RegistrationFormOrganizer);
+export default RegistrationFormOrganizer;
