@@ -125,8 +125,6 @@ class CreateRequest extends React.Component {
             //events: this.state.events, // TODO: needs event link and populate in backend?
         };
 
-        console.log(newRequest);
-
         var secret_token = window.sessionStorage.secret_token;
 
         fetch('/createrequest', {
@@ -137,7 +135,7 @@ class CreateRequest extends React.Component {
             },
             body: JSON.stringify(newRequest)
         }).then(res => res.json()).then(res => {
-            if (res) { // TODO: make sure they are really cleared (not just in the state.. also visible for the user)
+            if (res) {
                 this.handleCancel();
             }
         })
@@ -154,7 +152,6 @@ class CreateRequest extends React.Component {
         })
             .then(res => res.json(res))
             .then(function (res) {
-                console.log(res);
                 component_scope.setState({
                     user: res,
                     prefGender: res.prefGender,
@@ -167,7 +164,9 @@ class CreateRequest extends React.Component {
     }
 
     componentDidMount() {
-        this.getUserData()
+        if(window.sessionStorage.secret_token != null) {
+            this.getUserData()
+        }
     }
 
     render() {
