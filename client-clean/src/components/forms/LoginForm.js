@@ -1,17 +1,22 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
+import RouteRedirect from "../../services/RouteRedirect";
 
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false,
+      secret_token: null,
+      login: false,
       email: null,
       password: null,
-      token: null,
     };
-  }
-  onChange = (event) => {
+    //binding events to the component context
+    this.userLogin = this.userLogin.bind(this);
+    this.onChange = this.onChange.bind(this);
+  };
+
+  onChange (event) {
     /*
           Because we named the inputs to match their
           corresponding values in state, it's
@@ -21,17 +26,13 @@ class LoginForm extends React.Component {
     console.log(this.state);
   };
 
-  userLogin = (event) => {
+  userLogin (event) {
     event.preventDefault();
     if (!this.state.email || !this.state.password) return;
-    /*
-    fetch('/login', { email: 'test@test.com', password: 'testing' }) //create a get request which is a Promise
-    .then(function(data){
-      console.log(data)
-    }).catch(err => console.log(err))
-    */
 
-    var component_scope = this;
+    //saving the current component context
+    let context = this;
+    console.log(context);
 
     fetch("/login", {
       method: "POST",
@@ -47,27 +48,29 @@ class LoginForm extends React.Component {
       .then(function (res) {
         //store the token in the browser's session storage
         window.sessionStorage.setItem("secret_token", res.token);
-
-        //console.log(res.token);
-        //this.setState({ secret_token: res.token});
-        //var token = res.token;
-        //setting the app's token to secret_token
-        //component_scope.props.auth_token(token);
-        //component_scope.setState({token: token});
-        //alert("Data uploaded!");
-        //console.log(res);
+        //reset the login form -> TODO: Maybe a react unmount?
         document.getElementById("loginForm").reset();
-        component_scope.setState({
+        context.setState({
           password: null,
-          email: null,
+          email: res.email,
+          login: true,
+          secret_token: res.token
         });
-        var data = {
-          token: res.token,
+        //populate login data
+
+        let data = {
+          secret_token: res.token,
           email: res.email,
           login: true,
         };
-        component_scope.props.logIn(data);
-        //component_scope.setState({isLoggedIn: true});
+
+        //call the app component and login the user
+        console.log(context);
+        console.log(context.props);
+        console.log(context.props.test);
+        context.props.logIn(data);
+
+        //context.setState({isLoggedIn: true});
         //this.forceUpdate();
       })
       .catch((err) => alert(err));
@@ -99,11 +102,6 @@ class LoginForm extends React.Component {
   }
 */
   render() {
-    /*Logged In*/
-    if (window.sessionStorage.secret_token != null) {
-      return <Redirect to="/" />;
-    } else {
-      /*Not Logged In*/
       return (
         <div className="container loginForm" className="loginForm">
           <div id="img-homepage"></div>
@@ -144,6 +142,6 @@ class LoginForm extends React.Component {
       );
     }
   }
-}
 
+//TODO: Check the context binding on -> export default RouteRedirect(LoginForm);
 export default LoginForm;

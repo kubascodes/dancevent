@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema(
     },
     name: { type: String, required: true },
     city: { type: String, required: true },
-    picture: { type: Buffer, required: false },
+    picture: { type: String, required: false }, //base64 image check it's a string not a buffer
     interestedInEvents: [
       { type: mongoose.Schema.Types.ObjectId, ref: "event", required: false },
     ], // List of events the user is interested in, to be filled with update requests

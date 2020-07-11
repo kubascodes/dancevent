@@ -98,16 +98,6 @@ router.get("/login", function (req, res) {
   res.send("Welcome to the user's login page");
 });
 
-//access organizer registration form
-router.get("/register/organizer", function (req, res) {
-  res.send("Welcome to the organizer registration page");
-});
-
-//access dancer registration form
-router.get("/register/dancer", function (req, res) {
-  res.send("Welcome to the dancer registration page");
-});
-
 //User Login
 router.post("/login", (req, res, next) => {
   passport.authenticate("login", async (error, user, info) => {
@@ -125,7 +115,7 @@ router.post("/login", (req, res, next) => {
           email: user.email,
         };
         //Sign the JWT token and populate the payload with the user email and id
-        const token = jwt.sign({ user: body }, config.JwtSecret);
+        const token = await jwt.sign({ user: body }, config.JwtSecret);
         //Send back the token to the user
         return res.json({ token: token, email: body.email });
       });
@@ -145,8 +135,17 @@ router.post("/register/organizer", async (req, res) => {
     });
 
   try {
+    //create a new organizer
     let organizer = await Organizer.create(req.body);
-    return res.status(201).json(organizer);
+    //populate the body request for the JWT token issuing with the newly created organizer
+    const body = {
+      _id: organizer._id,
+      email: organizer.email
+    };
+    //sign the JWT token and populate the payload with the user email and id
+    const token = await jwt.sign({ user: body }, config.JwtSecret);
+    //return the token to the user (redirect to homepage will happen on the client);
+    return res.status(201).json({token: token, email: body.email});
   } catch (error) {
     return res.status(500).json({
       error: "Internal server error",
@@ -166,8 +165,17 @@ router.post("/register/dancer", async (req, res) => {
     });
 
   try {
+    //create a new dancer
     let dancer = await Dancer.create(req.body);
-    return res.status(201).json(dancer);
+    //populate the body request for the JWT token issuing with the newly created dancer
+    const body = {
+      _id: dancer._id,
+      email: dancer.email
+    };
+    //sign the JWT token and populate the payload with the user email and id
+    const token = await jwt.sign({ user: body }, config.JwtSecret);
+    //return the token to the user (redirect to homepage will happen on the client);
+    return res.status(201).json({token: token, email: body.email});
   } catch (error) {
     return res.status(500).json({
       error: "Internal server error",
