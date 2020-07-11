@@ -9,17 +9,6 @@ class FindDancePartnerView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // TODO: Dancer connection, Event Connection
-      dancerId: {}, //Dancer name and details needed
-      eventList: [],
-      requestDescription: null,
-      ageOffset: null,
-      prefGender: null,
-      proficiencyLevel: [],
-      city: null,
-      date: null, //+timestamp of request?
-      togglePopup: false,
-      sorting: "date",
       requests: [],
     };
   }
@@ -28,13 +17,6 @@ class FindDancePartnerView extends React.Component {
     /* The function call is in the buildup and loads all the requests */
     this.getRequests(window.location.pathname);
     console.log(this.state.requests);
-    /*fetch("/dancepartner")
-        .then((res) => res.json())
-        .then((resp) => {
-          console.log(resp);
-          this.setState({ requests: resp });
-        })
-        .catch(console.log);*/
   }
 
 
@@ -77,14 +59,11 @@ class FindDancePartnerView extends React.Component {
         body: JSON.stringify({id: requestId})
       })
           .then((res) => res.json(res))
-          .then(function (res) {
-            console.log(res);
-          })
           .catch((err) => alert(err));
     }catch(err){
       console.log(err);
     }
-    //this.getRequests();
+
     this.getRequests(window.location.pathname);
   }
 
@@ -96,7 +75,6 @@ class FindDancePartnerView extends React.Component {
     this.setState({
       requests,
     });
-    console.log("filteres requests" + requests);
   };
 
 
