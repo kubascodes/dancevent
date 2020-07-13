@@ -21,10 +21,26 @@ class RequestForm extends React.Component {
         this.setState({ showModal: true });
     };
 
+    calculate_age = (yearOfBrith) => {
+
+        var today = new Date();
+        var todayNum = Number(today.getFullYear());
+        //var birthDate = new Date(yearOfBrith); // left, if we decide to change saving the exact birth date.
+        var age_now = today.getFullYear() - yearOfBrith; //birthDate.getFullYear();
+        console.log(age_now);
+        return age_now;
+    }
+
 
 
     render() {
         const request = this.props.request;
+        const requestDanceStyles = request.listOfDanceStyles ? (
+            request.listOfDanceStyles.map((style) =>
+            <li>{style}</li>
+        )
+    ) : (<li> You have not entered any dance styles.</li>
+    );
 
         // Contact Email popover as this is implemented later if there isstill time
         const popover = (
@@ -71,7 +87,7 @@ class RequestForm extends React.Component {
                         {/* Requesting User - Age Information*/}
                         <Row>
                             <Col > <label>My age...</label> </Col>
-                            <Col> <label>{request.dancerId.yearOfBirth} </label></Col>
+                            <Col> <label>{this.calculate_age(request.dancerId.yearOfBirth)} </label></Col>
                         </Row>
 
                         {/* Requesting User - Height Information*/}
@@ -120,7 +136,9 @@ class RequestForm extends React.Component {
 
                         <Row>
                             <Col > <label>To dance...</label> </Col>
-                            <Col> <label>{request.listOfDanceStyles}</label></Col>
+                            <Col>
+                                <ul>{requestDanceStyles} </ul>
+                            </Col>
                         </Row>
 
                         {/* City - Event*/}

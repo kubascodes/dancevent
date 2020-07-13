@@ -51,7 +51,6 @@ export default class App extends Component {
     })
       .then((res) => res.json(res))
       .then(function (res) {
-        console.log(res);
         context.setState({
           secret_token: window.sessionStorage.secret_token,
           login: true,
@@ -211,7 +210,7 @@ export default class App extends Component {
             exact
             path="/createrequest"
             render={(props) => (
-            <CreateRequest {...props} state={this.state} auth_token={this.secret_token} />
+            <CreateRequest {...props}  auth_token={this.secret_token} />
             )}
             />
         </div>

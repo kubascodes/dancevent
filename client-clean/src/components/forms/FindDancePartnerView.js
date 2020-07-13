@@ -21,16 +21,13 @@ class FindDancePartnerView extends React.Component {
 
 
   getRequests = (url) => {
-  //getRequests = () => {
     /* fetches all requests from the backend*/
-    var secret_token = window.sessionStorage.secret_token;
 
     fetch(url, {
-    //fetch("/dancepartner/request", {
       method: "GET",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        Authorization: "Bearer " + secret_token,
+        Authorization: "Bearer " + window.sessionStorage.secret_token,
       },
     })
       .then((res) => res.json(res))
