@@ -187,11 +187,12 @@ class CreateRequest extends React.Component {
         })
             .then(res => res.json(res))
             .then(function (res) {
+                console.log(res);
                 component_scope.setState({
-                    user: res.user,
-                    prefGender: res.user.prefGender,
-                    prefAgeMin: res.user.prefAgeMin,
-                    prefAgeMax: res.user.prefAgeMax
+                    user: res,
+                    prefGender: res.prefGender,
+                    prefAgeMin: res.prefAgeMin,
+                    prefAgeMax: res.prefAgeMax
                 });
             })
             .catch(err => alert(err));

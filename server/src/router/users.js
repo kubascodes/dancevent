@@ -63,13 +63,12 @@ router.get(
       /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
       try {
         let user = await User.findOne({ _id: req.user._id });
-        //setting the response object
-        let response = {};
 
         //Removing sensitive properties from user
         user.password = null;
         user._id = null;
         user.__v = null;
+        console.log(user);
         return res.status(200).json(user)
       } catch (error) {
         return res.status(500).json({
