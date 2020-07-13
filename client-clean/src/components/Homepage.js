@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
 import HomepageBanner from "./HomepageBanner";
-import EventCard from "./EventCard";
+import EventCard from "./parts/EventCard";
 import Container from "react-bootstrap/Container";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -175,8 +175,8 @@ class Homepage extends React.Component {
                   })}
                 </Row>
                 <Button
-                  variant="outline-dark"
-                  size="lg"
+                  className="button-pink"
+                  size="md"
                   block
                   onClick={() => this.setState({ redirect: "/events/create" })}
                 >
@@ -211,17 +211,17 @@ class Homepage extends React.Component {
               <Col className="col">
                 {this.state.savedEvents.length > 0 ? (
                   <Button
-                    variant="outline-dark"
-                    size="lg"
+                    className="button-pink"
+                    size="md"
                     block
                     onClick={() => this.setState({ redirect: "/myevents" })}
                   >
                     Go to <i>My Events</i>
-                  </Button>
+                  </Button >
                 ) : (
                   <Button
-                    variant="outline-dark"
-                    size="lg"
+                    className="button-pink"
+                    size="md"
                     block
                     onClick={() => this.setState({ redirect: "/events" })}
                   >

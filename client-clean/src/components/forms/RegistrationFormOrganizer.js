@@ -29,7 +29,7 @@ class RegistrationFormOrganizer extends React.Component {
 
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
-        console.log(this.state);
+        //console.log(this.state);
   };
 
   onChangeFile = (event) => {
@@ -40,11 +40,11 @@ class RegistrationFormOrganizer extends React.Component {
       let context = this;
       //defining the function
       async function processImage(file, fileUrl, context) {
-        console.log(file);
+        //console.log(file);
         try {
           let image = await ProcessImage(file, fileUrl);
           context.setState({ picture: image });
-          console.log(context.state);
+          //console.log(context.state);
         }
         catch (error) {
           alert(error);
@@ -99,7 +99,7 @@ class RegistrationFormOrganizer extends React.Component {
     .then(res => res.json(res))
     .then(function(res){
       //console.log("Logging Response");
-      console.log(res);
+      //console.log(res);
       document.getElementById("RegistrationFormOrganizer").reset();
       context.setState({
         //user schema attributes
@@ -126,18 +126,11 @@ class RegistrationFormOrganizer extends React.Component {
       };
 
       //call the app component and login the user
-      console.log(context);
-      console.log(context.props);
       context.props.logIn(data);
-      
+
     })
     .catch(err => alert(err));
   };
-
-  dataToParent (data) {
-    //console.log(data);
-    this.props.auth(data);
-  }
 
 
   render() {

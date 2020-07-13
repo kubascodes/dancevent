@@ -48,12 +48,12 @@ class RegistrationFormDancer extends React.Component {
       let context = this;
       //defining the function
       async function processImage(file, fileUrl, context) {
-        console.log(file);
+        //console.log(file);
         try {
           let image = await ProcessImage(file, fileUrl);
           context.setState({ picture: image });
-          console.log(context.state.picture);
-          console.log(context.state);
+          //console.log(context.state.picture);
+          //console.log(context.state);
         }
         catch (error) {
           alert(error);
@@ -96,12 +96,12 @@ class RegistrationFormDancer extends React.Component {
     if (checked.length == 1) {
       //store as a string if only 1 preference
       this.setState({ [checkboxName]: checked[0] });
-      console.log(this.state);
+      //console.log(this.state);
     }
     else if (checked.length > 1) {
       //store as an array if multiple preferences
       this.setState({ [checkboxName]: checked });
-      console.log(this.state);
+      //console.log(this.state);
     }
 
   };
@@ -121,8 +121,8 @@ class RegistrationFormDancer extends React.Component {
       }
     }
     //return non-null values
-    console.log("Output form cleaning");
-    console.log(output);
+    //console.log("Output form cleaning");
+    //console.log(output);
     return output;
   };
 
@@ -183,10 +183,10 @@ class RegistrationFormDancer extends React.Component {
       };
 
       //call the app component and login the user
-      console.log(context);
-      console.log(context.props);
+      //console.log(context);
+      //console.log(context.props);
       context.props.logIn(data);
-      
+
     })
     .catch(err => alert(err));
 

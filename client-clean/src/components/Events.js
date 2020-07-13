@@ -2,7 +2,7 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import EventCard from "./EventCard";
+import EventCard from "./parts/EventCard";
 
 /*
     TODOs:
@@ -90,10 +90,10 @@ class Events extends React.Component {
 
   submitFilter = (event) => {
     /*
-        This Method is the called if the user want to update 
+        This Method is the called if the user want to update
         the events based on the set filters
-        It checks if a option is not in the general case and 
-        then adds it to the URL 
+        It checks if a option is not in the general case and
+        then adds it to the URL
         */
 
     //otherwise it would reload the Page

@@ -1,0 +1,58 @@
+.label-bold {
+  font-weight: 700 !important;
+}
+.pink {
+  color: #ffbbbb;
+}
+.border-pink {
+  border: 2px solid #ffbbbb;
+}
+.border-bottom-pink {
+  border-bottom: 1px solid #ffbbbb;
+}
+.button-pink {
+  border: 1px solid #ffbbbb;
+  background-color: #ffffff;
+  color: black;
+}
+.button-pink:hover, .button-pink:focus, .button-pink:active {
+  border: 1px solid #ffbbbb;
+  background-color: #ffbbbb;
+  color: #ffffff;
+}
+.profile-margin {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+/*CARDS in Profile*/
+.event-card {
+  margin: 0.5rem;
+}
+/*crop images*/
+.crop-box {
+  height: 250px;
+  width: 100%;
+}
+.crop-to-fit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+#crop-avatar img {
+  display: flex;
+  width: 150px;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.card-img-top {
+  flex-shrink: 0;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+}
+ .card {
+  height: 100%;
+}

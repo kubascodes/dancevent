@@ -1,6 +1,7 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
 import RouteRedirect from "../../services/RouteRedirect";
+import { Link } from "react-router-dom";
+
 
 class LoginForm extends React.Component {
   constructor(props) {
@@ -132,7 +133,7 @@ class LoginForm extends React.Component {
               />
             </div>
 
-            <div className="form-group col-sm-12 center">
+            <div className="form-group">
               <input
                 type="submit"
                 className="btn btn-outline-dark"
@@ -140,7 +141,23 @@ class LoginForm extends React.Component {
               />
             </div>
           </form>
+          <div className="text-center">
+          <li className="list-unstyled mb-1">Don't have an account with us?</li>
+            <li className="list-unstyled mb-1">
+            <Link
+              className="font-weight-bolder text-body text-decoration-none"
+              to="/register/dancer"
+            >Register as a Dancer </Link>
+            to find dance partners and events.</li>
+            <li className="list-unstyled mb-1">
+            <Link
+              className="font-weight-bolder text-body text-decoration-none"
+              to="/register/organizer"
+            >Register as an Organizer </Link>
+            to post events with us.</li>
+            </div>
         </div>
+
       );
     }
   }
