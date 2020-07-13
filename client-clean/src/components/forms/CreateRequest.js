@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Container, Modal, Row} from "react-bootstrap";
+import {Button, Col, Container, Modal, Overlay, Popover, Row} from "react-bootstrap";
 import Select from 'react-select';
 import {Link} from "react-router-dom";
 
@@ -11,16 +11,20 @@ class CreateRequest extends React.Component {
         this.state = {
             user: null,
             // Looking for information
-            prefGender: null,
+            prefGender: "",
             prefAgeMin: 20,
-            prefAgeMax: 50,
-            prefProficiencyLevel: null,
+            prefAgeMax: 30,
+            prefProficiencyLevel: "",
             description: "",
             // Event info
             danceCategory: [],
             danceStyle: null,
             events: null, // TODO: not used at the moment => add if needed or delete
             showModal: false,
+            validDescription: true, // checks if the required values are available and if not,
+            validSelect: true,
+            showPopover: false,
+            targetPopover: null
         };
     }
 
@@ -28,12 +32,14 @@ class CreateRequest extends React.Component {
         /* this function is called, 1. when the modal is canceled and 2. when the request is submitted to reset the changes and close the modal*/
         this.setState({
             danceCategory: [],
-            prefProficiencyLevel: null,
-            description: null,
+            prefProficiencyLevel: "",
+            description: "",
             // Event info
             danceStyle: null,
             events: null,
             showModal: false,
+            validDescription: true,
+            validSelect: true
         });
 
         var user = this.state.user;
@@ -62,9 +68,10 @@ class CreateRequest extends React.Component {
 
     onChange = (e) => {
         /*this function handles the change of the input fields*/
-        e.preventDefault();
+       e.preventDefault();
 
         var allow = true;
+        // check that the min in not bigger than the max and the other way around
         if (e.target.name == "prefAgeMin") {
             if (e.target.value >= this.state.prefAgeMax) {
                 allow = false;
@@ -74,44 +81,80 @@ class CreateRequest extends React.Component {
             if (e.target.value <= this.state.prefAgeMin) {
                 allow = false;
             }
-        }
+        };
+
+        // if a desciption is enered set the validation true
+        if(e.target.name == "description"){
+            this.setState({validDescription: true});
+        };
+
         if (allow) {
-            this.setState({
-                [e.target.name]: e.target.value
-            });
-        }
+            this.setState({[e.target.name]: e.target.value});
+        };
     }
 
-    handleChange = (selectedOption, action) => {
+    handleSelect = (selectedOption, action) => {
         /* this function handles the interaction of the selection component that is like a drop down */
 
         this.setState({
             [action.name]: selectedOption ? selectedOption.value : ""
         });
         if (action.name == 'danceCategory') {
-            this.setState({
-                danceStyle: ''
-            })
-        }
+            this.setState({danceStyle: ''});
+        };
     }
 
-    handleChangeMSelect = (danceStyle) => {
+    handleMultiSelect = (danceStyle) => {
         /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
         this.setState({danceStyle});
     }
 
-    submitRequest = (e) => {
-        /*submits the request, by changing the values and calling the createRequestPost to add it to the backend*/
+    colorMissingSelectRed = () => {
+
+    }
+
+    handleSubmit = (e) => {
+        /*check the request, if every required value is entered call submitRequest to send it to the backend otherwise */
         e.preventDefault();
 
-        // adding the dance category and the values of the styles (saved as [{value, label}]) together as one to send to the backend
-        // TODO: fix dance style below.. problem: what if only dance category selected
+        // TODO check if event is linked
+        // check if required values are entered
+        if(this.state.user != null && this.props.state.email != "" && this.state.prefProficiencyLevel != "" && this.state.prefGender != "" && this.state.description != ""){
+            this.submitRequest();
+        }
+        else {
+            this.setState({
+                targetPopover: e.target,
+                showPopover: true
+            });
 
+            if(this.state.prefGender == "" || this.state.prefProficiencyLevel == ""){
+                console.log("gender or skill null: FALSE");
+                this.setState({validSelect: false});
+            };
+
+            if(this.state.description == ""){
+                console.log("description null: FALSE");
+                this.setState({
+                    validDescription: false
+                });
+            };
+            if(this.state.user == null ||this.props.state.email == null){
+                console.log("dancerId or email missing! Some ERROR! check both values and the token");
+            };
+
+        };
+    }
+
+
+    submitRequest = () => {
+        /*submits the request, by calling the createRequestPost to add it to the backend*/
+
+        // adding the dance category and the values of the styles (saved as [{value, label}]) together as one to send to the backend
         const danceStyle = this.state.danceStyle ? (this.state.danceStyle.map(style => style.value).concat(this.state.danceCategory)) : (this.state.danceCategory);
 
+        // TODO: fix dance style below.. problem: what if only dance category selected
         // create request body
-        //TODO: email from props
-        //TODO: change values
         var newRequest = {
             description: this.state.description,
             prefAgeMin: this.state.prefAgeMin,
@@ -182,6 +225,8 @@ class CreateRequest extends React.Component {
         return age_now;
     }
 
+
+
     render() {
 
         //gender
@@ -232,6 +277,29 @@ class CreateRequest extends React.Component {
         const danceStyle = this.state.danceStyle;
         const user = this.state.user;
 
+        // ERROR handling if required value is missing
+        // sets the colors red if nothing is selected in the submit
+        //color of the selects, when not entered
+        const customStyle = this.state.validSelect ? ({
+            placeholder: (defaultStyles) => {
+                return {
+                    ...defaultStyles,
+                }}}) : ({
+            placeholder: (defaultStyles) => {
+                return {
+                    ...defaultStyles,
+                    color: '#dc2029',
+                }}});
+        //color the textarea if not entered a text
+        //TODO: check border color of select if changed: need to be changed here as well
+        const customColor = this.state.validDescription ? ({"border-color":"#ccc"}) : ({"border-color":"#dc2029"});
+        // Contact Email popover as this is implemented later if there isstill time
+        /*const popover = (
+            <Popover id="popover-basic">
+                <Popover.Content> Please entered your preffered gender, proficiency level and the description of the request, to continue.</Popover.Content>
+            </Popover>
+        );*/
+
 
         //when logged in display requests
         if (window.sessionStorage.secret_token != null) {
@@ -260,7 +328,7 @@ class CreateRequest extends React.Component {
                         </Modal.Header>
                         <Modal.Body>
                             <Container fluid>
-                                <form onSubmit={this.submitRequest}>
+                                <form onSubmit={this.handleSubmit}>
 
                                     {/* User-Age Information*/}
                                     <Row>
@@ -305,11 +373,12 @@ class CreateRequest extends React.Component {
                                                 <Select
                                                     className="basic-single"
                                                     classNamePrefix="select"
-                                                    defaultValue={this.state.prefGender}
+                                                    defaultValue={gender.filter((value) => value.value === this.state.prefGender)}
                                                     placeholder={"Preferred gender..."}
                                                     isClearable={true}
                                                     isSearchable={true}
-                                                    onChange={this.handleChange}
+                                                    onChange={this.handleSelect}
+                                                    styles={customStyle}
                                                     name="prefGender"
                                                     options={gender}
                                                 />
@@ -362,7 +431,8 @@ class CreateRequest extends React.Component {
                                                     placeholder={"Proficiency levels..."}
                                                     isClearable={true}
                                                     isSearchable={true}
-                                                    onChange={this.handleChange}
+                                                    styles={customStyle}
+                                                    onChange={this.handleSelect}
                                                     name="prefProficiencyLevel"
                                                     options={prefProficiencyLevels}
                                                 />
@@ -386,7 +456,7 @@ class CreateRequest extends React.Component {
                                                         placeholder={"Dance style category..."}
                                                         isClearable={true}
                                                         isSearchable={true}
-                                                        onChange={this.handleChange}
+                                                        onChange={this.handleSelect}
                                                         name="danceCategory"
                                                         options={danceStyleCategory}
                                                     />
@@ -396,7 +466,7 @@ class CreateRequest extends React.Component {
                                                                 <Select
                                                                     className="basic-multi-select"
                                                                     classNamePrefix="select"
-                                                                    onChange={this.handleChangeMSelect}
+                                                                    onChange={this.handleMultiSelect}
                                                                     defaultValue={''}
                                                                     value={danceStyle}
                                                                     isMulti={true}
@@ -410,7 +480,7 @@ class CreateRequest extends React.Component {
                                                                 <Select
                                                                     className="basic-multi-select"
                                                                     classNamePrefix="select"
-                                                                    onChange={this.handleChangeMSelect}
+                                                                    onChange={this.handleMultiSelect}
                                                                     defaultValue={''}
                                                                     value={danceStyle}
                                                                     isMulti={true}
@@ -424,7 +494,7 @@ class CreateRequest extends React.Component {
                                                                 <Select
                                                                     className="basic-multi-select"
                                                                     classNamePrefix="select"
-                                                                    onChange={this.handleChangeMSelect}
+                                                                    onChange={this.handleMultiSelect}
                                                                     defaultValue={''}
                                                                     value={danceStyle}
                                                                     isMulti={true}
@@ -462,8 +532,8 @@ class CreateRequest extends React.Component {
                                         <Col>
                                             <div className="form-group">
                                                 <label htmlFor="description">Description</label>
-                                                <textarea type="description" className="form-control" id="description"
-                                                          name="description" onChange={this.onChange}
+                                                <textarea name="description" className="form-control" id="description"
+                                                           style={customColor} onChange={this.onChange}
                                                           placeholder="Personal text to add to the request"
                                                           value={this.description}/>
                                             </div>
@@ -475,7 +545,23 @@ class CreateRequest extends React.Component {
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.handleCancel}> Cancel </Button>
-                            <Button type="submit" variant="primary" onClick={this.submitRequest}> Place Request </Button>
+
+                            <div >
+                                <Button name="submit" type="submit" variant="primary" onClick={this.handleSubmit}> Place Request </Button>
+
+                                <Overlay
+                                show={this.state.showPopover}
+                                target={this.state.targetPopover}
+                                placement="bottom"
+                                containerPadding={20}
+                                    >
+                                    <Popover id="popover-contained">
+                                        <Popover.Content> Please check if all the required data is added! </Popover.Content>
+                                    </Popover>
+                                </Overlay>
+                            </div>
+
+
                         </Modal.Footer>
                     </Modal>
                 </div>
