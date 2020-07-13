@@ -21,6 +21,16 @@ class RequestForm extends React.Component {
         this.setState({ showModal: true });
     };
 
+    calculate_age = (yearOfBrith) => {
+
+        var today = new Date();
+        var todayNum = Number(today.getFullYear());
+        //var birthDate = new Date(yearOfBrith); // left, if we decide to change saving the exact birth date.
+        var age_now = today.getFullYear() - yearOfBrith; //birthDate.getFullYear();
+        console.log(age_now);
+        return age_now;
+    }
+
 
 
     render() {
@@ -71,7 +81,7 @@ class RequestForm extends React.Component {
                         {/* Requesting User - Age Information*/}
                         <Row>
                             <Col > <label>My age...</label> </Col>
-                            <Col> <label>{request.dancerId.yearOfBirth} </label></Col>
+                            <Col> <label>{this.calculate_age(request.dancerId.yearOfBirth)} </label></Col>
                         </Row>
 
                         {/* Requesting User - Height Information*/}

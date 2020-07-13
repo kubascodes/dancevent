@@ -211,21 +211,14 @@ class CreateRequest extends React.Component {
     }
 
     calculate_age = (yearOfBrith) => {
-        //console.log("AGE_________");
 
         var today = new Date();
-       // console.log("today "+ today);
         var todayNum = Number(today.getFullYear());
-        //console.log("year" + todayNum);
-        var birthDate = new Date(yearOfBrith);
-        //console.log("birthdate "+ birthDate);
-        var age_now = today.getFullYear() - birthDate.getFullYear();
-        //console.log("AGE_________");
-        //console.log(age_now);
+        //var birthDate = new Date(yearOfBrith); // left, if we decide to change saving the exact birth date.
+        var age_now = today.getFullYear() - yearOfBrith; //birthDate.getFullYear();
+        console.log(age_now);
         return age_now;
     }
-
-
 
     render() {
 
@@ -333,7 +326,7 @@ class CreateRequest extends React.Component {
                                     {/* User-Age Information*/}
                                     <Row>
                                         <Col><label>My age...</label></Col>
-                                        <Col><label>{age}</label></Col>
+                                        <Col><label>{this.calculate_age(user.yearOfBirth)}</label></Col>
                                     </Row>
 
                                     {/* User-Height Information*/}
