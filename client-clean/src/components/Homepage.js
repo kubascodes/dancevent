@@ -37,7 +37,7 @@ class Homepage extends React.Component {
 
           // We get an array of event-Ids from the user and fetch the event object for each of them -> handleEventFetching only returns when all events are fetched
           component_scope
-            .handleEventFetching(res.interestedInEvents)
+            .handleEventFetching(res.user.interestedInEvents)
             .then((events) => {
               // Only resolved promises of the fetched events end up in here
               let interestedInEventsObjects = [...events];

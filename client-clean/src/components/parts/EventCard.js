@@ -52,12 +52,14 @@ class EventCard extends React.Component {
         .then((res) => res.json(res))
         .then(function (res) {
           component_scope.setState({
-            interestedInEvents: res.interestedInEvents,
+            interestedInEvents: res.user.interestedInEvents,
           });
           resolve(res);
         })
         .catch((err) => reject(err));
     });
+    console.log(this.state);
+    console.log(this.props.event);
   };
 
   componentDidMount() {
