@@ -1,5 +1,9 @@
 import React from "react";
 import { Route, Link, BrowserRouter } from "react-router-dom";
+import { createAvatarComponent, SrcSource } from 'react-avatar';
+const Avatar = createAvatarComponent({ sources: [SrcSource]});
+
+
 
 const NavBar = ({ state, logOut }) => {
   /*
@@ -10,12 +14,12 @@ const NavBar = ({ state, logOut }) => {
   */
 
   /*When you're logged in, display a different NavBar*/
-  if (window.sessionStorage.secret_token != null) {
+  if (state.secret_token) {
     return (
       <div className="navBar">
         <nav
           id="navBar"
-          className="navbar navbar-expand navbar-light container-fluid border-black border-bottom shadow-sm bg-white"
+          className="navbar navbar-expand d-md-flex d-inline-flex align-items-center navbar-light container-fluid border-bottom-pink shadow-sm bg-white"
         >
           <button
             className="navbar-toggler"
@@ -32,10 +36,10 @@ const NavBar = ({ state, logOut }) => {
             <ul className="navbar-nav">
               <li className="nav-item nav-link  text-secondary ">
                 <Link
-                  className="font-weight-bolder text-decoration-none"
+                  className="font-weight-bolder pink text-decoration-none"
                   to="/"
                 >
-                  Homepage
+                  Dancevent
                 </Link>
               </li>
               <li className="nav-item nav-link">
@@ -52,25 +56,6 @@ const NavBar = ({ state, logOut }) => {
                   to="/dancepartner"
                 >
                   Dance Partners
-                </Link>
-              </li>
-              {/*
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
-          */}
-              <li className="nav-item nav-link ">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/register/organizer"
-                >
-                  Register Organizer
-                </Link>
-              </li>
-              <li className="nav-item nav-link ">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/register/dancer"
-                >
-                  Register Dancer
                 </Link>
               </li>
               <li className="nav-item nav-link ">
@@ -89,14 +74,7 @@ const NavBar = ({ state, logOut }) => {
                   Create Event
                 </Link>
               </li>
-              <li className="nav-item nav-link text-secondary text-decoration-none">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/profile"
-                >
-                  {state.email}
-                </Link>
-              </li>
+
               <li className="nav-item nav-link text-secondary text-decoration-none">
                   <Link
               className="font-weight-bolder text-body text-decoration-none"
@@ -104,15 +82,26 @@ const NavBar = ({ state, logOut }) => {
                   Create Request
               </Link>
               </li>
+
+
             </ul>
 
-            <ul className="navbar-nav navbar-right">
+            <ul className="nav navbar-nav ml-auto flex-row justify-content-start flex-nowrap">
+              <li className="nav-item nav-link text-secondary text-decoration-none">
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/profile"
+                >
+                  <Avatar round="50%" size="30" src={state.profilePicture} name={state.name} className="align-middle img-fluid"/>
+                </Link>
+              </li>
+
               <li
-                className="nav-item nav-link text-secondary "
+                className="nav-item nav-link text-secondary align-middle"
                 onClick={logOut}
               >
                 <Link
-                  className="font-weight-bolder text-body text-decoration-none"
+                  className="font-weight-bolder text-body text-decoration-none align-middle"
                   to="/"
                 >
                   Logout
@@ -127,7 +116,7 @@ const NavBar = ({ state, logOut }) => {
     /*When you're not logged in, display a public NavBar*/
     return (
       <div className="navBar">
-        <nav className="navbar navbar-expand navbar-light container-fluid border-bottom border-black shadow-sm bg-white">
+        <nav className="navbar navbar-expand navbar-light container-fluid border-bottom-pink shadow-sm bg-white">
           <button
             className="navbar-toggler"
             type="button"
@@ -143,10 +132,10 @@ const NavBar = ({ state, logOut }) => {
             <ul className="navbar-nav">
               <li className="nav-item nav-link">
                 <Link
-                  className="font-weight-bolder text-body text-decoration-none"
+                  className="font-weight-bolder pink text-decoration-none"
                   to="/"
                 >
-                  Homepage
+                  Dancevent
                 </Link>
               </li>
               <li className="nav-item nav-link">
@@ -165,25 +154,7 @@ const NavBar = ({ state, logOut }) => {
                   Dance Partners
                 </Link>
               </li>
-              {/*
-          <li className="nav-item nav-link "><Link className="font-weight-bolder text-body text-decoration-none" to="/register">Register</Link></li>
-          */}
-              <li className="nav-item nav-link ">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/register/organizer"
-                >
-                  Register Organizer
-                </Link>
-              </li>
-              <li className="nav-item nav-link ">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/register/dancer"
-                >
-                  Register Dancer
-                </Link>
-              </li>
+
               <li className="nav-item nav-link ">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"
@@ -201,7 +172,7 @@ const NavBar = ({ state, logOut }) => {
                 </li>
             </ul>
 
-            <ul className="navbar-nav navbar-right">
+            <ul className="nav navbar-nav ml-auto flex-row justify-content-start flex-nowrap">
               <li className="nav-item nav-link text-secondary">
                 <Link
                   className="font-weight-bolder text-body text-decoration-none"

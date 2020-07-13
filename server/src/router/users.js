@@ -10,7 +10,9 @@ const config = require("../config"); //to access our Jwt Secret
 const User = require("../models/user"); //to access the user database
 const Dancer = require("../models/dancer"); //to create new dancers
 const Organizer = require("../models/organizer"); //to create new organizers
-const Request = require("../models/partnerrequest");
+const Request = require("../models/partnerrequest"); //returning requests to profile
+const Event = require("../models/event"); //returning events to profile
+const ObjectId = require('mongoose').Types.ObjectId;
 //Unsecured routes for anyone to access
 
 //access the /profile of the user
@@ -22,14 +24,28 @@ router.post(
     //console.log(req.user);
     try {
       let user = await User.findOne({ _id: req.user._id });
-      //TODO: REMOVE THESE PROPERTIES BELOW ALTOGETHER!
+      //setting the response object
+      let response = {};
+      //if dancer, add events and requests to the response
+      if (user.userType === "Dancer") {
+        let events = await Event.find().where('_id').in(user.interestedInEvents).select('-organizer -_id').sort( {startDate: 1} ).limit(5);
+        let requests = await Request.find({ 'dancerId': new ObjectId(user._id)}).select('-dancerId -_id').sort( {timestamp: 1} ).limit(5);
+        response.requests = requests;
+        response.events = events;
+      }
+      //if organizer, add events to the response
+      else if (user.userType === "Organizer") {
+        let events = await Event.find({ 'organizer': new ObjectId(user._id)}).select('-organizer -_id').sort( {startDate: 1} ).limit(5);
+        response.events = events;
+      }
+      //Removing sensitive properties from user
       user.password = null;
       user._id = null;
       user.__v = null;
+      //adding the user object to the response
+      response.user = user;
 
-      console.log(user);
-
-      return res.status(200).json(user);
+      return res.status(200).json(response);
     } catch (error) {
       return res.status(500).json({
         error: "Internal server error",
@@ -38,21 +54,6 @@ router.post(
     }
   }
 );
-
-// List all users
-router.get("/users", async (req, res, next) => {
-  try {
-    //search in database based on the url-request-parameters
-    let user = await User.find(req.query).exec();
-    //send the found result back
-    return res.status(200).json(user);
-  } catch (err) {
-    return res.status(500).json({
-      error: "Internal server error",
-      message: err.message,
-    });
-  }
-});
 
 //List all dance request on Dance Partner Page
 //TODO: sort is missing, events
@@ -74,28 +75,6 @@ router.get("/dancepartner", async (req, res, next) => {
     });
   }
 
-});
-
-// Get specific user
-router.get("/users/:id", (req, res, next) => {
-  //find user with id in database
-  var user = User.findById(req.params.id, (err, user) => {
-    //error in step (will also be called if <id> has not correct the pattern)
-    if (err) {
-      return res.status(500).json({
-        error: "Internal server error",
-        message: err.message,
-      });
-    }
-    //Query is empty (user does not exist)
-    if (!user) {
-      return res.status(404).json({
-        error: "User not found",
-      });
-    }
-    //successful query -> send found user
-    return res.status(200).json(user);
-  });
 });
 
 //User Login Route
@@ -229,7 +208,7 @@ router.post("/createrequest", passport.authenticate("jwt", { session: false }), 
 });
 
 
-// Update user via POST request
+// Update user via POST request -> TODO: should be PUT
 router.post(
   "/profile/update",
   passport.authenticate("jwt", { session: false }),

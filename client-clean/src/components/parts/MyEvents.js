@@ -92,13 +92,17 @@ class MyEvents extends React.Component {
           a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
         );
         const now = new Date();
+
         component_scope.setState({
           // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
+          organizedEvents: organizedEvents.slice(0,4),
+          /*DOES NOT WORK FOR ME
           organizedEvents: organizedEvents.filter(
-            (event) =>
-              event.organizer.email === organizerEmail &&
-              event.startDate.getTime() > now.getTime()
+            (singleEvent) =>
+              singleEvent.organizer.email === organizerEmail &&
+              singleEvent.startDate.getTime() > now.getTime()
           ),
+          */
         });
       });
   };

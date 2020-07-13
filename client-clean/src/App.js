@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { Route, Link, BrowserRouter } from "react-router-dom";
-import NavBar from "./components/NavBar";
+import NavBar from "./components/parts/NavBar";
 import Homepage from "./components/Homepage";
 import Events from "./components/Events";
 import Event from "./components/Event";
 /*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
-import Profile from "./components/forms/Profile";
+import Profile from "./components/pages/Profile";
 import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
-import MyEvents from "./components/MyEvents";
+import MyEvents from "./components/parts/MyEvents";
 import CreateRequest from "./components/forms/CreateRequest";
 
 export default class App extends Component {
@@ -74,8 +74,9 @@ export default class App extends Component {
       name: data.name,
       userType: data.userType,
       profilePicture: data.profilePicture
-
     });
+    //add secret token to session storage
+    window.sessionStorage.setItem('secret_token', data.secret_token);
     //this.getUserData();
     console.log(this.state);
     console.log("main state");

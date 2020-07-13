@@ -107,7 +107,7 @@ router.put(
   passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   async (req, res, next) => {
     try {
-      
+
       //get Event ID from URL Param
       const uid = req.params.id
       //get the event
@@ -139,7 +139,7 @@ router.delete(
     // Check if the logged in user owns the event
     const uid = req.params.id;
     let event = await Event.findById(uid).exec();
-      
+
     if(event && event.organizer == req.user._id){
       Event.findOneAndDelete({ _id: uid }, (err, event) => {
         //error in step (will also be called if <id> has not correct the pattern)
