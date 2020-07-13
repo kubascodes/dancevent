@@ -52,6 +52,7 @@ class Events extends React.Component {
         this.setState({ events: data });
       })
       .catch(console.log);
+      console.log(this.state);
   }
 
   onChange = (event) => {
