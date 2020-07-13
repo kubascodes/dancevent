@@ -35,6 +35,12 @@ class RequestForm extends React.Component {
 
     render() {
         const request = this.props.request;
+        const requestDanceStyles = request.listOfDanceStyles ? (
+            request.listOfDanceStyles.map((style) =>
+            <li>{style}</li>
+        )
+    ) : (<li> You have not entered any dance styles.</li>
+    );
 
         // Contact Email popover as this is implemented later if there isstill time
         const popover = (
@@ -130,7 +136,9 @@ class RequestForm extends React.Component {
 
                         <Row>
                             <Col > <label>To dance...</label> </Col>
-                            <Col> <label>{request.listOfDanceStyles}</label></Col>
+                            <Col>
+                                <ul>{requestDanceStyles} </ul>
+                            </Col>
                         </Row>
 
                         {/* City - Event*/}

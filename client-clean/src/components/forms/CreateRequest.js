@@ -119,7 +119,7 @@ class CreateRequest extends React.Component {
 
         // TODO check if event is linked
         // check if required values are entered
-        if(this.state.user != null && this.props.state.email != "" && this.state.prefProficiencyLevel != "" && this.state.prefGender != "" && this.state.description != ""){
+        if( this.state.prefProficiencyLevel != "" && this.state.prefGender != "" && this.state.description != ""){
             this.submitRequest();
         }
         else {
@@ -129,18 +129,13 @@ class CreateRequest extends React.Component {
             });
 
             if(this.state.prefGender == "" || this.state.prefProficiencyLevel == ""){
-                console.log("gender or skill null: FALSE");
                 this.setState({validSelect: false});
             };
 
             if(this.state.description == ""){
-                console.log("description null: FALSE");
                 this.setState({
                     validDescription: false
                 });
-            };
-            if(this.state.user == null ||this.props.state.email == null){
-                console.log("dancerId or email missing! Some ERROR! check both values and the token");
             };
 
         };
@@ -161,7 +156,6 @@ class CreateRequest extends React.Component {
             prefAgeMax: this.state.prefAgeMax,
             listofGenders: this.state.prefGender,
             listOfProficiencyLevels: this.state.prefProficiencyLevel,
-            counterfeitEmail: this.props.state.email,
             listOfDanceStyles: danceStyle,
             //events: this.state.events, // TODO: needs event link and populate in backend?
         };
@@ -182,10 +176,10 @@ class CreateRequest extends React.Component {
         })
     }
 
-    getUserData() {
+    getUser() {
         const component_scope = this; //binding this context to the current component
-        fetch('/profile', {
-            method: 'POST',
+        fetch('/user', {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': 'Bearer ' + window.sessionStorage.secret_token
@@ -201,12 +195,11 @@ class CreateRequest extends React.Component {
                 });
             })
             .catch(err => alert(err));
-
     }
 
     componentDidMount() {
         if(window.sessionStorage.secret_token != null) {
-            this.getUserData()
+            this.getUser()
         }
     }
 
@@ -285,20 +278,22 @@ class CreateRequest extends React.Component {
                 }}});
         //color the textarea if not entered a text
         //TODO: check border color of select if changed: need to be changed here as well
-        const customColor = this.state.validDescription ? ({"border-color":"#ccc"}) : ({"border-color":"#dc2029"});
-        // Contact Email popover as this is implemented later if there isstill time
-        /*const popover = (
-            <Popover id="popover-basic">
-                <Popover.Content> Please entered your preffered gender, proficiency level and the description of the request, to continue.</Popover.Content>
-            </Popover>
-        );*/
+        const customColor = this.state.validDescription ? ({"borderColor":"#ccc"}) : ({"borderColor":"#dc2029"});
+
 
 
         //when logged in display requests
         if (window.sessionStorage.secret_token != null) {
             //TODO(Bug?) getting the user takes time and the get ('POST') takes long and throws first []
             if(user){
-                const age = this.calculate_age(user.yearOfBirth);
+                console.log(user);
+                const userDanceStyles = user.listOfDanceStyles ? (
+                    user.listOfDanceStyles.map((style) =>
+                          <li>{style}</li>
+                    )
+                    ) : (<li> You have not entered any dance styles.</li>
+                    );
+
 
                 return (
                 <div className="form-group">
@@ -345,11 +340,7 @@ class CreateRequest extends React.Component {
                                     <Row>
                                         <Col> <label>I usually enjoy to dance...</label> </Col>
                                         <Col>
-                                            <ul>
-                                                {user.listOfDanceStyles.map((style) =>
-                                                    <li>{style}</li>
-                                                )}
-                                            </ul>
+                                            {userDanceStyles}
                                         </Col>
                                     </Row>
 
@@ -558,34 +549,6 @@ class CreateRequest extends React.Component {
                         </Modal.Footer>
                     </Modal>
                 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             );}
             else{

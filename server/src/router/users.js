@@ -55,6 +55,31 @@ router.post(
   }
 );
 
+//access just the user information with /user
+router.get(
+    "/user",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res, next) => {
+      /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
+      try {
+        let user = await User.findOne({ _id: req.user._id });
+        //setting the response object
+        let response = {};
+
+        //Removing sensitive properties from user
+        user.password = null;
+        user._id = null;
+        user.__v = null;
+        return res.status(200).json(user)
+      } catch (error) {
+        return res.status(500).json({
+          error: "Internal server error",
+          message: error.message,
+        });
+      }
+    }
+);
+
 //List all dance request on Dance Partner Page
 //TODO: sort is missing, events
 router.get("/dancepartner", async (req, res, next) => {
@@ -187,6 +212,7 @@ router.post("/register/dancer", async (req, res) => {
 //Register as a Request
 router.post("/createrequest", passport.authenticate("jwt", { session: false }), async (req, res) => {
 
+  console.log(req.body);
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
@@ -194,11 +220,15 @@ router.post("/createrequest", passport.authenticate("jwt", { session: false }), 
     });
 
   req.body.dancerId = req.user._id;
+  req.body.counterfeitEmail = req.user.email;
+  console.log(req.body.dancerId);
+  console.log(req.body);
 
   try {
     let request = await Request.create(req.body);
     return res.status(201).json(request);
   } catch (error) {
+    console.log(error.message);
     return res.status(500).json({
       error: "Internal server error",
       message: error.message,
