@@ -28,7 +28,6 @@ class RequestForm extends React.Component {
         var todayNum = Number(today.getFullYear());
         //var birthDate = new Date(yearOfBrith); // left, if we decide to change saving the exact birth date.
         var age_now = today.getFullYear() - yearOfBrith; //birthDate.getFullYear();
-        console.log(age_now);
         return age_now;
     }
 
