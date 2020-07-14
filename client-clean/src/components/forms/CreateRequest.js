@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Container, Modal, Overlay, Popover, Row} from "react-bootstrap";
+import {Button, Col, Container, Image, Modal, Overlay, Popover, Row} from "react-bootstrap";
 import Select from 'react-select';
 import {Link} from "react-router-dom";
 
@@ -24,7 +24,8 @@ class CreateRequest extends React.Component {
             validDescription: true, // checks if the required values are available and if not,
             validSelect: true,
             showPopover: false,
-            targetPopover: null
+            targetPopover: null,
+            showModalUnvarified: false
         };
     }
 
@@ -38,6 +39,7 @@ class CreateRequest extends React.Component {
             danceStyle: null,
             events: null,
             showModal: false,
+            showModalUnvarified: false,
             validDescription: true,
             validSelect: true
         });
@@ -63,7 +65,11 @@ class CreateRequest extends React.Component {
 
     handleShow = () => {
         /*show the modal*/
-        this.setState({ showModal: true });
+        if(this.state.user.userType == "Dancer") {
+            this.setState({showModal: true});
+        }else{
+            this.setState({showModalUnvarified: true});
+        }
     }
 
     onChange = (e) => {
@@ -187,7 +193,6 @@ class CreateRequest extends React.Component {
         })
             .then(res => res.json(res))
             .then(function (res) {
-                console.log(res);
                 component_scope.setState({
                     user: res,
                     prefGender: res.prefGender,
@@ -210,7 +215,6 @@ class CreateRequest extends React.Component {
         var todayNum = Number(today.getFullYear());
         //var birthDate = new Date(yearOfBrith); // left, if we decide to change saving the exact birth date.
         var age_now = today.getFullYear() - yearOfBrith; //birthDate.getFullYear();
-        console.log(age_now);
         return age_now;
     }
 
@@ -287,7 +291,7 @@ class CreateRequest extends React.Component {
         if (window.sessionStorage.secret_token != null) {
             //TODO(Bug?) getting the user takes time and the get ('POST') takes long and throws first []
             if(user){
-                console.log(user);
+                // TODO: check if really used or needed
                 const userDanceStyles = user.listOfDanceStyles ? (
                     user.listOfDanceStyles.map((style) =>
                           <li>{style}</li>
@@ -309,16 +313,19 @@ class CreateRequest extends React.Component {
                         aria-labelledby="contained-modal-title-vcenter"
                         centered
                     >
-                        <Modal.Header closeButton>
-                            <Modal.Title >
-                                {this.state.user.name}
-                                {/*TODO:User Image*/}
-                            </Modal.Title>
-                        </Modal.Header>
+                        <Modal.Header closeButton> <Modal.Title>{this.state.user.name}</Modal.Title></Modal.Header>
+
                         <Modal.Body>
                             <Container fluid>
                                 <form onSubmit={this.handleSubmit}>
 
+                                    <Image
+                                src={
+                                    this.state.user.picture
+                                        ? this.state.user.picture
+                                        : "img/placeholderDancerProfile.png"}
+                                alt={this.state.user.name}
+                                style={{ width: "100px", height: "95px" }}roundedCircle />
                                     {/* User-Age Information*/}
                                     <Row>
                                         <Col><label>My age...</label></Col>
@@ -548,6 +555,21 @@ class CreateRequest extends React.Component {
 
 
                         </Modal.Footer>
+                    </Modal>
+                    {/*Error modal if organizer tries to add a request*/}
+                    <Modal
+                    show={this.state.showModalUnvarified}
+                    onHide={this.handleCancel}
+                    backdrop="static"
+                    style={{ color: "#dc2029" }}
+                    keyboard={false}
+                    size="lg"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                    >
+                        <Modal.Header closeButton> <Modal.Title>Unvalid Action!</Modal.Title></Modal.Header>
+                        <Modal.Body><p>You are logged in as an Organizer. Only dancers can create partner requests for events.</p></Modal.Body>
+                        <Modal.Footer><Button variant="secondary" onClick={this.handleCancel}> Cancel </Button></Modal.Footer>
                     </Modal>
                 </div>
 

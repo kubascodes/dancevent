@@ -121,7 +121,6 @@ class FilterRequest extends React.Component {
       url += "city=" + this.state.city;
       previous = true;
     }
-    console.log(url);
 
 
     //TODO: date, event, age
