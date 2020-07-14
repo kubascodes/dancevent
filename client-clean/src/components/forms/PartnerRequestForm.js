@@ -1,7 +1,8 @@
 import React from "react";
-import {Button, Card, Col, Container, Row, Popover, OverlayTrigger} from "react-bootstrap";
+import {Button, Card, Col, Container, Row, Popover, OverlayTrigger, Image} from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import Select from "react-select";
+import {Link} from "react-router-dom";
 
 class RequestForm extends React.Component {
 
@@ -53,15 +54,27 @@ class RequestForm extends React.Component {
         return (
 
             <div className="form-group" key={request._id} >
-             <Card style={{ width: "25rem" }} className="text-center" >
+            <Card
+        id={request._id}
+        style={{ width: "15rem" }}
+        className="text-center"
+            >
                     <Card.Body onClick={this.handleShow}>
+            {/*usinf image instead of Card.Image to round the picture*/}
+                        <Image
+                            src={
+                                request.dancerId.picture
+                                ? request.dancerId.picture
+                                : "img/placeholderDancerProfile.png"}
+                            alt={request.dancerId.name}
+                            style={{ width: "180px", height: "171px" }}roundedCircle />
+                        <Card.Title> </Card.Title>
                         <Card.Title> {request.dancerId.name} </Card.Title>
                         <Card.Text>{request.listOfProficiencyLevels}</Card.Text>
-                        <Card.Text>{request.description}</Card.Text>
                     </Card.Body>
-                 <Card.Footer>
-                     <Button id="deleteRequest" onClick={()=>{this.props.deleteRequest(request._id)}}>Delete Request</Button>
-                 </Card.Footer>
+                    {/*<Card.Footer>
+                                 <Button id="deleteRequest" onClick={()=>{this.props.deleteRequest(request._id)}}>Delete Request</Button>
+                             </Card.Footer>*/}
                 </Card>
 
                 <Modal
@@ -76,12 +89,18 @@ class RequestForm extends React.Component {
                     <Modal.Header closeButton>
                         <Modal.Title >
                             {request.dancerId.name}
-                            {/*TODO: Image missing*/}
                         </Modal.Title>
                     </Modal.Header>
 
                     <Modal.Body>
                         <Container fluid>
+        <Image
+        src={
+            request.dancerId.picture
+                ? request.dancerId.picture
+                : "img/placeholderDancerProfile.png"}
+        alt={request.dancerId.name}
+        style={{ width: "100px", height: "95px" }}roundedCircle />
                         {/* Requesting User Information_______________________*/}
 
                         {/* Requesting User - Age Information*/}

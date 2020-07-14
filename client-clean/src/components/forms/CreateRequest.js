@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Container, Modal, Overlay, Popover, Row} from "react-bootstrap";
+import {Button, Col, Container, Image, Modal, Overlay, Popover, Row} from "react-bootstrap";
 import Select from 'react-select';
 import {Link} from "react-router-dom";
 
@@ -288,6 +288,7 @@ class CreateRequest extends React.Component {
             //TODO(Bug?) getting the user takes time and the get ('POST') takes long and throws first []
             if(user){
                 console.log(user);
+                // TODO: check if really used or needed
                 const userDanceStyles = user.listOfDanceStyles ? (
                     user.listOfDanceStyles.map((style) =>
                           <li>{style}</li>
@@ -309,16 +310,19 @@ class CreateRequest extends React.Component {
                         aria-labelledby="contained-modal-title-vcenter"
                         centered
                     >
-                        <Modal.Header closeButton>
-                            <Modal.Title >
-                                {this.state.user.name}
-                                {/*TODO:User Image*/}
-                            </Modal.Title>
-                        </Modal.Header>
+                        <Modal.Header closeButton> <Modal.Title>{this.state.user.name}</Modal.Title></Modal.Header>
+
                         <Modal.Body>
                             <Container fluid>
                                 <form onSubmit={this.handleSubmit}>
 
+                                    <Image
+                                src={
+                                    this.state.user.picture
+                                        ? this.state.user.picture
+                                        : "img/placeholderDancerProfile.png"}
+                                alt={this.state.user.name}
+                                style={{ width: "100px", height: "95px" }}roundedCircle />
                                     {/* User-Age Information*/}
                                     <Row>
                                         <Col><label>My age...</label></Col>
