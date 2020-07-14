@@ -3,6 +3,8 @@ import React from 'react';
 import RouteAuthentication from '../../services/RouteAuthentication';
 //events components
 import MyEventsProfile from "../parts/MyEventsProfile";
+// request component
+import MyRequests from "../forms/MyRequests";
 //moment
 import moment from 'moment';
 //icons
@@ -86,6 +88,9 @@ class Profile extends React.Component {
 
           <div>
           <MyEventsProfile props={this.props} state={this.state} />
+          </div>
+        <div>
+          <MyRequests props={this.props} state={this.state} />
           </div>
 
           </div>

@@ -81,15 +81,23 @@ router.get(
 
 //List all dance request on Dance Partner Page
 //TODO: sort is missing, events
-router.get("/dancepartner", async (req, res, next) => {
+router.get("/dancepartner", passport.authenticate("jwt", { session: false }), async (req, res, next) => {
   try {
     //search in database based on the url-request-parameter
+
+    // do not send back my own requests
+    let user = req.user._id;
+    req.query.dancerId = {$ne: user};
+
     // filter dance styles in a listof dance styles selected in the filer
     let danceStyles = req.query.listOfDanceStyles;
     if (danceStyles) {
       req.query.listOfDanceStyles = {$in: danceStyles};
     }
+
+    console.log(req.query);
     let request = await Request.find(req.query).populate("dancerId").exec();
+
     //send the found result back
     return res.status(200).json(request);
   } catch (err) {
@@ -266,22 +274,46 @@ router.post(
 );
 
 // delete Request
-router.delete("/dancepartner/request/delete", async (req, res) => {
+router.delete("/profile/request/delete", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  console.log(req.body);
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
       message: "The request body is empty ",
     });
+  console.log("REQUEST_____DELETE__________________");
+  let reqId = req.body.id;
+  let request = await Request.findById(reqId).exec();
+  console.log("REQUESTID________________________");
+  console.log(reqId);
+  console.log("REQUEST_______________________");
+  console.log(request);
 
-  try {
-    await Request.findByIdAndRemove(req.body.id).exec();
-    return res.status(201).json({message: 'Request with id${req.body.id} was deleted'});
-  } catch (error) {
-    return res.status(500).json({
-      error: "Internal server error",
-      message: error.message,
-    });
+  if(request && req.user._id == request.dancerId){
+    if(!request)
+      return res.status(404).json({
+        error: "Request not found",
+        message: "The request the request is not found",
+      });
+
+    try {
+      await Request.findByIdAndRemove(req.body.id).exec();
+      return res.status(201).json({message: 'Request with id${req.body.id} was deleted'});
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: error.message,
+      });
+    }
+
   }
+  else {
+    return res.status(403).json({
+      error: "Unouthoriesed to delete this request",
+    })
+  }
+
+
 });
 
 
