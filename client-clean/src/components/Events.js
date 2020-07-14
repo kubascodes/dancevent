@@ -3,6 +3,9 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import EventCard from "./parts/EventCard";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+
 
 /*
     TODOs:
@@ -34,8 +37,10 @@ class Events extends React.Component {
       danceStyle: "various",
       danceLevel: "all",
       city: "Munich",
-      startDate: formatDate(Date.now()),
-      endDate: Date.now(),
+      //startDate: formatDate(Date.now()),
+      startDate: new Date(),
+      endDate: null,
+
       sorting: "date",
     };
   }
@@ -63,6 +68,12 @@ class Events extends React.Component {
     */
     this.setState({ [event.target.name]: event.target.value });
     console.log(this.state);
+  };
+  //Changes the state for calendar inputs
+  //type should specify if it is a start- or endDate
+  onChangeCalendar = (date, type) => {
+    console.log(this)
+    this.setState({ [type]: date });
   };
 
   sortingChanged = (event) => {
@@ -126,6 +137,20 @@ class Events extends React.Component {
         url += "&";
       }
       url += "city=" + this.state.city;
+      previous = true;
+    }
+    if (this.state.startDate) {
+      if (previous) {
+        url += "&";
+      }
+      url += "startDate=" + this.state.startDate;
+      previous = true;
+    }
+    if (this.state.endDate) {
+      if (previous) {
+        url += "&";
+      }
+      url += "endDate=" + this.state.endDate;
       previous = true;
     }
 
@@ -202,7 +227,7 @@ class Events extends React.Component {
               <form onSubmit={this.submitFilter}>
                 {/*    Eventtype   */}
                 <div className="form-group">
-                  <label>I'm looking for</label>
+                  <label className="label-bold">I'm looking for</label>
                   <select
                     className="form-control"
                     name="eventtype"
@@ -217,7 +242,7 @@ class Events extends React.Component {
                 </div>
                 {/*    Dance Style   */}
                 <div className="form-group">
-                  <label>To dance</label>
+                  <label className="label-bold">To dance</label>
                   <select
                     className="form-control"
                     name="danceStyle"
@@ -244,7 +269,7 @@ class Events extends React.Component {
                 </div>
                 {/*    Dance Level   */}
                 <div className="form-group">
-                  <label>Eventlevel</label>
+                  <label className="label-bold">Eventlevel</label>
                   <select
                     className="form-control"
                     name="danceLevel"
@@ -262,7 +287,7 @@ class Events extends React.Component {
 
                 {/*    City   */}
                 <div className="form-group">
-                  <label>City</label>
+                  <label className="label-bold">City</label>
                   <input
                     className="form-control"
                     id="city"
@@ -274,7 +299,7 @@ class Events extends React.Component {
                 </div>
 
                 {/*    Startdate   */}
-                <div class="form-group">
+                {/*<div class="form-group">
                   <label for="start">Start date:</label>
                   <input
                     type="date"
@@ -284,6 +309,28 @@ class Events extends React.Component {
                     min={formatDate(Date.now())}
                     max="2022-12-31"
                     onChange={this.onChange}
+                  />
+                        </div>*/}
+                <div className="form-group">
+                  <label className="label-bold"> Earliest start date </label>
+                  <DatePicker
+                    className="form-control"
+                    name="startDate"
+                    selected={this.state.startDate}
+                    onChange={date => this.onChangeCalendar(date, "startDate")}
+                    dateFormat="MMMM d, yyyy"
+                    minDate={new Date()}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="label-bold"> Latest start date </label>
+                  <DatePicker
+                    className="form-control"
+                    name="endDate"
+                    onChange={date => this.onChangeCalendar(date, "endDate")}
+                    dateFormat="MMMM d, yyyy"
+                    minDate={this.state.startDate}
+                    placeholderText="Press"
                   />
                 </div>
 

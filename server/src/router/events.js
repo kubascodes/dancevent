@@ -14,8 +14,38 @@ const DanceCourse = require("../models/dancecourse");
 
 //List all events
 //parameters are optional e.g .de/events/?city=Munich will search for all events in munich
+//List element shoulf be defined as followed to work automatically ...&list=a&list=b&...
 router.get("/", async (req, res, next) => {
   //TODO based on the frontend a default startDate range should be defined to not send past event
+
+
+
+  //Date parameters
+  //if start Date is undefined the event must happen after current date
+  //current implementation checks if the startDate is smaller/equal than the param endDate
+  //(gte : >=; lte: <=)
+  console.log(req.query)
+  var start = new Date();
+  if(req.query.startDate){
+
+    start = new Date(req.query.startDate)
+  }
+  if(req.query.endDate){
+    req.query["startDate"] = { $gte: start, $lte: req.query.endDate}   
+    delete req.query["endDate"]
+  }else{
+    req.query["startDate"] = { $gte: start } 
+  }
+
+  //List Parameters
+  //$in works like or so at least one element in params list must match one event list element
+  if(req.query.listOfDanceStyles){
+    req.query["listOfDanceStyles"] = {$in : req.query.listOfDanceStyles}
+  }
+  if(req.query.listOfProficiencyLevels){
+    req.query["listOfProficiencyLevels"] = {$in : req.query.listOfProficiencyLevels}
+  }
+  console.log(req.query)
 
   try {
     //search in database based on the url-request-parameters
