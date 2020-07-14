@@ -557,7 +557,6 @@ class CreateRequest extends React.Component {
                         </Modal.Footer>
                     </Modal>
                     {/*Error modal if organizer tries to add a request*/}
-                    {/*TODO: TEST! Could not be tested as */}
                     <Modal
                     show={this.state.showModalUnvarified}
                     onHide={this.handleCancel}
