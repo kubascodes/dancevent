@@ -2,6 +2,19 @@ import React from "react";
 import Select from 'react-select';
 import Form from 'react-bootstrap/Form'
 
+//formats object date into Sting: yyyy-mm-dd
+function formatDate(date) {
+    var d = new Date(date),
+        month = "" + (d.getMonth() + 1),
+        day = "" + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = "0" + month;
+    if (day.length < 2) day = "0" + day;
+
+    return [year, month, day].join("-");
+}
+
 class FilterRequest extends React.Component {
   constructor(props) {
     super(props);
@@ -17,11 +30,22 @@ class FilterRequest extends React.Component {
       ageOffset:20,
       ageOffsetMin:1,
       ageOffsetMax: 100,
+        startDate: formatDate(new Date()),
+        endDate: formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
 
     };
   }
+  componentDidMount() {
+      // set the dates
+      /*let today = Date.now();
+      let nextYear = this.formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
+      this.setState({
+          startDate: today,
+          endDate: nextYear
+      });*/
+  }
 
-   updatePriceLabels() { //avoids slider overlap
+    updatePriceLabels() { //avoids slider overlap
      var sliders = document.querySelectorAll(".price-slider input");
      var val1 = parseInt(sliders[0].value);
      var val2 = parseInt(sliders[1].value);
@@ -45,6 +69,13 @@ class FilterRequest extends React.Component {
     this.props.filterRequests(this.state); //TODO: change
   };
 
+    onChangeDate = (date) => {
+        /*this.setState({
+            startDate: start,
+            endDate: end
+        });*/
+    }
+
   onChange = (e) => {
     /*This function is called if the user changes a variable of the filter options*/
     e.preventDefault();
@@ -52,7 +83,52 @@ class FilterRequest extends React.Component {
             [e.target.name]: e.target.value
         })
   };
+// action.name == 'dateSelection'
+    handleTextDate = (selectedOption, action) => {
+        if(selectedOption){
 
+            var startDate ;
+            var endDate;
+            switch(selectedOption.value){
+                case "today":
+                    startDate = formatDate(new Date());
+                    endDate = startDate;
+                    break;
+                case "tomorrow":
+                    startDate = formatDate(new Date(new Date().setTime( new Date().getTime() + 1 * 86400000 )));
+                    endDate = startDate;
+                    break;
+                case "week":
+                    var curr = new Date; // get current date
+                    var monday = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
+                    var sunday = monday + 6; // last day is the first day + 6
+                    startDate = formatDate(new Date(new Date().setDate(monday)));
+                    endDate = formatDate(new Date(new Date().setDate(sunday)));
+                    break;
+                case "weekend":
+                    var curr = new Date; // get current date
+                    var friday = curr.getDate() - curr.getDay() + 5; // First day is the day of the month - the day of the week
+                    var sunday = friday + 2; // last day is the first day + 6
+                    startDate = formatDate(new Date(new Date().setDate(friday)));
+                    endDate = formatDate(new Date(new Date().setDate(sunday)));
+                    break;
+
+            }
+            this.setState({
+                startDate: startDate,
+                endDate: endDate
+            });
+        }
+        else{
+            this.setState({
+                startDate: formatDate(new Date()),
+                endDate: formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
+            });
+        }
+    }
+
+
+    // handle Select
   handleChange = (selectedOption, action) => {
 
       this.setState({
@@ -64,6 +140,7 @@ class FilterRequest extends React.Component {
           danceStyle: ''
         })
       }
+
   }
 
   handleChangeMSelect = (danceStyle) => {
@@ -271,7 +348,7 @@ class FilterRequest extends React.Component {
               placeholder={"Date selection..."}
               isClearable={true}
               isSearchable={true}
-              onChange={this.handleChange}
+              onChange={this.handleTextDate}
               name="dateSelection"
               options={dateSelection}
           />
@@ -279,6 +356,32 @@ class FilterRequest extends React.Component {
 
         {/* Date Type 2 - calender*/}
         {/* TODO*/}
+          <div class="form-group">
+             <label for="start">Start date:</label>
+                  <input
+                  type="date"
+                  id="startDate"
+                  name="startDate"
+                  value={this.state.startDate}
+                  min={formatDate(new Date())}
+                  max="2022-12-31"
+                  onChange={this.onChange}
+                  />
+              </div>
+              {/* Date Type 2 - calender*/}
+              {/* TODO*/}
+                <div class="form-group">
+                  <label for="start">End date:</label>
+                  <input
+                  type="date"
+                  id="endDate"
+                  name="endDate"
+                    value={this.state.endDate}
+                    min={formatDate(new Date(new Date().setMonth(new Date().getMonth() + 1)))}
+                  max="2022-12-31"
+                  onChange={this.onChange}
+                  />
+                </div>
 
         {/* Dance Style Type */}
         {/*TODO: change*/}
