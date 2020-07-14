@@ -35,24 +35,6 @@ class FilterRequest extends React.Component {
 
     };
   }
-  componentDidMount() {
-      // set the dates
-      /*let today = Date.now();
-      let nextYear = this.formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
-      this.setState({
-          startDate: today,
-          endDate: nextYear
-      });*/
-  }
-
-    updatePriceLabels() { //avoids slider overlap
-     var sliders = document.querySelectorAll(".price-slider input");
-     var val1 = parseInt(sliders[0].value);
-     var val2 = parseInt(sliders[1].value);
-     if (val1 >= val2) { sliders[0].value = val2 - 3; return; }
-     if (val2 <= val1) { sliders[1].value = val1 + 3; return; }
-  }
-
 
 
   //TODO: write Submit
@@ -69,13 +51,6 @@ class FilterRequest extends React.Component {
     this.props.filterRequests(this.state); //TODO: change
   };
 
-    onChangeDate = (date) => {
-        /*this.setState({
-            startDate: start,
-            endDate: end
-        });*/
-    }
-
   onChange = (e) => {
     /*This function is called if the user changes a variable of the filter options*/
     e.preventDefault();
@@ -83,8 +58,9 @@ class FilterRequest extends React.Component {
             [e.target.name]: e.target.value
         })
   };
-// action.name == 'dateSelection'
+
     handleTextDate = (selectedOption, action) => {
+        /*this function gets a text like "tomorrow" and evaluates than the start and end date*/
         if(selectedOption){
 
             var startDate ;
