@@ -22,6 +22,12 @@ class RequestForm extends React.Component {
         this.setState({ showModal: true });
     };
 
+    handleDelete = (requestId) => {
+        this.handleCancel();
+        this.props.deleteRequest(requestId);
+    }
+
+
     calculate_age = (yearOfBrith) => {
 
         var today = new Date();
@@ -35,18 +41,21 @@ class RequestForm extends React.Component {
 
     render() {
         const request = this.props.request;
+        const user = this.props.user;
+
+        // TODO: test if really needed
         const requestDanceStyles = request.listOfDanceStyles ? (
             request.listOfDanceStyles.map((style) =>
             <li>{style}</li>
         )
-    ) : (<li> You have not entered any dance styles.</li>
-    );
+        ) : (<li> You have not entered any dance styles.</li>
+        );
 
         // Contact Email popover as this is implemented later if there isstill time
         const popover = (
             <Popover id="popover-basic">
-                <Popover.Title as="h3">Contact data of {request.dancerId.name} </Popover.Title>
-                <Popover.Content> This functionality will be automated soon. For now just contact the {request.dancerId.name} here: {request.counterfeitEmail} </Popover.Content>
+                <Popover.Title as="h3">Contact data of {user.name} </Popover.Title>
+                <Popover.Content> This functionality will be automated soon. For now just contact the {user.name} here: {request.counterfeitEmail} </Popover.Content>
             </Popover>
         );
 
@@ -62,14 +71,16 @@ class RequestForm extends React.Component {
             {/*usinf image instead of Card.Image to round the picture*/}
                         <Image
                             src={
-                                request.dancerId.picture
-                                ? request.dancerId.picture
+                                user.picture
+                                ? user.picture
                                 : "img/placeholderDancerProfile.png"}
-                            alt={request.dancerId.name}
+                            alt={user.name}
                             style={{ width: "180px", height: "171px" }}roundedCircle />
                         <Card.Title> </Card.Title>
-                        <Card.Title> {request.dancerId.name} </Card.Title>
-                        <Card.Text>{request.listOfProficiencyLevels}</Card.Text>
+                        <Card.Title> {user.name} </Card.Title>
+                        <Card.Text>{user.proficiencyLevel}</Card.Text>
+                        {/*TODO: Add event location*/}
+                        {/*TODO: Add event date*/}
                     </Card.Body>
                     {/*<Card.Footer>
                                  <Button id="deleteRequest" onClick={()=>{this.props.deleteRequest(request._id)}}>Delete Request</Button>
@@ -87,7 +98,7 @@ class RequestForm extends React.Component {
                     >
                     <Modal.Header closeButton>
                         <Modal.Title >
-                            {request.dancerId.name}
+                            {user.name}
                         </Modal.Title>
                     </Modal.Header>
 
@@ -95,36 +106,36 @@ class RequestForm extends React.Component {
                         <Container fluid>
         <Image
         src={
-            request.dancerId.picture
-                ? request.dancerId.picture
+            user.picture
+                ? user.picture
                 : "img/placeholderDancerProfile.png"}
-        alt={request.dancerId.name}
+        alt={user.name}
         style={{ width: "100px", height: "95px" }}roundedCircle />
                         {/* Requesting User Information_______________________*/}
 
                         {/* Requesting User - Age Information*/}
                         <Row>
                             <Col > <label>My age...</label> </Col>
-                            <Col> <label>{this.calculate_age(request.dancerId.yearOfBirth)} </label></Col>
+                            <Col> <label>{this.calculate_age(user.yearOfBirth)} </label></Col>
                         </Row>
 
                         {/* Requesting User - Height Information*/}
                         <Row>
                             <Col > <label>My height...</label> </Col>
 
-                            <Col> <label>{request.dancerId.height} cm</label> </Col>
+                            <Col> <label>{user.height} cm</label> </Col>
                         </Row>
 
                         {/* Requesting User - Proficiency Information*/}
                         <Row>
                             <Col > <label>My proficiency experience...</label> </Col>
-                            <Col> <label>{request.dancerId.proficiencyLevel}</label> </Col>
+                            <Col> <label>{user.proficiencyLevel}</label> </Col>
                         </Row>
 
                         {/* User - Style Information*/}
                         <Row>
                             <Col > <label>I usually enjoy to dance...</label> </Col>
-                            <Col> <ul>{request.dancerId.listOfDanceStyles.map((style) => {
+                            <Col> <ul>{user.listOfDanceStyles.map((style) => {
                                 return <li>{style}</li>
                             })} </ul> </Col>
                         </Row>
@@ -182,15 +193,19 @@ class RequestForm extends React.Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={this.handleCancel}> Cancel </Button>
+                        {!this.props.profile&&
                         <OverlayTrigger trigger="click" placement="right" overlay={popover}>
                             <Button variant="primary"> Contact </Button>
-                        </OverlayTrigger>
+                        </OverlayTrigger>}
+                        {this.props.profile&&
+                            <div>
+                                <Button variant="danger" onClick={()=>{this.handleDelete(request._id)}}> Delete </Button>{' '}
+                                <Button variant="primary" onClick={this.handleCancel}> Update </Button>
+                            </div>}
                     </Modal.Footer>
                 </Modal>
 
             </div>
-
-
         );
 
     }
