@@ -134,8 +134,8 @@ class FindDancePartnerView extends React.Component {
                     {this.state.requests.map((request) => (
                         <RequestForm
                       request={request}
-                      state={this.props.state}
-                      deleteRequest={this.deleteRequest}
+                      user={request.dancerId}
+                      profile = {false}
                       />
                     ))}
                     </CardDeck>
