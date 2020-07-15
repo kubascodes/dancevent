@@ -9,7 +9,7 @@ const PartnerRequestSchema  = new mongoose.Schema({
     //ageOffset: { type: Number, required: true },
     prefAgeMin: { type: Number, required: false },
     prefAgeMax: { type: Number, required: false },
-    listofGenders: [{
+    listOfGenders: [{
       type: String,
       enum: ['female', 'male', 'other'],
       required: true
@@ -56,5 +56,3 @@ const PartnerRequestSchema  = new mongoose.Schema({
 
 // Export the PartnerRequest model
 module.exports = mongoose.model('PartnerRequest', PartnerRequestSchema);
-
-

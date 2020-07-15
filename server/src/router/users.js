@@ -28,14 +28,14 @@ router.get(
       let response = {};
       //if dancer, add events and requests to the response
       if (user.userType === "Dancer") {
-        let events = await Event.find().where('_id').in(user.interestedInEvents).select('-organizer -_id').sort( {startDate: 1} ).limit(5);
-        let requests = await Request.find({ 'dancerId': new ObjectId(user._id)}).select('-dancerId -_id').sort( {timestamp: 1} ).limit(5);
+        let events = await Event.find().where('_id').in(user.interestedInEvents).select('-organizer').sort( {startDate: 1} ).limit(5);
+        let requests = await Request.find({ 'dancerId': new ObjectId(user._id)}).select('-dancerId').sort( {timestamp: 1} ).limit(5);
         response.requests = requests;
         response.events = events;
       }
       //if organizer, add events to the response
       else if (user.userType === "Organizer") {
-        let events = await Event.find({ 'organizer': new ObjectId(user._id)}).select('-organizer -_id').sort( {startDate: 1} ).limit(5);
+        let events = await Event.find({ 'organizer': new ObjectId(user._id)}).select('-organizer').sort( {startDate: 1} ).limit(5);
         response.events = events;
       }
       //Removing sensitive properties from user
