@@ -89,9 +89,7 @@ class Profile extends React.Component {
           <div>
           <MyEventsProfile props={this.props} state={this.state} />
           </div>
-        <div>
-          <MyRequests props={this.props} state={this.state} />
-          </div>
+        
 
           </div>
 

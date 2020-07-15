@@ -42,7 +42,7 @@ class RegistrationFormOrganizer extends React.Component {
       async function processImage(file, fileUrl, context) {
         //console.log(file);
         try {
-          let image = await ProcessImage(file, fileUrl);
+          let image = await ProcessImage(file, fileUrl, "profilePicture");
           context.setState({ picture: image });
           //console.log(context.state);
         }
