@@ -1,10 +1,28 @@
 var Jimp = require('jimp');
 
-async function ProcessImage (image, imageUrl, crop) {
+export class Progress {
+  constructor(currentProgress, context) {
+    this.currentProgress = currentProgress;
+    this.setUploadProgress = context.setUploadProgress;
+  }
+  getProgress() {
+    return this.currentProgress;
+  };
+  setProgress (completed) {
+    this.currentProgress = completed;
+    this.setUploadProgress(this.getProgress());
+  }
+}
+
+export default async function ProcessImage (image, imageUrl, crop, context) {
+
+        let progressBar = new Progress(0, context);
         //if (!crop) { let crop = "default"; }
         if (image.type == 'image/png' || image.type == 'image/jpeg' || image.type == 'image/bmp' || image.type == 'image/tiff' || image.type == 'image/gif') {
           try {
+
             let image = await Jimp.read(imageUrl);
+            progressBar.setProgress(25);
             //settings for crop(x-axis, y-axis, width, height)
             let cropSettings = [];
             switch (crop) {
@@ -22,16 +40,16 @@ async function ProcessImage (image, imageUrl, crop) {
                 cropSettings = [Number(defaultImage.bitmap.width), Number(defaultImage.bitmap.height)];
                 break;
             }
-            console.log(cropSettings);
             let imageResize = await image.resize(Jimp.AUTO, cropSettings[1]).quality(70);
-            console.log(imageResize);
+            progressBar.setProgress(50);
             let imageCrop = await imageResize.crop(Number((imageResize.bitmap.width-cropSettings[0])), Number((imageResize.bitmap.height-cropSettings[1])), Number(cropSettings[0]), Number(cropSettings[1]));
-            console.log(imageCrop);
+            progressBar.setProgress(75);
             let imageBase64 = await imageCrop.getBase64Async(Jimp.MIME_JPEG);
-            console.log(imageBase64);
+            progressBar.setProgress(100); //complete on this tick
             return imageBase64;
           }
           catch (error) {
+            console.log(error);
             return(error);
           }
         }
@@ -39,5 +57,3 @@ async function ProcessImage (image, imageUrl, crop) {
           alert("Unsupported image type. Please upload a JPG, PNG, BMP, TIFF or GIF image.")
         }
       };
-
-export default ProcessImage;

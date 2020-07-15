@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Link, BrowserRouter } from "react-router-dom";
-import { createAvatarComponent, SrcSource } from 'react-avatar';
-const Avatar = createAvatarComponent({ sources: [SrcSource]});
+import { createAvatarComponent, SrcSource, IconSource } from 'react-avatar';
+const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource]});
 
 
 
@@ -40,7 +40,7 @@ const NavBar = ({ state, logOut }) => {
             <ul className="navbar-nav">
               <li className="nav-item nav-link  text-secondary ">
                 <Link
-                  className="font-weight-bolder white text-decoration-none"
+                  className="font-weight-bolder dancevent text-decoration-none"
                   to="/"
                 >
                   Dancevent
@@ -96,7 +96,7 @@ const NavBar = ({ state, logOut }) => {
                   className="font-weight-bolder text-body text-decoration-none"
                   to="/profile"
                 >
-                  <Avatar round="50%" size="30" src={state.profilePicture} name={state.name} className="align-middle"/>
+                  <Avatar round="50%" size="30" src={state.profilePicture} name={state.name} color={Avatar.getRandomColor('sitebase', ['#f0f0fc', '#f8bfa8', '#e3dcf1'])} className="align-middle"/>
                 </Link>
               </li>
 
@@ -136,7 +136,7 @@ const NavBar = ({ state, logOut }) => {
             <ul className="navbar-nav">
               <li className="nav-item nav-link">
                 <Link
-                  className="font-weight-bolder white text-decoration-none"
+                  className="font-weight-bolder dancevent text-decoration-none"
                   to="/"
                 >
                   Dancevent
