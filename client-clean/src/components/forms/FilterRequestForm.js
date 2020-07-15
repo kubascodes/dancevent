@@ -1,5 +1,6 @@
 import React from "react";
 import Select from 'react-select';
+import cities from './cities';
 import Form from 'react-bootstrap/Form'
 
 //formats object date into Sting: yyyy-mm-dd
@@ -19,7 +20,7 @@ class FilterRequest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      city: "",
+      city: "Munich",
       gender: "",
         proficiencyLevel: "",
       prefEventDate: "",
@@ -58,6 +59,12 @@ class FilterRequest extends React.Component {
             [e.target.name]: e.target.value
         })
   };
+
+    //Changes the state for REACT-SELECT inputs
+    onChangeCity = (event) => {
+        console.log(event)
+        this.setState({city : event.value})
+    }
 
     handleTextDate = (selectedOption, action) => {
         /*this function gets a text like "tomorrow" and evaluates than the start and end date*/
@@ -299,19 +306,18 @@ class FilterRequest extends React.Component {
         </div>
 
         {/*City Type*/}
-        {/*TODO: Add autofill*/}
-        <div>
-          <label>In...</label>
-          <input
-            type="text"
-            className="form-control"
-            id="city"
-            placeholder="Munich"
-            name="city"
-            onChange={this.onChangeInput}
-            value={this.city}
-          />
-        </div>
+          <div className="form-group">
+                  <label className="label-bold" htmlFor="city">City</label>
+                  <Select
+              className="basic-single"
+              classNamePrefix="select"
+              placeholder={"Choose a city..."}
+              onChange={this.onChangeCity}
+              name="city"
+              options={cities}
+
+              />
+          </div>
 
         {/* Date Type 1 - selection*/}
         {/* TODO: Multi Selection?*/}
