@@ -32,7 +32,7 @@ class Profile extends React.Component {
   getUserData() {
     const context = this; //binding context to current this context
     fetch('/profile', {
-      method: 'POST',
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'Authorization': 'Bearer ' + window.sessionStorage.secret_token
@@ -89,7 +89,7 @@ class Profile extends React.Component {
           <div>
           <MyEventsProfile props={this.props} state={this.state} />
           </div>
-        
+
 
           </div>
 

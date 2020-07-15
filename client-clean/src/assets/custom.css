@@ -9,12 +9,20 @@
 }
 .border-bottom-pink {
   border-bottom: 1px solid #ffbbbb;
+}
+.pink-background {
   background-color: #ffbbbb;
 }
 .button-pink {
   border: 1px solid #ffbbbb;
   background-color: #ffffff;
   color: black;
+}
+.white {
+  color: #ffffff;
+}
+.white:hover, .white:focus, .white:active {
+  color: #f5f5f5;
 }
 .button-pink:hover, .button-pink:focus, .button-pink:active {
   border: 1px solid #ffbbbb;

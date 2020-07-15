@@ -16,7 +16,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 //Unsecured routes for anyone to access
 
 //access the /profile of the user
-router.post(
+router.get(
   "/profile",
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
