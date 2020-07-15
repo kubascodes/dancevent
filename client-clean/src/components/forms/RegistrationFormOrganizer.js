@@ -124,6 +124,7 @@ class RegistrationFormOrganizer extends React.Component {
         userType: res.userType,
         secret_token: res.token
       };
+      console.log(data);
 
       //call the app component and login the user
       context.props.logIn(data);
