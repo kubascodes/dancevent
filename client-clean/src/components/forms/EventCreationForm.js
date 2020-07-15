@@ -29,6 +29,7 @@ class EventCreationForm extends React.Component {
     console.log(props)
     super(props);
     this.state = {
+      //Event attributes
       title: null,
       type: "course",
       description: "",
@@ -37,12 +38,16 @@ class EventCreationForm extends React.Component {
       endDate: new Date().setDate((new Date()).getDate()+10),
       city: "Munich",
       location: null,
-      listOfDanceStyles: null,
+      listOfDanceStyles: [],
       listOfProficiencyLevels: null,
       price: null,
       promoCode: null,
       picture: null,
-      pictureChange: false
+      
+      //attributes used for Class
+      pictureChange: false,
+      danceCategory: 'latin',
+      danceStyle: [],
 
     };
   }
@@ -61,6 +66,19 @@ class EventCreationForm extends React.Component {
         .then((res) => res.json())
         .then((data) => {
           console.log(data);
+
+          var dancstyles = [];
+          var danceCategory = null;
+          var style;
+          for(style of data.listOfDanceStyles){
+            console.log(style);
+            if(!["latin","standard", "various"].includes(style)){
+              dancstyles.push({ value: style, label: style});
+            }else{
+              danceCategory = style;
+            }
+          }
+
           //Set the loaded data to state
           component_scope.setState({
             title: data.title,
@@ -74,7 +92,12 @@ class EventCreationForm extends React.Component {
             listOfProficiencyLevels: data.listOfProficiencyLevels,
             price: data.price,
             promoCode: data.promoCode,
-            picture: data.picture
+            picture: data.picture,
+
+            danceCategory: danceCategory,
+            danceStyle: dancstyles,
+
+
           })
 
         })
@@ -113,6 +136,28 @@ class EventCreationForm extends React.Component {
     this.setState({ [checkboxName]: checked });
 
   };
+
+  handleSelect = (selectedOption, action) => {
+    /* this function handles the interaction of the selection component that is like a drop down */
+    console.log("new event")
+    console.log(selectedOption)
+    console.log(action)
+    this.setState({
+        [action.name]: selectedOption ? selectedOption.value : ""
+    });
+    /*if (action.name == 'danceCategory') {
+        this.setState({danceStyle: ''});
+    };*/
+    console.log(this.state)
+}
+
+handleMultiSelect = (danceStyle) => {
+    /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
+    console.log("new event")
+    console.log(danceStyle)
+    this.setState({danceStyle});
+    console.log(this.state)
+}
 
   //Changes the state for multiple selects inputs
   //the user can select more than one choice
@@ -195,11 +240,40 @@ class EventCreationForm extends React.Component {
       //saving the auth token
       const token = window.sessionStorage.secret_token
 
+      var danceStyles;
+      //listOfProficiencyLevels
+      if(this.state.danceStyle.length == 0){
+        danceStyles = [this.state.danceStyleCategory]
+      }else{
+
+      
+        danceStyles = this.state.danceStyle.map(style => style.value)
+        
+        var  latinStyles = ['jive', 'rumba', 'cha-cha-cha', 'samba', 'paso doble', 'bolero', 'mambo', 'east coast swing'];
+        var standardStyles = ['waltz', 'viennese waltz', 'tango', 'foxtrot', 'qickstep'];
+        var variousStyles = [ 'salsa', 'bachata', 'west coast swing', 'hustle'];
+        // Check if intersection is not empty 
+        // => the user has a chosen a danceStyle of this parentclass
+        //include it so it is easier to filter in later cases 
+        if(danceStyles.some(r=> latinStyles.includes(r))){
+          danceStyles.push('latin')
+        }
+        if(danceStyles.some(r=> standardStyles.includes(r))){
+          danceStyles.push('standard')
+        }
+        if(danceStyles.some(r=> variousStyles.includes(r))){
+          danceStyles.push('various')
+        }
+      }
+      console.log(danceStyles)
+
       //standard address
       var address = "/events/"
 
+
       //saving state to body of HTML
       var body = {
+        
         title: this.state.title,
         type: this.state.type,
         description: this.state.description,
@@ -207,7 +281,7 @@ class EventCreationForm extends React.Component {
         endDate: this.state.endDate,
         city: this.state.city,
         location: this.state.location,
-        listOfDanceStyles: this.state.listOfDanceStyles,
+        listOfDanceStyles: danceStyles,
         listOfProficiencyLevels: this.state.listOfProficiencyLevels,
         price: this.state.price,
         promoCode: this.state.promoCode,
@@ -251,11 +325,15 @@ class EventCreationForm extends React.Component {
             duration: 10,
             city: "Munich",
             location: null,
-            listOfDanceStyles: null,
+            listOfDanceStyles: [],
             listOfProficiencyLevels: null,
             price: null,
             promoCode: null,
             picture: null,
+
+            pictureChange: false,
+            danceCategory: 'latin',
+            danceStyle: [],
           });
         })
         .catch(err => alert(err));
@@ -302,7 +380,37 @@ class EventCreationForm extends React.Component {
       "beginner", "intermediate", "advanced"
     ];
 
-    
+
+    // Dance Styles //TODO (optional): add more various
+    const danceStyleCategory = [
+      {value: 'latin', label: 'Latin/Rythm'},
+      {value: 'standard', label: 'Standard/Smooth'},
+      {value: 'various', label: 'Various'},
+  ];
+
+  const latin = [
+      {value: 'jive', label: 'Jive'},
+      {value: 'rumba', label: 'Rumba'},
+      {value: 'cha-cha-cha', label: 'Cha-Cha-Cha'},
+      {value: 'samba', label: 'Samba'},
+      {value: 'paso doble', label: 'Paso Doble'},
+      {value: 'bolero', label: 'Bolero'},
+      {value: 'mambo', label: 'Mambo'},
+      {value: 'east coast swing', label: 'East Cost Swing'},
+  ];
+  const standard = [
+      {value: 'waltz', label: 'Waltz'},
+      {value: 'viennese waltz', label: 'Viennese Waltz'},
+      {value: 'tango', label: 'Tango'},
+      {value: 'foxtrot', label: 'Foxtrot'},
+      {value: 'qickstep', label: 'Qickstep'},
+  ];
+  const various = [
+      {value: 'salsa', label: 'Salsa'},
+      {value: 'bachata', label: 'Bachata'},
+      {value: 'west coast swing', label: 'West Cost Swing'},
+      {value: 'hustle', label: 'Hustle'},
+  ];
 
     
     if (window.sessionStorage.secret_token != null) {
@@ -382,6 +490,7 @@ class EventCreationForm extends React.Component {
                 className="basic-single"
                 classNamePrefix="select"
                 defaultValue={{label: this.state.city, value: this.state.city}}
+                value={{label: this.state.city, value: this.state.city}}
                 placeholder={"Choose a city..."}
                 onChange={this.onChangeAuto}
                 name="city"
@@ -404,6 +513,76 @@ class EventCreationForm extends React.Component {
                 </span>
               ))}
             </div>
+
+            
+                {/* The following are two selections, where the secound is depending on the first.
+                            Here are the dance style categories and depending on that the user can specify the dancing style in more details if wanted.
+                            This is solves by a switch case... */}
+            <div>
+              <div className="form-group">
+              <label className="mr-2 label-bold" htmlFor="listOfProficiencyLevels">Dance style</label>
+                <Select
+                  className="basic-single"
+                  classNamePrefix="select"
+                  defaultValue={this.state.danceCategory}
+                  placeholder={"Dance style category..."}
+                  isClearable={true}
+                  isSearchable={true}
+                  value={this.state.danceCategory}
+                  onChange={this.handleSelect}
+                  name="danceCategory"
+                  options={danceStyleCategory}
+                />
+                {
+                  {
+                    'latin':
+                      <Select
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        onChange={this.handleMultiSelect}
+                        defaultValue={''}
+                        value={this.state.danceStyle}
+                        isMulti={true}
+                        placeholder={"Dance style..."}
+                        isClearable={true}
+                        isSearchable={true}
+                        name="danceStyle"
+                        options={latin}
+                      />,
+                    'standard':
+                      <Select
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        onChange={this.handleMultiSelect}
+                        defaultValue={''}
+                        value={this.state.danceStyle}
+                        isMulti={true}
+                        placeholder={"Dance style..."}
+                        isClearable={true}
+                        isSearchable={true}
+                        name="danceStyle"
+                        options={standard}
+                      />,
+                    'various':
+                      <Select
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        onChange={this.handleMultiSelect}
+                        defaultValue={''}
+                        value={this.state.danceStyle}
+                        isMulti={true}
+                        placeholder={"Dance style..."}
+                        isClearable={true}
+                        isSearchable={true}
+                        name="danceStyle"
+                        options={various}
+                      />
+
+                  }[this.state.danceCategory]
+                }
+              </div>
+            </div>
+
             <div className="form-group">
               <label className="mr-2 label-bold" htmlFor="listOfProficiencyLevels">Profiency Level</label>
               <select multiple className="form-control" id="listOfProficiencyLevels" name="listOfProficiencyLevels" onChange={this.onChangeMultipleSelect} value={this.state.listOfProficiencyLevels} required>
