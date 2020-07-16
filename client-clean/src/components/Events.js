@@ -2,15 +2,12 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import Select from 'react-select'; 
+import Select from "react-select";
 import EventCard from "./parts/EventCard";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-import cities from './forms/cities'
-
-
-
+import cities from "./forms/cities";
 
 /*
     TODOs:
@@ -48,7 +45,7 @@ class Events extends React.Component {
 
       sorting: "date",
 
-      danceCategory: 'latin',
+      danceCategory: "latin",
       danceStyle: [],
     };
   }
@@ -65,7 +62,7 @@ class Events extends React.Component {
         this.setState({ events: data });
       })
       .catch(console.log);
-      console.log(this.state);
+    console.log(this.state);
   }
 
   onChange = (event) => {
@@ -80,38 +77,37 @@ class Events extends React.Component {
   //Changes the state for calendar inputs
   //type should specify if it is a start- or endDate
   onChangeCalendar = (date, type) => {
-    console.log(this)
+    console.log(this);
     this.setState({ [type]: date });
   };
 
-
   //Changes the state for REACT-SELECT inputs
   onChangeCity = (event) => {
-    console.log(event)
-    this.setState({city : event.value})
-  }
+    console.log(event);
+    this.setState({ city: event.value });
+  };
 
   handleSelect = (selectedOption, action) => {
     /* this function handles the interaction of the selection component that is like a drop down */
-    console.log("new event")
-    console.log(selectedOption)
-    console.log(action)
+    console.log("new event");
+    console.log(selectedOption);
+    console.log(action);
     this.setState({
-        [action.name]: selectedOption ? selectedOption.value : ""
+      [action.name]: selectedOption ? selectedOption.value : "",
     });
     /*if (action.name == 'danceCategory') {
         this.setState({danceStyle: ''});
     };*/
-    console.log(this.state)
-}
+    console.log(this.state);
+  };
 
-handleMultiSelect = (danceStyle) => {
+  handleMultiSelect = (danceStyle) => {
     /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
-    console.log("new event")
-    console.log(danceStyle)
-    this.setState({danceStyle});
-    console.log(this.state)
-}
+    console.log("new event");
+    console.log(danceStyle);
+    this.setState({ danceStyle });
+    console.log(this.state);
+  };
 
   sortingChanged = (event) => {
     /*
@@ -145,7 +141,7 @@ handleMultiSelect = (danceStyle) => {
         then adds it to the URL
         */
 
-    console.log(this.state)
+    console.log(this.state);
 
     //otherwise it would reload the Page
     event.preventDefault();
@@ -164,21 +160,21 @@ handleMultiSelect = (danceStyle) => {
       url += "listOfDanceStyles=" + this.state.danceStyle;
       previous = true;
     }*/
-    if(!this.state.danceStyle.includes('all')){
-      if(this.state.danceStyle.length !== 0){
-        console.log(this.state.danceStyle)
+    if (!this.state.danceStyle.includes("all")) {
+      if (this.state.danceStyle.length !== 0) {
+        console.log(this.state.danceStyle);
         var index;
-        for(index in this.state.danceStyle){
-          console.log(index)
-          if(index!==0){
+        for (index in this.state.danceStyle) {
+          console.log(index);
+          if (index !== 0) {
             url += "&";
-          }else if(previous){
+          } else if (previous) {
             url += "&";
           }
-          console.log(this.state.danceStyle[index])
-          console.log(this.state.danceStyle[index].value)
-          url += "listOfDanceStyles=" + this.state.danceStyle[index].value
-          console.log(url)
+          console.log(this.state.danceStyle[index]);
+          console.log(this.state.danceStyle[index].value);
+          url += "listOfDanceStyles=" + this.state.danceStyle[index].value;
+          console.log(url);
         }
         previous = true;
       }
@@ -271,53 +267,43 @@ handleMultiSelect = (danceStyle) => {
       "salsa",
       "bachata",
     ];
-    const eventLevels = [
-      "beginner", "intermediate", "advanced"
-    ];
-
+    const eventLevels = ["beginner", "intermediate", "advanced"];
 
     const danceStyleCategory = [
-      {value: 'all', label: 'All Styles'},
-      {value: 'latin', label: 'Latin/Rythm'},
-      {value: 'standard', label: 'Standard/Smooth'},
-      {value: 'various', label: 'Various'},
-  ];
-  
-  const all = [
-    {value: 'all', label: 'All styles'}
-  ]
+      { value: "all", label: "All Styles" },
+      { value: "latin", label: "Latin/Rythm" },
+      { value: "standard", label: "Standard/Smooth" },
+      { value: "various", label: "Various" },
+    ];
 
-  const latin = [
-      {value: 'latin', label: 'All latin styles'},
-      {value: 'jive', label: 'Jive'},
-      {value: 'rumba', label: 'Rumba'},
-      {value: 'cha-cha-cha', label: 'Cha-Cha-Cha'},
-      {value: 'samba', label: 'Samba'},
-      {value: 'paso doble', label: 'Paso Doble'},
-      {value: 'bolero', label: 'Bolero'},
-      {value: 'mambo', label: 'Mambo'},
-      {value: 'east coast swing', label: 'East Cost Swing'},
-  ];
-  const standard = [
-      {value: 'standard', label: 'All standard styles'},
-      {value: 'waltz', label: 'Waltz'},
-      {value: 'viennese waltz', label: 'Viennese Waltz'},
-      {value: 'tango', label: 'Tango'},
-      {value: 'foxtrot', label: 'Foxtrot'},
-      {value: 'qickstep', label: 'Qickstep'},
-  ];
-  const various = [
-      {value: 'various', label: 'All various styles'},
-      {value: 'salsa', label: 'Salsa'},
-      {value: 'bachata', label: 'Bachata'},
-      {value: 'west coast swing', label: 'West Cost Swing'},
-      {value: 'hustle', label: 'Hustle'},
-  ];
+    const all = [{ value: "all", label: "All styles" }];
 
-
-    
-
-
+    const latin = [
+      { value: "latin", label: "All latin styles" },
+      { value: "jive", label: "Jive" },
+      { value: "rumba", label: "Rumba" },
+      { value: "cha-cha-cha", label: "Cha-Cha-Cha" },
+      { value: "samba", label: "Samba" },
+      { value: "paso doble", label: "Paso Doble" },
+      { value: "bolero", label: "Bolero" },
+      { value: "mambo", label: "Mambo" },
+      { value: "east coast swing", label: "East Cost Swing" },
+    ];
+    const standard = [
+      { value: "standard", label: "All standard styles" },
+      { value: "waltz", label: "Waltz" },
+      { value: "viennese waltz", label: "Viennese Waltz" },
+      { value: "tango", label: "Tango" },
+      { value: "foxtrot", label: "Foxtrot" },
+      { value: "qickstep", label: "Qickstep" },
+    ];
+    const various = [
+      { value: "various", label: "All various styles" },
+      { value: "salsa", label: "Salsa" },
+      { value: "bachata", label: "Bachata" },
+      { value: "west coast swing", label: "West Cost Swing" },
+      { value: "hustle", label: "Hustle" },
+    ];
 
     return (
       <Container fluid>
@@ -386,75 +372,81 @@ handleMultiSelect = (danceStyle) => {
                     ))}
                   </select>
                 </div>
-                
 
                 <div className="form-group">
-              <label className="mr-2 label-bold" htmlFor="listOfProficiencyLevels">Dance style</label>
-                <Select
-                  className="basic-single"
-                  classNamePrefix="select"
-                  placeholder="Dance style category..."
-                  isClearable={true}
-                  isSearchable={true}
-                  onChange={this.handleSelect}
-                  name="danceCategory"
-                  options={danceStyleCategory}
-                />
-                {
+                  <label
+                    className="mr-2 label-bold"
+                    htmlFor="listOfProficiencyLevels"
+                  >
+                    Dance style
+                  </label>
+                  <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    placeholder="Dance style category..."
+                    isClearable={true}
+                    isSearchable={true}
+                    onChange={this.handleSelect}
+                    name="danceCategory"
+                    options={danceStyleCategory}
+                  />
                   {
-                    'all':
-                      <Select
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={this.handleMultiSelect}
-                        isMulti={true}
-                        placeholder="Dance style..."
-                        isClearable={true}
-                        isSearchable={true}
-                        name="danceStyle"
-                        options={all}
-                      />,
-                    'latin':
-                      <Select
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={this.handleMultiSelect}
-                        isMulti={true}
-                        placeholder="Dance style..."
-                        isClearable={true}
-                        isSearchable={true}
-                        name="danceStyle"
-                        options={latin}
-                      />,
-                    'standard':
-                      <Select
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={this.handleMultiSelect}
-                        isMulti={true}
-                        placeholder="Dance style..."
-                        isClearable={true}
-                        isSearchable={true}
-                        name="danceStyle"
-                        options={standard}
-                      />,
-                    'various':
-                      <Select
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={this.handleMultiSelect}
-                        isMulti={true}
-                        placeholder="Dance style..."
-                        isClearable={true}
-                        isSearchable={true}
-                        name="danceStyle"
-                        options={various}
-                      />
-
-                  }[this.state.danceCategory]
-                }
-              </div>
-
+                    {
+                      all: (
+                        <Select
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          onChange={this.handleMultiSelect}
+                          isMulti={true}
+                          placeholder="Dance style..."
+                          isClearable={true}
+                          isSearchable={true}
+                          name="danceStyle"
+                          options={all}
+                        />
+                      ),
+                      latin: (
+                        <Select
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          onChange={this.handleMultiSelect}
+                          isMulti={true}
+                          placeholder="Dance style..."
+                          isClearable={true}
+                          isSearchable={true}
+                          name="danceStyle"
+                          options={latin}
+                        />
+                      ),
+                      standard: (
+                        <Select
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          onChange={this.handleMultiSelect}
+                          isMulti={true}
+                          placeholder="Dance style..."
+                          isClearable={true}
+                          isSearchable={true}
+                          name="danceStyle"
+                          options={standard}
+                        />
+                      ),
+                      various: (
+                        <Select
+                          className="basic-multi-select"
+                          classNamePrefix="select"
+                          onChange={this.handleMultiSelect}
+                          isMulti={true}
+                          placeholder="Dance style..."
+                          isClearable={true}
+                          isSearchable={true}
+                          name="danceStyle"
+                          options={various}
+                        />
+                      ),
+                    }[this.state.danceCategory]
+                  }
+                </div>
 
                 {/*    City   */}
 
@@ -473,7 +465,9 @@ handleMultiSelect = (danceStyle) => {
                 */}
 
                 <div className="form-group">
-                  <label className="label-bold" htmlFor="city">City</label>
+                  <label className="label-bold" htmlFor="city">
+                    City
+                  </label>
                   <Select
                     className="basic-single"
                     classNamePrefix="select"
@@ -481,8 +475,7 @@ handleMultiSelect = (danceStyle) => {
                     onChange={this.onChangeCity}
                     name="city"
                     options={cities}
-                    
-                            />
+                  />
                 </div>
 
                 {/*    Startdate   */}
@@ -504,7 +497,9 @@ handleMultiSelect = (danceStyle) => {
                     className="form-control"
                     name="startDate"
                     selected={this.state.startDate}
-                    onChange={date => this.onChangeCalendar(date, "startDate")}
+                    onChange={(date) =>
+                      this.onChangeCalendar(date, "startDate")
+                    }
                     dateFormat="MMMM d, yyyy"
                     minDate={new Date()}
                   />
@@ -514,7 +509,7 @@ handleMultiSelect = (danceStyle) => {
                   <DatePicker
                     className="form-control"
                     name="endDate"
-                    onChange={date => this.onChangeCalendar(date, "endDate")}
+                    onChange={(date) => this.onChangeCalendar(date, "endDate")}
                     dateFormat="MMMM d, yyyy"
                     minDate={this.state.startDate}
                     placeholderText="Insert a date"
@@ -548,25 +543,24 @@ handleMultiSelect = (danceStyle) => {
             {/*    Event Cards   */}
             <Row>
               {" "}
-              { this.state.events.length > 0 ?
-                
+              {this.state.events.length > 0 ? (
                 this.state.events.map((event) => (
                   <EventCard
                     event={event}
                     state={this.props.state}
                     onDeleteEvent={() => this.onDeleteEvent(event)}
+                    onSaveEvent={() => this.props.onSaveEvent(event)}
+                    onUnsaveEvent={() => this.props.onUnsaveEvent(event)}
                   />
                 ))
-                :
+              ) : (
                 <div>
-
                   <h3>Events</h3>
-                  <p>Appearently, no events are found with your selected Filters.  </p>
+                  <p>
+                    Appearently, no events are found with your selected Filters.{" "}
+                  </p>
                 </div>
-
-
-              }
-              {" "}
+              )}{" "}
             </Row>
           </Col>
         </Row>
