@@ -16,7 +16,7 @@ import {
 //moment
 import moment from "moment";
 
-const RequestCardDeck = ({ state }) => {
+const EventCardDeckOld = ({ state }) => {
   const capitalize = (input) => {
     const capitalStr = input.replace(/\b\w/g, function (string) {
       return string.toUpperCase();
@@ -26,33 +26,30 @@ const RequestCardDeck = ({ state }) => {
 
   return (
     <div className="row justify-content-start">
-      {state.requests.map((request) => (
-        <div kclassName="col-md-4 col-lg-3 mt-4">
+      {state.events.map((ev) => (
+        <div className="col-md-4 col-lg-3 mt-4">
           <div className="card event-card shadow-sm">
+            <div className="crop-box crop-to-fit">
+              <img src={ev.picture} class="card-img-top" alt="..." />
+            </div>
             <div class="card-body d-flex flex-column">
-              <p class="card-title">{request.description}</p>
+              <h5 class="card-title">{ev.title}</h5>
               <li className="cart-text list-unstyled">
-                <MdFace /> {request.listOfGenders}
+                <MdLocationOn /> {ev.location} {ev.city}
               </li>
               <li className="cart-text list-unstyled">
-                <MdEvent /> Created on:{" "}
-                {moment(request.timestamp).format("dddd D.M.YYYY")}
+                <MdEvent /> {moment(ev.startDate).format("dddd D.M.YYYY")} at{" "}
+                {moment(ev.startDate).format("H")}h
               </li>
               <li className="cart-text list-unstyled">
-                <MdFace /> {request.listOfProficiencyLevels}
+                <MdCreditCard /> {ev.price} EUR
               </li>
-              <MdFavorite className="mr-1" />{" "}
-              {request.listOfDanceStyles.map((danceStyle) => (
-                <span className="mr-1 badge border-pink">
-                  {capitalize(danceStyle)}
-                </span>
-              ))}
               <div className="text-center mt-auto">
                 <Link
                   className="btn button-pink"
-                  to={"/myrequests" + request._id}
+                  to={"/events/single" + ev._id}
                 >
-                  Go to partner request
+                  Go to event
                 </Link>
               </div>
             </div>
@@ -63,4 +60,4 @@ const RequestCardDeck = ({ state }) => {
   );
 };
 
-export default RequestCardDeck;
+export default EventCardDeckOld;

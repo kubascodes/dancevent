@@ -348,9 +348,9 @@ router.post(
         message: "The request body is empty ",
       });
 
-    req.body.dancerId = req.user._id;
-    req.body.counterfeitEmail = req.user.email;
-    console.log(req.body.dancerId);
+    req.body.dancer = req.user._id;
+    //req.body.counterfeitEmail = req.user.email;
+    console.log(req.body.dancer);
     console.log(req.body);
 
     try {
