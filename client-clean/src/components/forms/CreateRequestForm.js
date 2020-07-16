@@ -176,7 +176,7 @@ class CreateRequestForm extends React.Component {
       listofGenders: this.state.prefGender,
       listOfProficiencyLevels: this.state.prefProficiencyLevel,
       listOfDanceStyles: danceStyle,
-      event: this.props.event._id, // TODO: needs event link and populate in backend?
+      event: this.props.event._id,
     };
 
     console.log("newRequest", newRequest);
@@ -227,8 +227,6 @@ class CreateRequestForm extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log("prevProps", prevProps);
-    console.log("props", this.props);
     if (prevProps !== this.props) {
       if (!prevProps.show && this.props.show) {
         this.setState({ showModal: true });
