@@ -12,8 +12,8 @@ import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
 import MyEvents from "./components/parts/MyEvents";
-import CreateRequest from "./components/forms/CreateRequest";
-import MyRequests from './components/forms/MyRequests';
+import CreateRequestForm from "./components/forms/CreateRequestForm";
+import MyRequests from "./components/forms/MyRequests";
 
 export default class App extends Component {
   constructor(props) {
@@ -25,9 +25,10 @@ export default class App extends Component {
       name: null,
       userType: null,
       profilePicture: null, //TODO
+      savedEvents: [],
+      organizedEvents: [],
     };
-  };
-
+  }
 
   addUser = (User) => {
     console.log(User);
@@ -40,8 +41,31 @@ export default class App extends Component {
     console.log(User);
   };
 
+  fetchUserEvents = () => {
+    var context = this;
+    // Fetch events the user is intereste in and/or organizes
+    // Ideally the get /profile route would fetch it all so we just need one request
+    fetch("/profile/events", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: "Bearer " + window.sessionStorage.secret_token,
+      },
+    })
+      .then((res) => res.json(res))
+      .then((res) => {
+        console.log(res);
+        context.setState({ savedEvents: res.interestedInEvents });
+        if (res.userType === "Organizer") {
+          context.setState({ organizedEvents: res.organizedEvents });
+        }
+      })
+      .catch((err) => alert(err));
+  };
+
   // Fetches the user data that did not come with the login as the login just retrieves email and token
   getUserData = () => {
+    // Fetch standard user info
     var context = this;
     fetch("/user", {
       method: "GET",
@@ -62,6 +86,8 @@ export default class App extends Component {
         });
       })
       .catch((err) => alert(err));
+
+    this.fetchUserEvents();
   };
 
   logIn = (data) => {
@@ -71,11 +97,11 @@ export default class App extends Component {
       login: data.login,
       name: data.name,
       userType: data.userType,
-      profilePicture: data.profilePicture
+      profilePicture: data.profilePicture,
     });
     //add secret token to session storage
-    window.sessionStorage.setItem('secret_token', data.secret_token);
-    //this.getUserData();
+    window.sessionStorage.setItem("secret_token", data.secret_token);
+    this.fetchUserEvents();
   };
 
   logOut = (data) => {
@@ -91,6 +117,16 @@ export default class App extends Component {
 
   // Propagated up from the EventCard
   deleteEvent = (event) => {
+    var component_scope = this;
+
+    component_scope.setState({
+      organizedEvents: component_scope.state.organizedEvents.filter(
+        (organizedEvent) => organizedEvent._id !== event._id
+      ),
+      savedEvents: component_scope.state.savedEvents.filter(
+        (savedEvent) => savedEvent._id !== event._id
+      ),
+    });
     // Delete the event from the backend
     fetch(`/events/${event._id}`, {
       method: "DELETE",
@@ -105,6 +141,64 @@ export default class App extends Component {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  // Propagated up from the EventCard
+  saveEvent = (event) => {
+    var component_scope = this;
+    component_scope.setState(
+      {
+        savedEvents: [...component_scope.state.savedEvents, event],
+      },
+      () => {
+        // Push that new state to the backend
+        fetch("/profile/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: "Bearer " + window.sessionStorage.secret_token,
+          },
+          body: JSON.stringify([
+            {
+              propName: "interestedInEvents",
+              value: component_scope.state.savedEvents,
+            },
+          ]),
+        })
+          .then((res) => res.json(res))
+          .catch((err) => console.log(err));
+      }
+    );
+  };
+
+  // Propagated up from the EventCard
+  unsaveEvent = (event) => {
+    var component_scope = this;
+    component_scope.setState(
+      {
+        savedEvents: component_scope.state.savedEvents.filter(
+          (item) => item._id !== event._id
+        ),
+      },
+      () => {
+        // Push that new state to the backend
+        fetch("/profile/update", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: "Bearer " + window.sessionStorage.secret_token,
+          },
+          body: JSON.stringify([
+            {
+              propName: "interestedInEvents",
+              value: component_scope.state.savedEvents,
+            },
+          ]),
+        })
+          .then((res) => res.json(res))
+          .catch((err) => console.log(err));
+      }
+    );
   };
 
   componentDidMount = () => {
@@ -127,34 +221,50 @@ export default class App extends Component {
                 {...props}
                 state={this.state}
                 onDeleteEvent={this.deleteEvent}
+                onSaveEvent={this.saveEvent}
+                onUnsaveEvent={this.unsaveEvent}
               />
             )}
           />
           <Route
             path="/register/organizer"
             render={(props) => (
-              <RegistrationFormOrganizer {...props} logIn={this.logIn} state={this.state} />
+              <RegistrationFormOrganizer
+                {...props}
+                logIn={this.logIn}
+                state={this.state}
+              />
             )}
           />
           <Route
             path="/profile"
-            render={(props) => <Profile {...props} state={this.state} />}
+            render={(props) => (
+              <Profile
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+                onSaveEvent={this.saveEvent}
+                onUnsaveEvent={this.unsaveEvent}
+              />
+            )}
           />
 
           <Route
             exact
             path="/register/dancer"
             render={(props) => (
-              <RegistrationFormDancer {...props} logIn={this.logIn} state={this.state} />
+              <RegistrationFormDancer
+                {...props}
+                logIn={this.logIn}
+                state={this.state}
+              />
             )}
           />
 
           <Route
             exact
             path="/login"
-            render={(props) => (
-              <LoginForm {...props} logIn={this.logIn} />
-            )}
+            render={(props) => <LoginForm {...props} logIn={this.logIn} />}
           />
 
           <Route
@@ -165,12 +275,22 @@ export default class App extends Component {
                 {...props}
                 state={this.state}
                 onDeleteEvent={this.deleteEvent}
+                onSaveEvent={this.saveEvent}
+                onUnsaveEvent={this.unsaveEvent}
               />
             )}
           />
           <Route
             path="/events/single/:id"
-            render={(props) => <Event {...props} state={this.state} />}
+            render={(props) => (
+              <Event
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+                onSaveEvent={this.saveEvent}
+                onUnsaveEvent={this.unsaveEvent}
+              />
+            )}
           />
 
           <Route
@@ -190,7 +310,11 @@ export default class App extends Component {
           <Route
             path="/events/update/:id"
             render={(props) => (
-              <EventCreationForm update {...props} auth_token={this.secret_token} />
+              <EventCreationForm
+                update
+                {...props}
+                auth_token={this.secret_token}
+              />
             )}
           />
 
@@ -201,6 +325,8 @@ export default class App extends Component {
                 {...props}
                 state={this.state}
                 onDeleteEvent={this.deleteEvent}
+                onSaveEvent={this.saveEvent}
+                onUnsaveEvent={this.unsaveEvent}
               />
             )}
           />
@@ -215,14 +341,15 @@ export default class App extends Component {
               />
             )}
           />
-
+          {/** // Request can only be created from an event page
           <Route
             exact
             path="/createrequest"
             render={(props) => (
-            <CreateRequest {...props}  auth_token={this.secret_token} />
+              <CreateRequestForm {...props} auth_token={this.secret_token} />
             )}
-            />
+          />
+          */}
         </div>
       </BrowserRouter>
     );

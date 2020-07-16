@@ -46,7 +46,7 @@ content-type: application/json
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDIxMTU1Mn0.AWS72KhDKgmtSrqutr0HKVWuyQQQBkRaYUFfoxq8Nsg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDg1MzI4OH0.AtF0ZcH4ayLDcKpzhHfJwjdlOKhHbxhu6iJAdq7MpuI
 
 {
     "title": "Dance Party Neubeck",
@@ -66,7 +66,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6I
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDIxMTU1Mn0.AWS72KhDKgmtSrqutr0HKVWuyQQQBkRaYUFfoxq8Nsg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDg1MzI4OH0.AtF0ZcH4ayLDcKpzhHfJwjdlOKhHbxhu6iJAdq7MpuI
 
 {
     "title": "ein fancy tanzball",
@@ -86,7 +86,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6I
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDIxMTU1Mn0.AWS72KhDKgmtSrqutr0HKVWuyQQQBkRaYUFfoxq8Nsg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDg1MzI4OH0.AtF0ZcH4ayLDcKpzhHfJwjdlOKhHbxhu6iJAdq7MpuI
 
 {
     "title": "noch ein event",
@@ -106,7 +106,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6I
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDIxMTU1Mn0.AWS72KhDKgmtSrqutr0HKVWuyQQQBkRaYUFfoxq8Nsg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDg1MzI4OH0.AtF0ZcH4ayLDcKpzhHfJwjdlOKhHbxhu6iJAdq7MpuI
 
 {
     "title": "und noch eins",
@@ -126,15 +126,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6I
 ###
 POST http://localhost:3000/events HTTP/1.1
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDIxMTU1Mn0.AWS72KhDKgmtSrqutr0HKVWuyQQQBkRaYUFfoxq8Nsg
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVmMDA3ODUxOGQzZTRmYmFjMmE4MWY1ZCIsImVtYWlsIjoidGVzdEB0ZXN0LmRlIn0sImlhdCI6MTU5NDg1MzI4OH0.AtF0ZcH4ayLDcKpzhHfJwjdlOKhHbxhu6iJAdq7MpuI
 
 {
     "title": "1 nica dance course",
     "type": "course",
     "organizer": "5efc1f055b7ed359e3c030ba",
     "description": "hier wird gedancet",
-    "startDate": "2020-07-12T18:00:00",
-    "endDate": "2020-07-15T23:00:00",
+    "startDate": "2020-07-20T18:00:00",
+    "endDate": "2020-07-23T23:00:00",
     "city": "Valencia",
     "location": "Akuarela Playa",
     "listOfDanceStyles": ["hustle", "various"],

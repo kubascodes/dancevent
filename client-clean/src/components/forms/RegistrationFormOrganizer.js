@@ -4,6 +4,7 @@ import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import ProcessImage from '../../services/imageProcessing';
 import RouteRedirect from '../../services/RouteRedirect';
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 class RegistrationFormOrganizer extends React.Component {
 
@@ -23,14 +24,25 @@ class RegistrationFormOrganizer extends React.Component {
       street: null,
       description: null,
       publicEmail: null,
-      phone: null
+      phone: null,
+      uploadProgress: 0,
+      hiddenProgress: true,
     };
+    this.setUploadProgress = this.setUploadProgress.bind(this);
   }
-
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
         //console.log(this.state);
   };
+
+  setUploadProgress = (progress) => {
+    this.setState({uploadProgress: progress});
+    /*
+    if (this.state.uploadProgress >= 100) {
+      setTimeout(this.setState({hiddenProgress: true}), 3000);
+    }
+    */
+  }
 
   onChangeFile = (event) => {
     //setting the file to the input
@@ -42,7 +54,7 @@ class RegistrationFormOrganizer extends React.Component {
       async function processImage(file, fileUrl, context) {
         //console.log(file);
         try {
-          let image = await ProcessImage(file, fileUrl, "profilePicture");
+          let image = await ProcessImage(file, fileUrl, "profilePicture", context);
           context.setState({ picture: image });
           //console.log(context.state);
         }
@@ -51,7 +63,9 @@ class RegistrationFormOrganizer extends React.Component {
         }
       };
 
-      //calling the function
+      //displaying progress bar
+      this.setState({hiddenProgress:false});
+      //calling the process function
       processImage(file, fileUrl, context);
     }
 
@@ -141,37 +155,37 @@ class RegistrationFormOrganizer extends React.Component {
 
       <div className="form-group">
         <label className="label-bold" htmlFor="name">Organization Name</label>
-        <input type="text" className="form-control" id="name" name="name" placeholder="Your Name" onChange={this.onChangeInput} value={this.name}/>
+        <input type="text" className="form-control border-red" id="name" name="name" placeholder="Your Organization Name (required)" onChange={this.onChangeInput} value={this.name} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="email">Private Email</label>
-        <input type="email" className="form-control" id="email" name="email" onChange={this.onChangeInput} placeholder="Required private@email.com" value={this.email}/>
+        <input type="email" className="form-control border-red" id="email" name="email" onChange={this.onChangeInput} placeholder="private@email.com (required)" value={this.email} required/>
       </div>
 
       <div className="form-group">
         <label htmlFor="password">Password</label>
-        <input type="password" className="form-control" id="password" name="password" onChange={this.onChangeInput} placeholder="Required" value={this.password}/>
+        <input type="password" className="form-control border-red" id="password" name="password" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.password} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="publicEmail">Public Email</label>
-        <input type="email" className="form-control" id="publicEmail" name="publicEmail" onChange={this.onChangeInput} placeholder="Required public@email.com" value={this.publicEmail}/>
+        <input type="email" className="form-control border-red" id="publicEmail" name="publicEmail" onChange={this.onChangeInput} placeholder="public@email.com (required)" value={this.publicEmail} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="phone">Phone</label>
-        <input type="number" className="form-control" id="phone" name="phone" onChange={this.onChangeInput} placeholder="Your phone" value={this.phone}/>
+        <input type="number" className="form-control border-red" id="phone" name="phone" onChange={this.onChangeInput} placeholder="Your phone (required)" value={this.phone} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="street">Street</label>
-        <input type="text" className="form-control" id="street" placeholder="Gisselstraße 4" name="street" onChange={this.onChangeInput} value={this.street}/>
+        <input type="text" className="form-control border-red" id="street" placeholder="Gisselstraße 4 (required)" name="street" onChange={this.onChangeInput} value={this.street} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="city">City</label>
-        <input type="text" className="form-control" id="city" placeholder="Munich" name="city" onChange={this.onChangeInput} value={this.city}/>
+        <input type="text" className="form-control border-red" id="city" placeholder="Munich (required)" name="city" onChange={this.onChangeInput} value={this.city} required/>
       </div>
 
       <div className="form-group">
@@ -186,8 +200,14 @@ class RegistrationFormOrganizer extends React.Component {
         </div>
       </div>
 
+      <div class="form-group">
+        <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={this.state.uploadProgress} hidden={this.state.hiddenProgress} />
+      </div>
+
+      <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
+
       <div className="form-group">
-        <input type="submit" className="btn btn-outline-dark" value="Submit"/>
+        <input type="submit" className="btn button-pink" value="Submit"/>
       </div>
     </form>
 

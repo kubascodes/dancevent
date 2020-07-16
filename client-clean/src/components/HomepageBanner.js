@@ -55,20 +55,20 @@ const HomepageBanner = () => {
       <Row className="mt-2">
         <Col className="col-4 text-center">
           <Link to="/dancepartner">
-            <Button variant="secondary" size="lg">
+            <Button className="button-pink" size="lg">
               Find a partner
             </Button>
           </Link>
         </Col>
         <Col className="col-4 text-center">
           <Link to="/events">
-            <Button variant="secondary" size="lg">
+            <Button className="button-pink" size="lg">
               Find upcoming events
             </Button>
           </Link>
         </Col>
         <Col className="col-4 text-center">
-          <Button variant="secondary" size="lg">
+          <Button className="button-pink" size="lg">
             Find a dance school
           </Button>
         </Col>
