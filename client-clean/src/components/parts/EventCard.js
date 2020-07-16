@@ -1,75 +1,71 @@
- import React from "react";
+import React from "react";
 import { Link, Redirect } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import moment from "moment";
+import {
+  MdMailOutline,
+  MdLocationOn,
+  MdPhone,
+  MdLockOutline,
+  MdFavorite,
+  MdFace,
+  MdStarHalf,
+  MdEvent,
+  MdCreditCard,
+} from "react-icons/md";
 
 class EventCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      interestedInEvents: [],
       interestedIn: false,
+      userIsOwner: false,
       redirect: null,
       showDialog: false,
     };
   }
 
-  days = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  fetchInterestedInEvents = () => {
-    var component_scope = this;
-    return new Promise((resolve, reject) => {
-      fetch("/profile", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + window.sessionStorage.secret_token,
-        },
-      })
-        .then((res) => res.json(res))
-        .then(function (res) {
-          component_scope.setState({
-            interestedInEvents: res.user.interestedInEvents,
-          });
-          resolve(res);
-        })
-        .catch((err) => reject(err));
-    });
-    console.log(this.state);
-    console.log(this.props.event);
-  };
-
   componentDidMount() {
-    // Get the events the currently logged in user is interested in and check if the event this EventCard belongs to is in there
-    if (window.sessionStorage.secret_token != null) {
-      this.fetchInterestedInEvents().then(() => {
-        if (this.state.interestedInEvents.includes(this.props.event._id)) {
+    if (this.props.state.savedEvents.length > 0) {
+      const savedEventIds = this.props.state.savedEvents.map(
+        (savedEvent) => savedEvent._id
+      );
+      if (savedEventIds.includes(this.props.event._id)) {
+        this.setState({ interestedIn: true });
+      }
+    }
+    if (this.props.state.organizedEvents.length > 0) {
+      const organizedEventIds = this.props.state.organizedEvents.map(
+        (organizedEvent) => organizedEvent._id
+      );
+      if (organizedEventIds.includes(this.props.event._id)) {
+        this.setState({ userIsOwner: true });
+      }
+    }
+  }
+
+  // On the homepage if an event is unsaved, there is no new component rendered in its place but the old card just receives new props
+  // Need to make sure that the interestedIn and userIsOwner properties are set correctly
+  componentDidUpdate(prevProps) {
+    if (prevProps.event !== this.props.event) {
+      if (this.props.state.savedEvents.length > 0) {
+        const savedEventIds = this.props.state.savedEvents.map(
+          (savedEvent) => savedEvent._id
+        );
+        if (savedEventIds.includes(this.props.event._id)) {
           this.setState({ interestedIn: true });
         }
-      });
+      }
+      if (this.props.state.organizedEvents.length > 0) {
+        const organizedEventIds = this.props.state.organizedEvents.map(
+          (organizedEvent) => organizedEvent._id
+        );
+        if (organizedEventIds.includes(this.props.event._id)) {
+          this.setState({ userIsOwner: true });
+        }
+      }
     }
   }
 
@@ -77,37 +73,8 @@ class EventCard extends React.Component {
     var component_scope = this;
     if (window.sessionStorage.secret_token != null) {
       component_scope.setState({ interestedIn: true });
-      // Refresh the state from the backend
-      component_scope.fetchInterestedInEvents().then(() => {
-        // Add the event to interestedInEvents in the state
-        component_scope.setState(
-          {
-            interestedInEvents: [
-              ...component_scope.state.interestedInEvents,
-              component_scope.props.event._id,
-            ],
-          },
-          // Callback of setState so it definitely pushes the newest state
-          () => {
-            // Push that new state to the backend
-            fetch("/profile/update", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: "Bearer " + window.sessionStorage.secret_token,
-              },
-              body: JSON.stringify([
-                {
-                  propName: "interestedInEvents",
-                  value: component_scope.state.interestedInEvents,
-                },
-              ]),
-            })
-              .then((res) => res.json(res))
-              .catch((err) => console.log(err));
-          }
-        );
-      });
+      // Add the event to the savedEvents state in App.js and push the new state to the backend
+      this.props.onSaveEvent();
     } else {
       this.setState({ redirect: "/login" });
     }
@@ -116,117 +83,99 @@ class EventCard extends React.Component {
   handleUnSave = () => {
     var component_scope = this;
     component_scope.setState({ interestedIn: false });
-    // Refresh the state from the backend
-    component_scope.fetchInterestedInEvents().then(() => {
-      // Remove the event from interestedInEvents in the state
-      component_scope.setState(
-        {
-          interestedInEvents: component_scope.state.interestedInEvents.filter(
-            (item) => item !== component_scope.props.event._id
-          ),
-        },
-        () => {
-          // Push that new state to the backend
-          fetch("/profile/update", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: "Bearer " + window.sessionStorage.secret_token,
-            },
-            body: JSON.stringify([
-              {
-                propName: "interestedInEvents",
-                value: component_scope.state.interestedInEvents,
-              },
-            ]),
-          })
-            .then((res) => res.json(res))
-            .catch((err) => alert(err));
-        }
-      );
-    });
+
+    // Remove the event from the savedEvents state in App.js and push the new state to the backend
+    this.props.onUnsaveEvent();
   };
 
   handleDelete = () => {
-    this.handleClose();
+    this.setState({ showDialog: false });
     // This is propagated up to App.js where the actual deletion is happening. This way the EventCard can easily be removed from the Component containing it.
     this.props.onDeleteEvent();
   };
-
+  /*
   handleClose = () => {
     this.setState({ showDialog: false });
   };
+  */
+  /*
   handleShow = () => {
     this.setState({ showDialog: true });
   };
+  */
 
   render() {
-    const date = new Date(this.props.event.startDate);
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
     }
     return (
       <>
-        <Card
-          id={this.props.event._id}
-          style={{ width: "18rem" }}
-          className="m-2"
-        >
-          <Link to={`/events/single/${this.props.event._id}`}>
-            <Card.Img
-              variant="top"
-              src={
-                this.props.event.picture
-                  ? this.props.event.picture
-                  : "img/placeholder2_1024x365.png"
-              }
-              alt={this.props.event.title}
-              style={{ objectFit: "cover", width: "286px", height: "180px" }}
-            />
-          </Link>
-          <Card.Body>
-            <Link
-              to={`/events/single/${this.props.event._id}`}
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <Card.Title>{this.props.event.title}</Card.Title>
-            </Link>
-            <Card.Subtitle className="mb-2 text-muted">
-              {this.days[date.getDay()]}, {date.getDate()}{" "}
-              {this.months[date.getMonth()]} {date.getFullYear()}
-            </Card.Subtitle>
-            <Card.Text>by {this.props.event.organizer.name}</Card.Text>
-            {this.state.interestedIn ? (
-              <Button
-                className="m-2"
-                variant="success"
-                onClick={() => this.handleUnSave()}
+        <div className="col-md-4 col-lg-3 mt-4">
+          <div className="card event-card shadow-sm">
+            <div className="crop-box crop-to-fit">
+              <Link to={`/events/single/${this.props.event._id}`}>
+                <img
+                  src={
+                    this.props.event.picture
+                      ? this.props.event.picture
+                      : "img/placeholder2_1024x365.png"
+                  }
+                  class="card-img-top"
+                  alt="..."
+                />
+              </Link>
+            </div>
+            <div class="card-body d-flex flex-column">
+              <Link
+                to={`/events/single/${this.props.event._id}`}
+                style={{ textDecoration: "none", color: "black" }}
               >
-                Saved
-              </Button>
-            ) : (
-              <Button
-                className="m-2"
-                variant="secondary"
-                onClick={() => this.handleSave()}
-              >
-                Save in <i>My Events</i>
-              </Button>
-            )}
-            {this.props.state.email === this.props.event.organizer.email ? (
-              <Card.Link
-                href="#"
-                onClick={this.handleShow}
-                style={{ color: "#dc2029" }}
-                className=""
-              >
-                Delete
-              </Card.Link>
-            ) : (
-              <></>
-            )}
-          </Card.Body>
-        </Card>
+                <h5 class="card-title">{this.props.event.title}</h5>
+              </Link>
+              <li className="cart-text list-unstyled">
+                <MdLocationOn /> {this.props.event.location}{" "}
+                {this.props.event.city}
+              </li>
+              <li className="cart-text list-unstyled">
+                <MdEvent />{" "}
+                {moment(this.props.event.startDate).format("dddd D.M.YYYY")} at{" "}
+                {moment(this.props.event.startDate).format("H")}h
+              </li>
+              <li className="cart-text list-unstyled">
+                <MdCreditCard /> {this.props.event.price} EUR
+              </li>
+              {this.state.interestedIn ? (
+                <Button
+                  className="text-center mt-auto"
+                  variant="success"
+                  onClick={() => this.handleUnSave()}
+                >
+                  <MdFavorite /> Saved
+                </Button>
+              ) : (
+                <Button
+                  className="text-center mt-auto"
+                  variant="secondary"
+                  onClick={() => this.handleSave()}
+                >
+                  <MdFavorite /> Save in <i>My Events</i>
+                </Button>
+              )}
+              {this.state.userIsOwner ? (
+                <Card.Link
+                  href="#"
+                  onClick={() => this.setState({ showDialog: true })}
+                  style={{ color: "#dc2029" }}
+                  className="text-center mt-auto"
+                >
+                  Delete
+                </Card.Link>
+              ) : (
+                <></>
+              )}
+            </div>
+          </div>
+        </div>
         <Modal
           show={this.state.showDialog}
           onHide={this.handleClose}
@@ -239,7 +188,10 @@ class EventCard extends React.Component {
             the platform anymore. This cannot be undone.
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
+            <Button
+              variant="secondary"
+              onClick={() => this.setState({ showDialog: false })}
+            >
               Close
             </Button>
             <Button variant="primary" onClick={this.handleDelete}>
