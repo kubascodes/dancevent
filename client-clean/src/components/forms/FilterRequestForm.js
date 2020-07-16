@@ -149,31 +149,33 @@ class FilterRequest extends React.Component {
     let previous = false;
     let url = "/dancepartner/?";
 
+    // set Filter for dancer belonging to request
     if (this.state.gender != "") {
-      url += "listofGenders=" + this.state.gender;
+      url += "listofGendersDancer=" + this.state.gender;
       previous = true;
     }
       if (this.state.prefAgeMin != "") {
           if (previous) {
               url += "&";
           }
-          url += "prefAgeMin=" + this.state.prefAgeMin;
+          url += "prefAgeMinDancer=" + this.state.prefAgeMin;
           previous = true;
       }
       if (this.state.prefAgeMax != "") {
           if (previous) {
               url += "&";
           }
-          url += "prefAgeMax=" + this.state.prefAgeMax;
+          url += "prefAgeMaxDancer=" + this.state.prefAgeMax;
           previous = true;
       }
     if (this.state.proficiencyLevel != "") {
       if (previous) {
         url += "&";
       }
-      url += "listOfProficiencyLevels=" + this.state.proficiencyLevel;
+      url += "listOfProficiencyLevelsDancer=" + this.state.proficiencyLevel;
       previous = true;
     }
+    //beong to the request
     if (this.state.danceCategory != "") {
       if (previous) {
         url += "&";
@@ -358,6 +360,7 @@ class FilterRequest extends React.Component {
 
         {/* Date Type 1 - selection*/}
         {/* TODO: Multi Selection?*/}
+  <label className="label-bold"> In the time...</label>
         <div className="form-group">
           <label> On... </label>
           <Select
@@ -373,8 +376,8 @@ class FilterRequest extends React.Component {
           />
         </div>
                   <div className="form-group">
-                    <label className="label-bold"> In the time...</label>
-                    <label className="label-bold"> From...</label>
+
+                    <label> From...</label>
                       <DatePicker
                           className="form-control"
                           name="startDate"
@@ -388,7 +391,7 @@ class FilterRequest extends React.Component {
                       />
                   </div>
                   <div className="form-group">
-                        <label className="label-bold"> Till...</label>
+                        <label > Till...  </label>
                         <DatePicker
                           className="form-control"
                           name="endDate"
