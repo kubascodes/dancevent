@@ -146,7 +146,7 @@ router.get(
       //search in database based on the url-request-parameter
 
     let userId = req.user._id;
-    req.query.dancerId = {$ne: userId}; // do not send back my own created requests
+    req.query.dancer = {$ne: userId}; // do not send back my own created requests
 
     // get user to just fetch the requests that belong to my profile
     let user = await User.findOne({ _id: userId });
@@ -190,7 +190,7 @@ router.get(
     let myAge = new Date().getFullYear() - user.yearOfBirth;
     // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
     if(dancerValues.length == 0){
-         await Request.find(req.query).populate("dancerId").exec(function(err, docs){
+         await Request.find(req.query).populate("dancer").exec(function(err, docs){
          if(myAge){
            docs = docs.filter(function(doc){
             return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
@@ -201,16 +201,16 @@ router.get(
       } else {
        var dancerCheck = { $and: dancerValues};
         await Request.find(req.query).populate(
-            "dancerId",
+            "dancer",
             null,
             dancerCheck
             ).exec(function(err, docs){
             docs = docs.filter(function(doc){
               if(myAge){
-                return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancerId != null;
+                return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null;
               }
               else {
-                return doc.dancerId != null;
+                return doc.dancer != null;
               }
             })
           return res.status(200).json(docs);
