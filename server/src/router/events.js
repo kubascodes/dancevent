@@ -102,8 +102,12 @@ router.get(
     /*only logged in users can access partner requests*/
     try {
       console.log(req.params.id);
+      // TODO: Add to request filter so that the dancer would not see itself
+      /*let userId = req.user._id;
+      req.query.dancer = {$ne: userId}; // do not send back my own created requests*/
       let requests = await Request.find({ event: new ObjectId(req.params.id) })
-        .select("-dancerId -_id")
+        .populate("dancer", "-_id -__v -password -interestedInEvents").populate("event", "-_id")
+        .select("-_id -__v")
         .sort({ timestamp: 1 })
         .limit(5);
 

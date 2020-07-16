@@ -10,6 +10,8 @@ import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 import CreateRequestForm from "./forms/CreateRequestForm";
+import PartnerRequestForm from "./forms/PartnerRequestForm";
+import {CardDeck} from "react-bootstrap";
 
 class Event extends React.Component {
   constructor(props) {
@@ -353,10 +355,7 @@ class Event extends React.Component {
           </Row>
           {window.sessionStorage.secret_token ? (
             <>
-              <h3>
-                Open partner requests for this event: TODO: Create Partner
-                Request Event Cards and link them here
-              </h3>
+              <h3>Open partner requests for this event:</h3>
               {this.state.partnerRequests.length > 5 ? (
                 <h4>
                   There are {this.state.partnerRequests.length} open partner
@@ -377,10 +376,10 @@ class Event extends React.Component {
                   create a request.
                 </p>
               )}
-
+          <CardDeck>
               {this.state.partnerRequests.map((partnerRequest) => {
-                // Partner Request card
-              })}
+                return <PartnerRequestForm request={partnerRequest} />;
+              })}</CardDeck>
             </>
           ) : (
             ""
