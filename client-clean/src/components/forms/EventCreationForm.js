@@ -2,7 +2,7 @@ import React from 'react';
 import DatePicker from "react-datepicker";
 import Select from 'react-select';
 import cities from './cities'
-
+import ProgressBar from 'react-bootstrap/ProgressBar'
 import "react-datepicker/dist/react-datepicker.css";
 import { Typeahead, TypeaheadInputSingle } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -48,7 +48,9 @@ class EventCreationForm extends React.Component {
       pictureChange: false,
       danceCategory: 'latin',
       danceStyle: [],
-
+      //upload
+      uploadProgress: 0,
+      hiddenProgress: true,
     };
   }
 
@@ -110,6 +112,11 @@ class EventCreationForm extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
     console.log(this.state);
   };
+
+  //upload progress bar
+  setUploadProgress = (progress) => {
+    this.setState({uploadProgress: progress});
+  }
 
   //Changes the state for checkboxes
   onChangeCheckbox = (event) => {
@@ -192,24 +199,25 @@ handleMultiSelect = (danceStyle) => {
     if (event.target.files[0]) {
       let file = event.target.files[0];
       let fileUrl = URL.createObjectURL(file);
-      let component_scope = this;
+      let context = this;
       //defining the function
-      async function processImage(file, fileUrl, component_scope) {
+      async function processImage(file, fileUrl, context) {
         console.log(file);
         try {
-          let image = await ProcessImage(file, fileUrl);
-          component_scope.setState({
+          let image = await ProcessImage(file, fileUrl, "eventPicture", context);
+          context.setState({
             picture: image,
             pictureChange: true });
-          console.log(component_scope.state);
+          console.log(context.state);
         }
         catch (error) {
           alert(error);
         }
       };
-
+      //displaying progress bar
+      this.setState({hiddenProgress:false});
       //calling the function
-      processImage(file, fileUrl, component_scope);
+      processImage(file, fileUrl, context);
     }
 
   };
@@ -620,6 +628,12 @@ handleMultiSelect = (danceStyle) => {
               <label className="label-bold">Description</label>
               <textarea className="form-control" name="description" id="description" onChange={this.onChangeInput} value={this.state.description} rows="4" />
             </div>
+
+            <div class="form-group">
+              <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={"Uploading " + this.state.uploadProgress + " %"} hidden={this.state.hiddenProgress} />
+            </div>
+
+            <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
 
             <div className="form-group">
               <input type="submit" className="btn btn-outline-dark" value="Submit" />
