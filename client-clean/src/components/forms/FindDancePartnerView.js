@@ -32,6 +32,7 @@ class FindDancePartnerView extends React.Component {
     })
       .then((res) => res.json(res))
       .then((requests) => {
+        console.log(requests);
         this.setState({requests});
         console.log(this.state.requests);
       })

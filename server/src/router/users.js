@@ -79,8 +79,80 @@ router.get(
     }
 );
 
+ //List all dance request on Dance Partner Page
+//TODO: sort is missing, events
+router.get("/dancepartner", passport.authenticate("jwt", { session: false }), async (req, res, next) => {
+  try {
+    //search in database based on the url-request-parameter
+
+    // do not send back my own requests
+    let user = req.user._id;
+    req.query.dancerId = {$ne: user};
+
+    // filter dance styles in a listof dance styles selected in the filer
+    let danceStyles = req.query.listOfDanceStyles;
+    if (danceStyles) {
+      req.query.listOfDanceStyles = {$in: danceStyles};
+    }
+
+
+    //{ '$and': [ {'yearOfBirth': {$gte: minYearOfBirth}}, {'yearOfBirth': {$lte: maxYearOfBirth}} ] }
+    var values = [];
+
+    if(req.query.prefAgeMin) {
+      let minAge = req.query.prefAgeMin;
+      // req.query.prefAgeMin = {$gte: minAge};
+      let minYearOfBirth = new Date().getFullYear() - minAge;
+      values.push({'yearOfBirth': {$lte: minYearOfBirth}});
+      console.log(minYearOfBirth);
+    }
+
+    if(req.query.prefAgeMax){
+      let maxAge = req.query.prefAgeMax;
+      //req.query.prefAgeMax = {$lte: maxAge};
+      let maxYearOfBirth = new Date().getFullYear() - maxAge;
+      values.push({'yearOfBirth': {$gte: maxYearOfBirth}});
+      console.log(maxYearOfBirth);
+    }
+
+    delete req.query.prefAgeMin;
+    delete req.query.prefAgeMax;
+
+    if(values.length == 0){
+       var request = await Request.find(req.query).populate("dancerId").exec();
+        console.log("REQUEST");
+      return res.status(200).json(request);
+      } else {
+       var ageRange = { $and: values};
+       console.log(ageRange);
+       console.log(req.query);
+        //request = await Request.find(req.query).populate("dancerId", null, { $and: [ { yearOfBirth: { $lte: 2010 } }, { yearOfBirth: { $gte: 1995 } } ] }).exec();
+      //request.filter((r) => r.dancerId != null);
+      await Request.find(req.query).populate(
+          "dancerId",
+          null,
+          ageRange
+          ).exec(function(err, docs){
+          docs = docs.filter(function(doc){
+            return doc.dancerId != null;
+          })
+        return res.status(200).json(docs);
+        });
+
+      };
+
+} catch (err) {
+  return res.status(500).json({
+    error: "Internal server error",
+    message: err.message,
+  });
+}
+
+});
+
 //List all dance request on Dance Partner Page
 //TODO: sort is missing, events
+/*
 router.get("/dancepartner", passport.authenticate("jwt", { session: false }), async (req, res, next) => {
   try {
     //search in database based on the url-request-parameter
@@ -107,7 +179,7 @@ router.get("/dancepartner", passport.authenticate("jwt", { session: false }), as
     });
   }
 
-});
+});*/
 
 //User Login Route
 router.post("/login", (req, res, next) => {
@@ -142,6 +214,8 @@ router.post("/login", (req, res, next) => {
     }
   })(req, res, next);
 });
+
+
 
 //Register as an Organizer
 router.post("/register/organizer", async (req, res) => {

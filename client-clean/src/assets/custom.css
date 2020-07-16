@@ -15,6 +15,7 @@
   background-color: #ffffff;
   color: black;
 }
+
 .button-pink:hover, .button-pink:focus, .button-pink:active {
   border: 1px solid #ffbbbb;
   background-color: #ffbbbb;
@@ -55,4 +56,30 @@
 }
  .card {
   height: 100%;
+}
+
+ .age-slider{
+   position: relative;
+   margin: 0 auto 20px;
+   height: 35px;
+ }
+
+.age-slider input {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 100%;
+  outline: none;
+  height: 8px;
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+
+}
+.age-slider input::-webkit-slider-thumb {
+  pointer-events: all;
+  position: relative;
+  z-index: 1;
+  background-color: #df8f8f;
 }
