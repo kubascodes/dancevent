@@ -103,7 +103,8 @@ router.get(
     try {
       console.log(req.params.id);
       let requests = await Request.find({ event: new ObjectId(req.params.id) })
-        .select("-dancerId -_id")
+        .populate("dancer", "-_id -__v -password -interestedInEvents")
+        .select("-_id -__v")
         .sort({ timestamp: 1 })
         .limit(5);
 
