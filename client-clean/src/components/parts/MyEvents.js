@@ -1,14 +1,63 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import EventCard from "./EventCard";
 import Button from "react-bootstrap/Button";
+import {
+  MdMailOutline,
+  MdLocationOn,
+  MdPhone,
+  MdLockOutline,
+  MdFavorite,
+  MdFace,
+  MdStarHalf,
+  MdEvent,
+  MdCreditCard,
+} from "react-icons/md";
 
 class MyEvents extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { savedEvents: [], organizedEvents: [], redirect: null };
+    this.state = {
+      savedEventsSorted: [],
+      organizedEventsSorted: [],
+      redirect: null,
+    };
   }
 
+  convertStringToDate = (events) => {
+    return new Promise((resolve, reject) => {
+      try {
+        // Convert the startDate-String for each event into an actual Date object
+        events.forEach((event) => {
+          event.startDate = new Date(event.startDate);
+        });
+        resolve(events);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  // Filter the received savedEvents and organizedEvents to only show upcoming ones
+  handleEventsToDisplay = (events) => {
+    const now = new Date();
+    return new Promise((resolve, reject) => {
+      try {
+        this.convertStringToDate(events).then((convertedEvents) => {
+          let eventsToDisplay = convertedEvents.filter(
+            (convertedEvent) => convertedEvent.startDate > now
+          );
+          eventsToDisplay.sort((a, b) =>
+            a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
+          );
+          resolve(eventsToDisplay);
+        });
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+  /*
   componentDidMount = () => {
     if (window.sessionStorage.secret_token != null) {
       var component_scope = this;
@@ -78,7 +127,8 @@ class MyEvents extends React.Component {
         .catch((err) => reject(err));
     });
   };
-
+*/
+  /*
   fetchOrganizedEvents = (organizerEmail) => {
     var component_scope = this;
     // Additionally fetch organized events: Fetch all events and filter for those that are organized by the logged in organizer
@@ -96,17 +146,19 @@ class MyEvents extends React.Component {
         component_scope.setState({
           // Filter out those events that are over and only take the first 4 out (only those 4 will be shown on the homepage)
           organizedEvents: organizedEvents.slice(0,4),
-          /*DOES NOT WORK FOR ME
+          
+          DOES NOT WORK FOR ME
           organizedEvents: organizedEvents.filter(
             (singleEvent) =>
               singleEvent.organizer.email === organizerEmail &&
               singleEvent.startDate.getTime() > now.getTime()
           ),
-          */
+          
         });
       });
   };
-
+*/
+  /*
   convertStringToDate = (events) => {
     return new Promise((resolve, reject) => {
       try {
@@ -120,8 +172,10 @@ class MyEvents extends React.Component {
       }
     });
   };
-
+*/
+  /*
   onDeleteEvent = (event) => {
+    
     var component_scope = this;
     // Interrupting the flow from the EventCard to App.js to ensure immediate rerendering of the Homepage when the deletion in App.js is done
     component_scope.setState({
@@ -134,8 +188,51 @@ class MyEvents extends React.Component {
     });
 
     // After the Homepage is re-rendered the event is deleted from the backend
-    component_scope.props.onDeleteEvent(event);
+    this.props.onDeleteEvent(event);
   };
+  */
+
+  componentDidMount = () => {
+    if (this.props.state.savedEvents.length > 0) {
+      this.handleEventsToDisplay(this.props.state.savedEvents).then(
+        (eventsToDisplay) =>
+          this.setState({
+            savedEventsSorted: eventsToDisplay,
+          })
+      );
+    }
+    if (this.props.state.organizedEvents.length > 0) {
+      this.handleEventsToDisplay(this.props.state.organizedEvents).then(
+        (eventsToDisplay) =>
+          this.setState({
+            organizedEventsSorted: eventsToDisplay,
+          })
+      );
+    }
+  };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.state.savedEvents !== this.props.state.savedEvents) {
+      console.log(prevProps.state.savedEvents);
+      console.log(this.props.state.savedEvents);
+      this.handleEventsToDisplay(this.props.state.savedEvents).then(
+        (eventsToDisplay) => {
+          console.log(eventsToDisplay);
+          this.setState({
+            savedEventsSorted: eventsToDisplay,
+          });
+        }
+      );
+    }
+    if (prevProps.state.organizedEvents !== this.props.state.organizedEvents) {
+      this.handleEventsToDisplay(this.props.state.organizedEvents).then(
+        (eventsToDisplay) =>
+          this.setState({
+            organizedEventsSorted: eventsToDisplay,
+          })
+      );
+    }
+  }
 
   render() {
     if (this.state.redirect) {
@@ -150,28 +247,49 @@ class MyEvents extends React.Component {
               <hr />
               <h2 className="">Events organized by you</h2>
               <div className="row">
-                {this.state.organizedEvents.map((event) => {
+                {this.state.organizedEventsSorted.map((event) => {
                   return (
-                    <div key={event._id} className="col-4">
-                      <EventCard
-                        event={event}
-                        state={this.props.state}
-                        onDeleteEvent={() => this.onDeleteEvent(event)}
-                      />
-                    </div>
+                    <EventCard
+                      event={event}
+                      state={this.props.state}
+                      onDeleteEvent={() => this.onDeleteEvent(event)}
+                      onSaveEvent={() => this.props.onSaveEvent(event)}
+                      onUnsaveEvent={() => this.props.onUnsaveEvent(event)}
+                    />
                   );
                 })}
+                <div className="col-md-4 col-lg-3 mt-4">
+                  <div className="card event-card shadow-sm">
+                    <div className="crop-box crop-to-fit">
+                      <Link to={"/events/create"}>
+                        <img
+                          src="img/placeholder2_1024x365.png"
+                          class="card-img-top"
+                          alt="..."
+                        />
+                      </Link>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                      <Link
+                        to={"/events/create"}
+                        style={{ textDecoration: "none", color: "black" }}
+                      >
+                        <h5 class="card-title">Create a new event!</h5>
+                      </Link>
+                      <li className="cart-text list-unstyled">
+                        <MdLocationOn /> [location]
+                      </li>
+                      <li className="cart-text list-unstyled">
+                        <MdEvent /> [DD.MM.YYY]
+                      </li>
+                      <li className="cart-text list-unstyled">
+                        <MdCreditCard /> [price]
+                      </li>
+                      <div className="text-center mt-auto"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <Button
-                variant="outline-dark"
-                size="lg"
-                block
-                onClick={() => this.setState({ redirect: "/events/create" })}
-              >
-                {this.state.organizedEvents.length > 0
-                  ? "Create a new event!"
-                  : "Nothing to see yet. Click here to create a new event!"}
-              </Button>
               <hr />
             </div>
           ) : (
@@ -181,15 +299,15 @@ class MyEvents extends React.Component {
           <div className="container">
             <h2 className="">Saved Events</h2>
             <div className="row">
-              {this.state.savedEvents.map((event) => {
+              {this.state.savedEventsSorted.map((event) => {
                 return (
-                  <div key={event._id} className="col-4">
-                    <EventCard
-                      event={event}
-                      state={this.props.state}
-                      onDeleteEvent={() => this.onDeleteEvent(event)}
-                    />
-                  </div>
+                  <EventCard
+                    event={event}
+                    state={this.props.state}
+                    onDeleteEvent={() => this.props.onDeleteEvent(event)}
+                    onSaveEvent={() => this.props.onSaveEvent(event)}
+                    onUnsaveEvent={() => this.props.onUnsaveEvent(event)}
+                  />
                 );
               })}
             </div>
@@ -201,7 +319,7 @@ class MyEvents extends React.Component {
                   block
                   onClick={() => this.setState({ redirect: "/events" })}
                 >
-                  {this.state.savedEvents.length > 0
+                  {this.props.state.savedEvents.length > 0
                     ? "Search for more events!"
                     : "Nothing to see yet. Click here to search for events!"}
                 </Button>

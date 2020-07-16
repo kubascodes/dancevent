@@ -6,9 +6,10 @@ const middlewares = require("../middlewares");
 const passport = require("passport");
 const User = require("../models/user");
 const Organizer = require("../models/organizer");
+const Request = require("../models/partnerrequest"); //returning requests to profile
 const Event = require("../models/event");
 const DanceCourse = require("../models/dancecourse");
-
+const ObjectId = require("mongoose").Types.ObjectId;
 
 //   ---------Public event routes for viewing events---------
 
@@ -18,34 +19,33 @@ const DanceCourse = require("../models/dancecourse");
 router.get("/", async (req, res, next) => {
   //TODO based on the frontend a default startDate range should be defined to not send past event
 
-
-
   //Date parameters
   //if start Date is undefined the event must happen after current date
   //current implementation checks if the startDate is smaller/equal than the param endDate
   //(gte : >=; lte: <=)
-  console.log(req.query)
+  console.log(req.query);
   var start = new Date();
-  if(req.query.startDate){
-
-    start = new Date(req.query.startDate)
+  if (req.query.startDate) {
+    start = new Date(req.query.startDate);
   }
-  if(req.query.endDate){
-    req.query["startDate"] = { $gte: start, $lte: req.query.endDate}   
-    delete req.query["endDate"]
-  }else{
-    req.query["startDate"] = { $gte: start } 
+  if (req.query.endDate) {
+    req.query["startDate"] = { $gte: start, $lte: req.query.endDate };
+    delete req.query["endDate"];
+  } else {
+    req.query["startDate"] = { $gte: start };
   }
 
   //List Parameters
   //$in works like or so at least one element in params list must match one event list element
-  if(req.query.listOfDanceStyles){
-    req.query["listOfDanceStyles"] = {$in : req.query.listOfDanceStyles}
+  if (req.query.listOfDanceStyles) {
+    req.query["listOfDanceStyles"] = { $in: req.query.listOfDanceStyles };
   }
-  if(req.query.listOfProficiencyLevels){
-    req.query["listOfProficiencyLevels"] = {$in : req.query.listOfProficiencyLevels}
+  if (req.query.listOfProficiencyLevels) {
+    req.query["listOfProficiencyLevels"] = {
+      $in: req.query.listOfProficiencyLevels,
+    };
   }
-  console.log(req.query)
+  console.log(req.query);
 
   try {
     //search in database based on the url-request-parameters
@@ -93,6 +93,31 @@ router.get("/:id", (req, res, next) => {
     });
 });
 
+// List the partner requests for a specific event
+//id is number after .de/events/xxx
+router.get(
+  "/:id/partnerrequests",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    /*only logged in users can access partner requests*/
+    try {
+      console.log(req.params.id);
+      let requests = await Request.find({ event: new ObjectId(req.params.id) })
+        .select("-dancerId -_id")
+        .sort({ timestamp: 1 })
+        .limit(5);
+
+      console.log(requests);
+      return res.status(200).json(requests);
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: error.message,
+      });
+    }
+  }
+);
+
 //   --------- Secured event routes for manipulation which require authentication---------
 
 //1. Create a new event
@@ -137,21 +162,20 @@ router.put(
   passport.authenticate("jwt", { session: false, failureRedirect: "/login" }),
   async (req, res, next) => {
     try {
-
       //get Event ID from URL Param
-      const uid = req.params.id
+      const uid = req.params.id;
       //get the event
       let event = await Event.findById(uid).exec();
       //Check if Event is owned by the Organizer (got from JWT Token)
-      if(event && event.organizer == req.user._id){
+      if (event && event.organizer == req.user._id) {
         //update event with the body
         var updatedEvent = await Event.findByIdAndUpdate(uid, req.body);
         return res.status(201).json(updatedEvent);
-      }else{
+      } else {
         return res.status(403).json({
           error: "User has no Authority to change the Event",
-        })
-      };
+        });
+      }
     } catch (error) {
       return res.status(500).json({
         error: "Internal server error",
@@ -170,7 +194,7 @@ router.delete(
     const uid = req.params.id;
     let event = await Event.findById(uid).exec();
 
-    if(event && event.organizer == req.user._id){
+    if (event && event.organizer == req.user._id) {
       Event.findOneAndDelete({ _id: uid }, (err, event) => {
         //error in step (will also be called if <id> has not correct the pattern)
         if (err) {
@@ -188,11 +212,11 @@ router.delete(
         //successful query -> send deleted event
         res.send(`Event deleted: ${event._id}`);
       });
-    }else{
+    } else {
       return res.status(403).json({
         error: "User has no Authority to change the Event",
-      })
-    };
+      });
+    }
   }
 );
 

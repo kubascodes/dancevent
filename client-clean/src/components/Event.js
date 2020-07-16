@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -8,6 +8,8 @@ import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Modal from "react-bootstrap/Modal";
+import CreateRequestForm from "./forms/CreateRequestForm";
 
 class Event extends React.Component {
   constructor(props) {
@@ -15,10 +17,11 @@ class Event extends React.Component {
     this.state = {
       event: {},
       interestedIn: false,
-      interestedInEvents: [],
-      redirect: null,
-      partnerRequests: [],
       userIsOwner: false,
+      partnerRequests: [],
+      showDeletionDialog: false,
+      showCreateRequestForm: false,
+      redirect: null,
     };
   }
 
@@ -48,11 +51,54 @@ class Event extends React.Component {
     "Dec",
   ];
 
-  fetchInterestedInEvents = () => {
+  componentDidMount() {
     var component_scope = this;
-    return new Promise((resolve, reject) => {
-      fetch("/profile", {
-        method: "POST",
+    const {
+      match: { params },
+    } = component_scope.props;
+
+    fetch(`/events/${params.id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        component_scope.setState({ event: data });
+      })
+      .then(() => {
+        // Define the popover
+        component_scope.popover = (
+          <Popover id="popover-basic">
+            <Popover.Title as="h3">
+              {component_scope.state.event.promoCode}
+            </Popover.Title>
+            <Popover.Content>
+              <b>{component_scope.state.event.organizer.name}</b> provides the
+              above discount code. Use it when registering for this event to
+              save a buck.
+            </Popover.Content>
+          </Popover>
+        );
+        if (component_scope.props.state.savedEvents.length > 0) {
+          const savedEventIds = component_scope.props.state.savedEvents.map(
+            (savedEvent) => savedEvent._id
+          );
+          if (savedEventIds.includes(component_scope.state.event._id)) {
+            component_scope.setState({ interestedIn: true });
+          }
+        }
+        if (component_scope.props.state.organizedEvents.length > 0) {
+          const organizedEventIds = component_scope.props.state.organizedEvents.map(
+            (organizedEvent) => organizedEvent._id
+          );
+          if (organizedEventIds.includes(component_scope.state.event._id)) {
+            component_scope.setState({ userIsOwner: true });
+          }
+        }
+      })
+      .catch(console.log);
+
+    // Fetch partner requests for this event from the backend
+    if (window.sessionStorage.secret_token != null) {
+      fetch(`/events/${params.id}/partnerrequests`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: "Bearer " + window.sessionStorage.secret_token,
@@ -60,99 +106,21 @@ class Event extends React.Component {
       })
         .then((res) => res.json(res))
         .then(function (res) {
+          console.log("partner requests received in Event: ", res);
           component_scope.setState({
-            interestedInEvents: res.interestedInEvents,
+            partnerRequests: res,
           });
-          resolve(res);
         })
-        .catch((err) => reject(err));
-    });
-  };
-
-  componentDidMount() {
-    const {
-      match: { params },
-    } = this.props;
-
-    fetch(`/events/${params.id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        this.setState({ event: data });
-      })
-      .then(() => {
-        // Define the popover and the partnerRequestElement
-        this.popover = (
-          <Popover id="popover-basic">
-            <Popover.Title as="h3">{this.state.event.promoCode}</Popover.Title>
-            <Popover.Content>
-              <b>{this.state.event.organizer.name}</b> provides the above
-              discount code. Use it when registering for this event to save a
-              buck.
-            </Popover.Content>
-          </Popover>
-        );
-      })
-      .then(() => {
-        // Get the events the currently logged in user is interested in and check if this event is in there
-        if (window.sessionStorage.secret_token != null) {
-          this.fetchInterestedInEvents().then(() => {
-            if (this.state.interestedInEvents.includes(this.state.event._id)) {
-              this.setState({ interestedIn: true });
-            }
-          });
-        }
-      })
-      .catch(console.log);
-    // TODO: Fetch partner requests for this event from the backend
-  }
-
-  // The first time the Event component is rendered it receives the blank prop "state" from App.js. This prop changes with the componentDidMount of App.js
-  // This prop "state" includes the email of the current user which must be checked to decide if the update button will be shown for this event
-  // So in componenDidUpdate a change of the props is awaited
-  componentDidUpdate = (prevProps, prevState) => {
-    if (prevProps.state !== this.props.state) {
-      if (this.props.state.email === this.state.event.organizer.email) {
-        this.setState({ userIsOwner: true });
-        // Now we know that we can show the update button (similar to the delete button in the EventCard)
-      }
+        .catch((err) => alert(err));
     }
-  };
+  }
 
   handleSave = () => {
     var component_scope = this;
     if (window.sessionStorage.secret_token != null) {
       component_scope.setState({ interestedIn: true });
-      // Refresh the state from the backend
-      component_scope.fetchInterestedInEvents().then(() => {
-        // Add the event to interestedInEvents in the state
-        component_scope.setState(
-          {
-            interestedInEvents: [
-              ...component_scope.state.interestedInEvents,
-              component_scope.state.event._id,
-            ],
-          },
-          // Callback of setState so it definitely pushes the newest state
-          () => {
-            // Push that new state to the backend
-            fetch("/profile/update", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: "Bearer " + window.sessionStorage.secret_token,
-              },
-              body: JSON.stringify([
-                {
-                  propName: "interestedInEvents",
-                  value: component_scope.state.interestedInEvents,
-                },
-              ]),
-            })
-              .then((res) => res.json(res))
-              .catch((err) => console.log(err));
-          }
-        );
-      });
+      // Add the event to the savedEvents state in App.js and push the new state to the backend
+      this.props.onSaveEvent(this.state.event);
     } else {
       this.setState({ redirect: "/login" });
     }
@@ -161,35 +129,15 @@ class Event extends React.Component {
   handleUnSave = () => {
     var component_scope = this;
     component_scope.setState({ interestedIn: false });
-    // Refresh the state from the backend
-    component_scope.fetchInterestedInEvents().then(() => {
-      // Remove the event from interestedInEvents in the state
-      component_scope.setState(
-        {
-          interestedInEvents: component_scope.state.interestedInEvents.filter(
-            (item) => item !== component_scope.state.event._id
-          ),
-        },
-        () => {
-          // Push that new state to the backend
-          fetch("/profile/update", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: "Bearer " + window.sessionStorage.secret_token,
-            },
-            body: JSON.stringify([
-              {
-                propName: "interestedInEvents",
-                value: component_scope.state.interestedInEvents,
-              },
-            ]),
-          })
-            .then((res) => res.json(res))
-            .catch((err) => alert(err));
-        }
-      );
-    });
+
+    // Remove the event from the savedEvents state in App.js and push the new state to the backend
+    this.props.onUnsaveEvent(this.state.event);
+  };
+
+  handleDelete = () => {
+    this.setState({ showDeletionDialog: false, redirect: "/" });
+    // This is propagated up to App.js where the actual deletion is happening. This way the EventCard can easily be removed from the Component containing it.
+    this.props.onDeleteEvent(this.state.event);
   };
 
   convertTime24to12 = (time24h, minutes) => {
@@ -204,8 +152,17 @@ class Event extends React.Component {
     return time12;
   };
 
-  createPartnerRequest = () => {
-    // TODO
+  showCreateRequestForm = () => {
+    if (this.props.state.userType == "Dancer") {
+      this.setState({ showCreateRequestForm: true });
+    }
+  };
+
+  capitalize = (input) => {
+    const capitalStr = input.replace(/\b\w/g, function (string) {
+      return string.toUpperCase();
+    });
+    return capitalStr;
   };
 
   render() {
@@ -278,6 +235,17 @@ class Event extends React.Component {
                   Save in <i>My Events</i>
                 </Button>
               )}
+              {this.state.userIsOwner ? (
+                <Button
+                  className="float-right m-4"
+                  variant="danger"
+                  onClick={() => this.setState({ showDeletionDialog: true })}
+                >
+                  Delete Event
+                </Button>
+              ) : (
+                <></>
+              )}
             </Col>
           </Row>
           <Row>
@@ -300,7 +268,11 @@ class Event extends React.Component {
                     </td>
                     <td>
                       {this.state.event.listOfDanceStyles
-                        ? this.state.event.listOfDanceStyles.join(", ")
+                        ? this.state.event.listOfDanceStyles
+                            .map((danceStyle) => {
+                              return this.capitalize(danceStyle);
+                            })
+                            .join(", ")
                         : "not available"}
                     </td>
                   </tr>
@@ -310,8 +282,11 @@ class Event extends React.Component {
                     </td>
                     <td>
                       {this.state.event.listOfProficiencyLevels
-                        ? this.state.event.listOfProficiencyLevels.join(", ") +
-                          " dancers"
+                        ? this.state.event.listOfProficiencyLevels
+                            .map((profLevel) => {
+                              return this.capitalize(profLevel);
+                            })
+                            .join(", ") + " dancers"
                         : "not available"}
                     </td>
                   </tr>
@@ -379,9 +354,27 @@ class Event extends React.Component {
                 Open partner requests for this event: TODO: Create Partner
                 Request Event Cards and link them here
               </h3>
-              <Button variant="light" onClick={this.createPartnerRequest}>
-                Create a partner request
-              </Button>
+              {this.state.partnerRequests.length > 5 ? (
+                <h4>
+                  There are {this.state.partnerRequests.length} open partner
+                  requests for this event.
+                </h4>
+              ) : (
+                <></>
+              )}
+
+              {this.props.state.userType === "Dancer" ? (
+                <Button variant="light" onClick={this.showCreateRequestForm}>
+                  Create a partner request
+                </Button>
+              ) : (
+                <p>
+                  {" "}
+                  Please {<Link to={{ pathname: "login" }}>login</Link>} to
+                  create a request.
+                </p>
+              )}
+
               {this.state.partnerRequests.map((partnerRequest) => {
                 // Partner Request card
               })}
@@ -390,6 +383,34 @@ class Event extends React.Component {
             ""
           )}
         </Container>
+        <Modal
+          show={this.state.showDeletionDialog}
+          onHide={this.handleClose}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Body>
+            Are you sure you want to delete the event{" "}
+            <b>{this.state.event.title}</b>? It will not be visible to users of
+            the platform anymore. This cannot be undone.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => this.setState({ showDeletionDialog: false })}
+            >
+              Close
+            </Button>
+            <Button variant="primary" onClick={this.handleDelete}>
+              Understood
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <CreateRequestForm
+          show={this.state.showCreateRequestForm}
+          onClose={() => this.setState({ showCreateRequestForm: false })}
+          event={this.state.event}
+        />
       </>
     );
   }
