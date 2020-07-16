@@ -11,6 +11,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 import CreateRequestForm from "./forms/CreateRequestForm";
 import PartnerRequestForm from "./forms/PartnerRequestForm";
+import {CardDeck} from "react-bootstrap";
 
 class Event extends React.Component {
   constructor(props) {
@@ -372,10 +373,10 @@ class Event extends React.Component {
                   create a request.
                 </p>
               )}
-
+          <CardDeck>
               {this.state.partnerRequests.map((partnerRequest) => {
                 return <PartnerRequestForm request={partnerRequest} />;
-              })}
+              })}</CardDeck>
             </>
           ) : (
             ""

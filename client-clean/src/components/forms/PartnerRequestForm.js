@@ -166,9 +166,10 @@ class PartnerRequestForm extends React.Component {
                 <Col>
                   {" "}
                   <ul>
-                    {user.listOfDanceStyles.map((style) => {
+                    {user.listOfDanceStyles ? ( user.listOfDanceStyles.map((style) => {
                       return <li>{style}</li>;
-                    })}{" "}
+                    })) : (<li></li>)
+                    }{" "}
                   </ul>{" "}
                 </Col>
               </Row>
