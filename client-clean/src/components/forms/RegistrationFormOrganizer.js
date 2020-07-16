@@ -28,6 +28,7 @@ class RegistrationFormOrganizer extends React.Component {
       uploadProgress: 0,
       hiddenProgress: true,
     };
+    this.setUploadProgress = this.setUploadProgress.bind(this);
   }
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
@@ -36,6 +37,11 @@ class RegistrationFormOrganizer extends React.Component {
 
   setUploadProgress = (progress) => {
     this.setState({uploadProgress: progress});
+    /*
+    if (this.state.uploadProgress >= 100) {
+      setTimeout(this.setState({hiddenProgress: true}), 3000);
+    }
+    */
   }
 
   onChangeFile = (event) => {

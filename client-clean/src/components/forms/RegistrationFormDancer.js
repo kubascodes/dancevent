@@ -28,9 +28,10 @@ class RegistrationFormDancer extends React.Component {
       prefAgeMax: null,
       prefGender: null,
       //image upload progress
-      uploadProgress: 0,
+      uploadProgress: null,
       hiddenProgress: true,
     };
+    this.setUploadProgress = this.setUploadProgress.bind(this);
   }
 
 
@@ -40,14 +41,10 @@ class RegistrationFormDancer extends React.Component {
   };
 
   setUploadProgress = (progress) => {
-    let context = this;
     this.setState({uploadProgress: progress});
     /*
-    function hideProgress (context) {
-      context.setState({hiddenProgress: true})
-    }
-    if (this.state.uploadProgress === 100) {
-      setTimeout(hideProgress, 3000);
+    if (this.state.uploadProgress >= 100) {
+      setTimeout(this.setState({hiddenProgress: true}), 3000);
     }
     */
   }
@@ -365,7 +362,7 @@ class RegistrationFormDancer extends React.Component {
       </div>
 
       <div class="form-group">
-        <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={this.state.uploadProgress} hidden={this.state.hiddenProgress} />
+        <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={"Uploading " + this.state.uploadProgress + " %"} hidden={this.state.hiddenProgress} />
       </div>
 
       <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
