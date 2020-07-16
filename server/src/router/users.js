@@ -197,12 +197,13 @@ router.get(
             return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
           })
          }
+         console.log(docs);
          return res.status(200).json(docs);
        });
       } else {
        var dancerCheck = { $and: dancerValues};
         await Request.find(req.query).populate(
-            "dancer", "-_id",
+            "dancer",
             null,
             dancerCheck
             ).populate("event", "-_id").exec(function(err, docs){
@@ -214,6 +215,7 @@ router.get(
                 return doc.dancer != null;
               }
             })
+            console.log(docs);
           return res.status(200).json(docs);
         });
       };
