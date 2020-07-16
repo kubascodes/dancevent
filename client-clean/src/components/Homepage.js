@@ -106,11 +106,8 @@ class Homepage extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.state.savedEvents !== this.props.state.savedEvents) {
-      console.log(prevProps.state.savedEvents);
-      console.log(this.props.state.savedEvents);
       this.handleEventsToDisplay(this.props.state.savedEvents).then(
         (eventsToDisplay) => {
-          console.log(eventsToDisplay);
           this.setState({
             savedEventsShortened: eventsToDisplay,
           });

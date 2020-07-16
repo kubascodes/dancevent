@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -9,6 +9,7 @@ import Table from "react-bootstrap/Table";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
+import CreateRequestForm from "./forms/CreateRequestForm";
 
 class Event extends React.Component {
   constructor(props) {
@@ -18,7 +19,8 @@ class Event extends React.Component {
       interestedIn: false,
       userIsOwner: false,
       partnerRequests: [],
-      showDialog: false,
+      showDeletionDialog: false,
+      showCreateRequestForm: false,
       redirect: null,
     };
   }
@@ -93,7 +95,24 @@ class Event extends React.Component {
       })
       .catch(console.log);
 
-    // TODO: Fetch partner requests for this event from the backend
+    // Fetch partner requests for this event from the backend
+    if (window.sessionStorage.secret_token != null) {
+      fetch(`/events/${params.id}/partnerrequests`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: "Bearer " + window.sessionStorage.secret_token,
+        },
+      })
+        .then((res) => res.json(res))
+        .then(function (res) {
+          console.log("partner requests received in Event: ", res);
+          component_scope.setState({
+            partnerRequests: res,
+          });
+        })
+        .catch((err) => alert(err));
+    }
   }
 
   handleSave = () => {
@@ -116,7 +135,7 @@ class Event extends React.Component {
   };
 
   handleDelete = () => {
-    this.setState({ showDialog: false, redirect: "/" });
+    this.setState({ showDeletionDialog: false, redirect: "/" });
     // This is propagated up to App.js where the actual deletion is happening. This way the EventCard can easily be removed from the Component containing it.
     this.props.onDeleteEvent(this.state.event);
   };
@@ -133,8 +152,10 @@ class Event extends React.Component {
     return time12;
   };
 
-  createPartnerRequest = () => {
-    // TODO
+  showCreateRequestForm = () => {
+    if (this.props.state.userType == "Dancer") {
+      this.setState({ showCreateRequestForm: true });
+    }
   };
 
   capitalize = (input) => {
@@ -218,7 +239,7 @@ class Event extends React.Component {
                 <Button
                   className="float-right m-4"
                   variant="danger"
-                  onClick={() => this.setState({ showDialog: true })}
+                  onClick={() => this.setState({ showDeletionDialog: true })}
                 >
                   Delete Event
                 </Button>
@@ -333,9 +354,27 @@ class Event extends React.Component {
                 Open partner requests for this event: TODO: Create Partner
                 Request Event Cards and link them here
               </h3>
-              <Button variant="light" onClick={this.createPartnerRequest}>
-                Create a partner request
-              </Button>
+              {this.state.partnerRequests.length > 5 ? (
+                <h4>
+                  There are {this.state.partnerRequests.length} open partner
+                  requests for this event.
+                </h4>
+              ) : (
+                <></>
+              )}
+
+              {this.props.state.userType === "Dancer" ? (
+                <Button variant="light" onClick={this.showCreateRequestForm}>
+                  Create a partner request
+                </Button>
+              ) : (
+                <p>
+                  {" "}
+                  Please {<Link to={{ pathname: "login" }}>login</Link>} to
+                  create a request.
+                </p>
+              )}
+
               {this.state.partnerRequests.map((partnerRequest) => {
                 // Partner Request card
               })}
@@ -345,7 +384,7 @@ class Event extends React.Component {
           )}
         </Container>
         <Modal
-          show={this.state.showDialog}
+          show={this.state.showDeletionDialog}
           onHide={this.handleClose}
           backdrop="static"
           keyboard={false}
@@ -358,7 +397,7 @@ class Event extends React.Component {
           <Modal.Footer>
             <Button
               variant="secondary"
-              onClick={() => this.setState({ showDialog: false })}
+              onClick={() => this.setState({ showDeletionDialog: false })}
             >
               Close
             </Button>
@@ -367,6 +406,11 @@ class Event extends React.Component {
             </Button>
           </Modal.Footer>
         </Modal>
+        <CreateRequestForm
+          show={this.state.showCreateRequestForm}
+          onClose={() => this.setState({ showCreateRequestForm: false })}
+          event={this.state.event}
+        />
       </>
     );
   }
