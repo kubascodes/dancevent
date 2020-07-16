@@ -256,7 +256,7 @@ class CreateRequest extends React.Component {
             {value: 'viennese waltz', label: 'Viennese Waltz'},
             {value: 'tango', label: 'Tango'},
             {value: 'foxtrot', label: 'Foxtrot'},
-            {value: 'qickstep', label: 'Qickstep'},
+            {value: 'quickstep', label: 'Quickstep'},
         ];
         const various = [
             {value: 'salsa', label: 'Salsa'},

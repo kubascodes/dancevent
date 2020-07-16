@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import Select from 'react-select'; 
 import cities from './cities'
@@ -8,6 +9,8 @@ import { Typeahead, TypeaheadInputSingle } from 'react-bootstrap-typeahead';
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 import ProcessImage from '../../services/imageProcessing';
+
+import {CriticalAlert} from "../helpers/Alert";
 
 
 /*
@@ -49,6 +52,11 @@ class EventCreationForm extends React.Component {
       danceCategory: 'latin',
       danceStyle: [],
 
+
+      showAltert : false,
+      errorMessage: "",
+
+      redirect : null
     };
   }
 
@@ -101,9 +109,14 @@ class EventCreationForm extends React.Component {
           })
 
         })
-        .catch(console.log);
+        .catch(err => {
+          component_scope.setState({showAltert: true,
+                        errorMessage: "Existing data could not be loaded" })
+          console.log(err)});
     }
   }
+
+  hideAlert = () => {this.setState({showAltert : !this.state.showAltert})}
 
   //Changes the state for text inputs and selects
   onChangeInput = (event) => {
@@ -301,6 +314,8 @@ handleMultiSelect = (danceStyle) => {
         var method = 'POST'
       }
 
+      var component_scope = this;
+
       //post/put to organizer's registration api
       fetch(address, {
         method: method,
@@ -311,8 +326,17 @@ handleMultiSelect = (danceStyle) => {
         //body must be stringify to be readable by backend
         body: JSON.stringify(body)
       }) //create a post request which is a Promise
-        .then(res => res.json(res))
-        .then(function (res) {
+        .then(res => {
+          if(!res.ok){
+            throw new Error('Network response was not ok');
+          }
+          return res.json()
+        })
+        .then((res) =>{
+          console.log("redirect")
+          this.setState({ redirect: "/events/single/" + res._id});
+
+          /*
           //reset the HTML form
           document.getElementById("EventCreationForm").reset();
           //reset the state
@@ -334,13 +358,25 @@ handleMultiSelect = (danceStyle) => {
             pictureChange: false,
             danceCategory: 'latin',
             danceStyle: [],
-          });
+          });*/
         })
-        .catch(err => alert(err));
+        .catch(err => {
+          if(component_scope.props.update){
+            component_scope.setState({showAltert: true,
+              errorMessage: "Error occured while sending to server. Event might not have been updated." })
+          }else{
+            component_scope.setState({showAltert: true,
+              errorMessage: "Error occured while sending to server. Event might not have been created." })
+          }
+          console.log(err)}
+          );
     } else {
-      alert("Error: There has been a problem with the authorization.")
+      this.setState({showAltert: true,
+        errorMessage: "You are not authorized to do this operation." })
     }
   };
+
+
 
 
   render() {
@@ -403,7 +439,7 @@ handleMultiSelect = (danceStyle) => {
       {value: 'viennese waltz', label: 'Viennese Waltz'},
       {value: 'tango', label: 'Tango'},
       {value: 'foxtrot', label: 'Foxtrot'},
-      {value: 'qickstep', label: 'Qickstep'},
+      {value: 'quickstep', label: 'Quickstep'},
   ];
   const various = [
       {value: 'salsa', label: 'Salsa'},
@@ -413,12 +449,17 @@ handleMultiSelect = (danceStyle) => {
   ];
 
     
+    if(this.state.redirect){
+      return <Redirect to={this.state.redirect} />
+    }
+
     if (window.sessionStorage.secret_token != null) {
       return (
 
 
         
         <div>
+          <CriticalAlert show={this.state.showAltert} change={this.hideAlert}/>
           
           {(this.props.update && typeof(this.state.picture)=== "string" )? ( <img src={"/"+this.state.picture} alt="Picture"  height="600"/> ) : null}
           <form className="form-group" id="EventCreationForm" onSubmit={this.pushEvent}>
@@ -503,6 +544,8 @@ handleMultiSelect = (danceStyle) => {
               <label className="label-bold" htmlFor="location">Location</label>
               <input type="text" className="form-control" id="location" placeholder="e.g. Steet and Room Number" name="location" onChange={this.onChangeInput} value={this.state.location} required />
             </div>
+
+            {/*
             <div className="form-group">
               <label className="mr-2 label-bold" htmlFor="listOfDanceStyles">Dance Styles</label>
               
@@ -513,7 +556,7 @@ handleMultiSelect = (danceStyle) => {
                 </span>
               ))}
             </div>
-
+              */}
             
                 {/* The following are two selections, where the secound is depending on the first.
                             Here are the dance style categories and depending on that the user can specify the dancing style in more details if wanted.
@@ -528,7 +571,7 @@ handleMultiSelect = (danceStyle) => {
                   placeholder={"Dance style category..."}
                   isClearable={true}
                   isSearchable={true}
-                  value={this.state.danceCategory}
+                  value={{label: this.state.danceCategory, value: this.state.danceCategory}}
                   onChange={this.handleSelect}
                   name="danceCategory"
                   options={danceStyleCategory}

@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Select from 'react-select'; 
 import EventCard from "./parts/EventCard";
 import DatePicker from "react-datepicker";
+import {CriticalAlert} from "./helpers/Alert";
 import "react-datepicker/dist/react-datepicker.css";
 
 import cities from './forms/cities'
@@ -50,6 +51,9 @@ class Events extends React.Component {
 
       danceCategory: 'latin',
       danceStyle: [],
+
+      showAltert : false,
+      errorMessage: "",
     };
   }
 
@@ -58,15 +62,22 @@ class Events extends React.Component {
     this function is called by react in the build up.
     Thus the events (without optional parameters) are requested
     */
+   var component_scope = this;
     fetch("/events")
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        this.setState({ events: data });
+        component_scope.setState({ events: data });
       })
-      .catch(console.log);
+      .catch(err => {
+        component_scope.setState({showAltert: true,
+                      errorMessage: "Internal Problem. Data could not be fetched from the backend" })
+        console.log(err)});
       console.log(this.state);
+
   }
+
+  hideAlert = () => {this.setState({showAltert : !this.state.showAltert})}
 
   onChange = (event) => {
     /*
@@ -76,6 +87,8 @@ class Events extends React.Component {
     */
     this.setState({ [event.target.name]: event.target.value });
     console.log(this.state);
+
+    
   };
   //Changes the state for calendar inputs
   //type should specify if it is a start- or endDate
@@ -103,6 +116,7 @@ class Events extends React.Component {
         this.setState({danceStyle: ''});
     };*/
     console.log(this.state)
+    
 }
 
 handleMultiSelect = (danceStyle) => {
@@ -212,17 +226,18 @@ handleMultiSelect = (danceStyle) => {
       previous = true;
     }
 
-    //TODO implement in backend:
-    //url+='&startDate=' + this.state.startDate
-
+    var component_scope = this;
     //fetch events from backend
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        this.setState({ events: data });
+        component_scope.setState({ events: data });
       })
-      .catch(console.log);
+      .catch(err => {
+        //Error is not important enough for display
+        console.log(err)}
+        );
   };
 
   //maybe for later
@@ -304,7 +319,7 @@ handleMultiSelect = (danceStyle) => {
       {value: 'viennese waltz', label: 'Viennese Waltz'},
       {value: 'tango', label: 'Tango'},
       {value: 'foxtrot', label: 'Foxtrot'},
-      {value: 'qickstep', label: 'Qickstep'},
+      {value: 'quickstep', label: 'Quickstep'},
   ];
   const various = [
       {value: 'various', label: 'All various styles'},
@@ -320,6 +335,8 @@ handleMultiSelect = (danceStyle) => {
 
 
     return (
+      <div>
+      <CriticalAlert show={this.state.showAltert} change={this.hideAlert}/>
       <Container fluid>
         <Row>
           {/*    Filter Sidebar   */}
@@ -571,6 +588,7 @@ handleMultiSelect = (danceStyle) => {
           </Col>
         </Row>
       </Container>
+      </div>
     );
   }
 }
