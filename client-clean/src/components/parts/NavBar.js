@@ -1,9 +1,7 @@
 import React from "react";
 import { Route, Link, BrowserRouter } from "react-router-dom";
-import { createAvatarComponent, SrcSource, IconSource } from 'react-avatar';
-const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource]});
-
-
+import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
+const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
 
 const NavBar = ({ state, logOut }) => {
   /*
@@ -78,7 +76,7 @@ const NavBar = ({ state, logOut }) => {
                   Create Event
                 </Link>
               </li>
-
+              {/**  // Request can only be created from an event page
               <li className="nav-item nav-link text-secondary text-decoration-none">
                   <Link
               className="font-weight-bolder text-body text-decoration-none"
@@ -86,8 +84,7 @@ const NavBar = ({ state, logOut }) => {
                   Create Request
               </Link>
               </li>
-
-
+              */}
             </ul>
 
             <ul className="nav navbar-nav ml-auto flex-row justify-content-start flex-nowrap">
@@ -96,7 +93,18 @@ const NavBar = ({ state, logOut }) => {
                   className="font-weight-bolder text-body text-decoration-none"
                   to="/profile"
                 >
-                  <Avatar round="50%" size="30" src={state.profilePicture} name={state.name} color={Avatar.getRandomColor('sitebase', ['#f0f0fc', '#f8bfa8', '#e3dcf1'])} className="align-middle"/>
+                  <Avatar
+                    round="50%"
+                    size="30"
+                    src={state.profilePicture}
+                    name={state.name}
+                    color={Avatar.getRandomColor("sitebase", [
+                      "#f0f0fc",
+                      "#f8bfa8",
+                      "#e3dcf1",
+                    ])}
+                    className="align-middle"
+                  />
                 </Link>
               </li>
 
@@ -167,13 +175,16 @@ const NavBar = ({ state, logOut }) => {
                   My Events
                 </Link>
               </li>
+              {/**  // Request can only be created from an event page
               <li className="nav-item nav-link text-secondary text-decoration-none">
-                  <Link
-                      className="font-weight-bolder text-body text-decoration-none"
-                      to="/createrequest" >
-                    Create Request
+                <Link
+                  className="font-weight-bolder text-body text-decoration-none"
+                  to="/createrequest"
+                >
+                  Create Request
                 </Link>
-                </li>
+              </li>
+              */}
             </ul>
 
             <ul className="nav navbar-nav ml-auto flex-row justify-content-start flex-nowrap">

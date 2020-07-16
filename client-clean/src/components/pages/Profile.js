@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 //authentication component
-import RouteAuthentication from '../../services/RouteAuthentication';
+import RouteAuthentication from "../../services/RouteAuthentication";
 //dancer profile
 import ProfileDancer from "../parts/ProfileDancer";
 //organizer profile
@@ -8,16 +8,22 @@ import ProfileOrganizer from "../parts/ProfileOrganizer";
 // request component
 import MyRequests from "../forms/MyRequests";
 //moment
-import moment from 'moment';
+import moment from "moment";
 //icons
-import { MdMailOutline, MdLocationOn, MdPhone, MdLockOutline, MdFavorite, MdFace, MdStarHalf } from "react-icons/md";
+import {
+  MdMailOutline,
+  MdLocationOn,
+  MdPhone,
+  MdLockOutline,
+  MdFavorite,
+  MdFace,
+  MdStarHalf,
+} from "react-icons/md";
 //profile avatar
-import { createAvatarComponent, SrcSource } from 'react-avatar';
-const Avatar = createAvatarComponent({ sources: [SrcSource]});
-
+import { createAvatarComponent, SrcSource } from "react-avatar";
+const Avatar = createAvatarComponent({ sources: [SrcSource] });
 
 class Profile extends React.Component {
-
   // this constructor needs care. Session state should be inherited from parent.
   constructor(props) {
     super(props);
@@ -25,60 +31,69 @@ class Profile extends React.Component {
       user: null,
       loaded: false,
       requests: null,
-      events: null
+      events: null,
     };
     this.getUserData(); //we call the server for user information
-
   }
 
   getUserData() {
     const context = this; //binding context to current this context
-    fetch('/profile', {
-      method: 'GET',
+    fetch("/profile", {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Authorization': 'Bearer ' + window.sessionStorage.secret_token
-      }
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: "Bearer " + window.sessionStorage.secret_token,
+      },
     })
-    .then(res => res.json(res))
-    .then(function(res){
-      console.log(res);
-      context.setState({user: res.user, events: res.events, requests: res.requests});
-      context.setState({loaded: true});
-    })
-    .catch(err => alert(err));
+      .then((res) => res.json(res))
+      .then(function (res) {
+        console.log(res);
+        context.setState({
+          user: res.user,
+          events: res.events,
+          requests: res.requests,
+        });
+        context.setState({ loaded: true });
+      })
+      .catch((err) => alert(err));
   }
 
   capitalize = (input) => {
-    const capitalStr = input.replace(/\b\w/g, function(string) {
-    return string.toUpperCase();
+    const capitalStr = input.replace(/\b\w/g, function (string) {
+      return string.toUpperCase();
     });
     return capitalStr;
-  }
+  };
 
   render() {
-
     if (this.state.loaded) {
-
       if (this.state.user.userType === "Dancer") {
         return (
-          <ProfileDancer state={this.state} />
-          )
-      }
-
-      else if (this.state.user.userType === "Organizer") {
+          <ProfileDancer
+            state={this.state}
+            stateProps={this.props.state}
+            onDeleteEvent={this.deleteEvent}
+            onSaveEvent={this.saveEvent}
+            onUnsaveEvent={this.unsaveEvent}
+          />
+        );
+      } else if (this.state.user.userType === "Organizer") {
         return (
-          <ProfileOrganizer state={this.state} />
-          )
+          <ProfileOrganizer
+            state={this.state}
+            stateProps={this.props.state}
+            onDeleteEvent={this.props.onDeleteEvent}
+            onSaveEvent={this.props.onSaveEvent}
+            onUnsaveEvent={this.props.onUnsaveEvent}
+          />
+        );
       }
-    }
-
-    else {
+    } else {
       return (
         <div>
-        <p>Loading...</p>
+          <p>Loading...</p>
         </div>
-      )
+      );
     }
   }
 }

@@ -49,7 +49,7 @@ class EventCard extends React.Component {
   // On the homepage if an event is unsaved, there is no new component rendered in its place but the old card just receives new props
   // Need to make sure that the interestedIn and userIsOwner properties are set correctly
   componentDidUpdate(prevProps) {
-    if (prevProps.event !== this.props.event) {
+    if (prevProps.event != this.props.event) {
       if (this.props.state.savedEvents.length > 0) {
         const savedEventIds = this.props.state.savedEvents.map(
           (savedEvent) => savedEvent._id

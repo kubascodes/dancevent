@@ -12,8 +12,8 @@ import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
 import MyEvents from "./components/parts/MyEvents";
-import CreateRequest from "./components/forms/CreateRequest";
-import MyRequests from './components/forms/MyRequests';
+//import CreateRequest from "./components/forms/CreateRequest";
+import MyRequests from "./components/forms/MyRequests";
 
 export default class App extends Component {
   constructor(props) {
@@ -238,7 +238,15 @@ export default class App extends Component {
           />
           <Route
             path="/profile"
-            render={(props) => <Profile {...props} state={this.state} />}
+            render={(props) => (
+              <Profile
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+                onSaveEvent={this.saveEvent}
+                onUnsaveEvent={this.unsaveEvent}
+              />
+            )}
           />
 
           <Route
@@ -333,7 +341,7 @@ export default class App extends Component {
               />
             )}
           />
-
+          {/** // Request can only be created from an event page
           <Route
             exact
             path="/createrequest"
@@ -341,6 +349,7 @@ export default class App extends Component {
               <CreateRequest {...props} auth_token={this.secret_token} />
             )}
           />
+          */}
         </div>
       </BrowserRouter>
     );
