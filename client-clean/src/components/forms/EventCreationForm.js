@@ -1,6 +1,6 @@
 import React from 'react';
 import DatePicker from "react-datepicker";
-import Select from 'react-select'; 
+import Select from 'react-select';
 import cities from './cities'
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -18,7 +18,7 @@ class EventCreationForm extends React.Component {
   /*TODO:
     -only allow access when logedin as organizer and update only if owner
     -restructuring (design)
-    
+
     Update functionality:
       -city, Checkboxes, photo(?)
   */
@@ -43,7 +43,7 @@ class EventCreationForm extends React.Component {
       price: null,
       promoCode: null,
       picture: null,
-      
+
       //attributes used for Class
       pictureChange: false,
       danceCategory: 'latin',
@@ -61,7 +61,7 @@ class EventCreationForm extends React.Component {
       } = this.props;
 
       const component_scope = this;
-      
+
       fetch(`/events/${params.id}`)
         .then((res) => res.json())
         .then((data) => {
@@ -198,7 +198,7 @@ handleMultiSelect = (danceStyle) => {
         console.log(file);
         try {
           let image = await ProcessImage(file, fileUrl);
-          component_scope.setState({ 
+          component_scope.setState({
             picture: image,
             pictureChange: true });
           console.log(component_scope.state);
@@ -227,7 +227,7 @@ handleMultiSelect = (danceStyle) => {
   //This method posts/puts the state to the REST backend
   pushEvent = (event) => {
 
-    
+
     //prevent default behavior
     event.preventDefault();
 
@@ -246,15 +246,15 @@ handleMultiSelect = (danceStyle) => {
         danceStyles = [this.state.danceStyleCategory]
       }else{
 
-      
+
         danceStyles = this.state.danceStyle.map(style => style.value)
-        
+
         var  latinStyles = ['jive', 'rumba', 'cha-cha-cha', 'samba', 'paso doble', 'bolero', 'mambo', 'east coast swing'];
         var standardStyles = ['waltz', 'viennese waltz', 'tango', 'foxtrot', 'qickstep'];
         var variousStyles = [ 'salsa', 'bachata', 'west coast swing', 'hustle'];
-        // Check if intersection is not empty 
+        // Check if intersection is not empty
         // => the user has a chosen a danceStyle of this parentclass
-        //include it so it is easier to filter in later cases 
+        //include it so it is easier to filter in later cases
         if(danceStyles.some(r=> latinStyles.includes(r))){
           danceStyles.push('latin')
         }
@@ -273,7 +273,7 @@ handleMultiSelect = (danceStyle) => {
 
       //saving state to body of HTML
       var body = {
-        
+
         title: this.state.title,
         type: this.state.type,
         description: this.state.description,
@@ -412,14 +412,14 @@ handleMultiSelect = (danceStyle) => {
       {value: 'hustle', label: 'Hustle'},
   ];
 
-    
+
     if (window.sessionStorage.secret_token != null) {
       return (
 
 
-        
+
         <div>
-          
+
           {(this.props.update && typeof(this.state.picture)=== "string" )? ( <img src={"/"+this.state.picture} alt="Picture"  height="600"/> ) : null}
           <form className="form-group" id="EventCreationForm" onSubmit={this.pushEvent}>
 
@@ -470,7 +470,7 @@ handleMultiSelect = (danceStyle) => {
                 minDate={this.state.startDate}
               />
             </div>
-            
+
             {/*
             <div className="form-group">
               <label className="label-bold" htmlFor="city">City</label>
@@ -495,7 +495,7 @@ handleMultiSelect = (danceStyle) => {
                 onChange={this.onChangeAuto}
                 name="city"
                 options={cities}
-                
+
                         />
             </div>
 
@@ -505,7 +505,7 @@ handleMultiSelect = (danceStyle) => {
             </div>
             <div className="form-group">
               <label className="mr-2 label-bold" htmlFor="listOfDanceStyles">Dance Styles</label>
-              
+
               {danceStyles.map((danceStyle) => (
                 <span>
                   <input className="mr-1" type="checkbox" name="listOfDanceStyles" value={danceStyle} onChange={this.onChangeCheckbox} />
@@ -514,7 +514,7 @@ handleMultiSelect = (danceStyle) => {
               ))}
             </div>
 
-            
+
                 {/* The following are two selections, where the secound is depending on the first.
                             Here are the dance style categories and depending on that the user can specify the dancing style in more details if wanted.
                             This is solves by a switch case... */}
@@ -615,7 +615,7 @@ handleMultiSelect = (danceStyle) => {
                 <input type="file" className="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
                 <label className="custom-file-label" htmlFor="customFile">Upload your event picture</label>
               </div>
-            </div>            
+            </div>
             <div className="form-group">
               <label className="label-bold">Description</label>
               <textarea className="form-control" name="description" id="description" onChange={this.onChangeInput} value={this.state.description} rows="4" />

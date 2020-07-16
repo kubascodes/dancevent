@@ -29,7 +29,7 @@ router.get(
       //if dancer, add events and requests to the response
       if (user.userType === "Dancer") {
         let events = await Event.find().where('_id').in(user.interestedInEvents).select('-organizer').sort( {startDate: 1} ).limit(5);
-        let requests = await Request.find({ 'dancerId': new ObjectId(user._id)}).select('-dancerId').sort( {timestamp: 1} ).limit(5);
+        let requests = await Request.find({ 'dancerId': new ObjectId(user._id)}).select('-dancerId').sort( {timestamp: 1} );
         response.requests = requests;
         response.events = events;
       }
