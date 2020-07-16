@@ -12,7 +12,7 @@ import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
 import MyEvents from "./components/parts/MyEvents";
-//import CreateRequest from "./components/forms/CreateRequest";
+import CreateRequestForm from "./components/forms/CreateRequestForm";
 import MyRequests from "./components/forms/MyRequests";
 
 export default class App extends Component {
@@ -346,7 +346,7 @@ export default class App extends Component {
             exact
             path="/createrequest"
             render={(props) => (
-              <CreateRequest {...props} auth_token={this.secret_token} />
+              <CreateRequestForm {...props} auth_token={this.secret_token} />
             )}
           />
           */}
