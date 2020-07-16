@@ -23,106 +23,8 @@ class Homepage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      savedEventsShortened: [],
-      organizedEventsShortened: [],
       redirect: null,
     };
-  }
-
-  convertStringToDate = (events) => {
-    return new Promise((resolve, reject) => {
-      try {
-        // Convert the startDate-String for each event into an actual Date object
-        events.forEach((event) => {
-          event.startDate = new Date(event.startDate);
-        });
-        resolve(events);
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
-  /*
-  onDeleteEvent = (event) => {
-    
-    var component_scope = this;
-    // Interrupting the flow from the EventCard to App.js to ensure immediate rerendering of the Homepage when the deletion in App.js is done
-    component_scope.setState({
-      organizedEvents: component_scope.state.organizedEvents.filter(
-        (organizedEvent) => organizedEvent._id !== event._id
-      ),
-      savedEvents: component_scope.state.savedEvents.filter(
-        (savedEvent) => savedEvent._id !== event._id
-      ),
-    });
-    
-
-    // After the Homepage is re-rendered the event is deleted from the backend
-    this.props.onDeleteEvent(event);
-  };
-  */
-
-  // Filter the received savedEvents and organizedEvents to only show upcoming ones
-  handleEventsToDisplay = (events) => {
-    const now = new Date();
-    return new Promise((resolve, reject) => {
-      try {
-        this.convertStringToDate(events).then((convertedEvents) => {
-          let eventsToDisplay = convertedEvents.filter(
-            (convertedEvent) => convertedEvent.startDate > now
-          );
-          eventsToDisplay.sort((a, b) =>
-            a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
-          );
-
-          // Only 3 events are displayed on the homepage
-          eventsToDisplay.length = Math.min(eventsToDisplay.length, 3);
-          resolve(eventsToDisplay);
-        });
-      } catch (error) {
-        reject(error);
-      }
-    });
-  };
-
-  componentDidMount = () => {
-    if (this.props.state.savedEvents.length > 0) {
-      this.handleEventsToDisplay(this.props.state.savedEvents).then(
-        (eventsToDisplay) =>
-          this.setState({
-            savedEventsShortened: eventsToDisplay,
-          })
-      );
-    }
-    if (this.props.state.organizedEvents.length > 0) {
-      this.handleEventsToDisplay(this.props.state.organizedEvents).then(
-        (eventsToDisplay) =>
-          this.setState({
-            organizedEventsShortened: eventsToDisplay,
-          })
-      );
-    }
-  };
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.state.savedEvents !== this.props.state.savedEvents) {
-      this.handleEventsToDisplay(this.props.state.savedEvents).then(
-        (eventsToDisplay) => {
-          this.setState({
-            savedEventsShortened: eventsToDisplay,
-          });
-        }
-      );
-    }
-    if (prevProps.state.organizedEvents !== this.props.state.organizedEvents) {
-      this.handleEventsToDisplay(this.props.state.organizedEvents).then(
-        (eventsToDisplay) =>
-          this.setState({
-            organizedEventsShortened: eventsToDisplay,
-          })
-      );
-    }
   }
 
   render() {
@@ -198,7 +100,7 @@ class Homepage extends React.Component {
             />
             <Row>
               <Col className="col">
-                {this.state.savedEventsShortened.length > 0 ? (
+                {this.props.state.savedEvents.length > 0 ? (
                   <Button
                     className="button-pink"
                     size="md"
