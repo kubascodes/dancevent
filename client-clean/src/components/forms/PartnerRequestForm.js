@@ -42,9 +42,44 @@ class PartnerRequestForm extends React.Component {
     return age_now;
   };
 
+  convertTime24to12 = (time24h, minutes) => {
+    const AmOrPm = time24h >= 12 ? "PM" : "AM";
+    const hours = time24h % 12 || 12;
+    let time12 = "";
+    if (minutes === 0) {
+      time12 = hours + " " + AmOrPm;
+    } else {
+      time12 = hours + ":" + minutes + " " + AmOrPm;
+    }
+    return time12;
+  };
+
   render() {
     const request = this.props.request;
     const user = this.props.request.dancer;
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
     // TODO: test if really needed
     const requestDanceStyles = request.listOfDanceStyles ? (
@@ -84,7 +119,28 @@ class PartnerRequestForm extends React.Component {
             />
             <Card.Title> </Card.Title>
             <Card.Title> {user.name} </Card.Title>
-            <Card.Text>{user.proficiencyLevel}</Card.Text>
+            <Card.Text>
+              <label>{this.calculate_age(user.yearOfBirth)}</label>
+    {' '}
+                <label>{user.proficiencyLevel}</label>
+        <label>{request.event.title}</label>
+              <label>
+              {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
+    {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
+    {request.event.type === "course" ? (
+        <>
+        {" "}
+        &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
+      {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
+        {request.event.interval})
+    </>
+    ) : (
+        ""
+    )}
+  </label>
+    <label>{request.event.city}</label>
+
+            </Card.Text>
             {/*TODO: Add event location*/}
             {/*TODO: Add event date*/}
           </Card.Body>
@@ -228,13 +284,21 @@ class PartnerRequestForm extends React.Component {
                 </Col>
               </Row>
 
+    <Row>
+    <Col>
+    {" "}
+    <label>At: </label>{" "}
+    </Col>
+    <Col> {request.event.title}</Col>
+    </Row>
+
               {/* City - Event*/}
               <Row>
                 <Col>
                   {" "}
                   <label> In: </label>{" "}
                 </Col>
-                <Col> {/*TODO: add event city*/} </Col>
+                <Col> {request.event.city} </Col>
               </Row>
 
               {/* Preferred - Events
@@ -243,10 +307,39 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>Looking for a partner for this event: </label>{" "}
+                  <label>On: </label>{" "}
                 </Col>
-                <Col> {/*TODO: Add events*/}</Col>
+                <Col><label>
+    {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
+    {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
+    {request.event.type === "course" ? (
+        <>
+        {" "}
+        &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
+      {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
+        {request.event.interval})
+    </>
+    ) : (
+        ""
+    )}
+    </label></Col>
               </Row>
+              <Row>
+              <Col>
+              {" "}
+                <label>From: </label>{" "}
+              </Col>
+              <Col> {this.convertTime24to12(
+                        new Date(request.event.startDate).getHours(),
+          new Date(request.event.startDate).getMinutes()
+      )}{" "}
+        <>&mdash;</>{" "}
+          {this.convertTime24to12(
+              new Date(request.event.endDate).getHours(),
+              new Date(request.event.endDate).getMinutes()
+          )}</Col>
+              </Row>
+
 
               {/*Request - Description */}
               <Row>

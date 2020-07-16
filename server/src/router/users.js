@@ -187,15 +187,17 @@ router.get(
           dancerValues.push({'proficiencyLevel': proficiencyLevel});
           delete req.query.listOfProficiencyLevelsDancer;
         }
+
     let myAge = new Date().getFullYear() - user.yearOfBirth;
     // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
     if(dancerValues.length == 0){
-         await Request.find(req.query).populate("dancer").exec(function(err, docs){
+         await Request.find(req.query).populate("dancer", "-_id").populate("event", "-_id").exec(function(err, docs){
          if(myAge){
            docs = docs.filter(function(doc){
             return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
           })
          }
+         console.log(docs);
          return res.status(200).json(docs);
        });
       } else {
@@ -204,7 +206,7 @@ router.get(
             "dancer",
             null,
             dancerCheck
-            ).exec(function(err, docs){
+            ).populate("event", "-_id").exec(function(err, docs){
             docs = docs.filter(function(doc){
               if(myAge){
                 return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null;
@@ -213,6 +215,7 @@ router.get(
                 return doc.dancer != null;
               }
             })
+            console.log(docs);
           return res.status(200).json(docs);
         });
       };
