@@ -41,7 +41,7 @@ const NavBar = ({ state, logOut }) => {
                   className="font-weight-bolder dancevent text-decoration-none"
                   to="/"
                 >
-                  Dancevent
+                  <img height="25" class="d-inline-block align-top" src="img/logo.png" alt="Dancevent"/>
                 </Link>
               </li>
               <li className="nav-item nav-link">
@@ -66,14 +66,6 @@ const NavBar = ({ state, logOut }) => {
                   to="/myevents"
                 >
                   My Events
-                </Link>
-              </li>
-              <li className="nav-item nav-link text-secondary text-decoration-none">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/events/create"
-                >
-                  Create Event
                 </Link>
               </li>
               {/**  // Request can only be created from an event page
@@ -147,7 +139,7 @@ const NavBar = ({ state, logOut }) => {
                   className="font-weight-bolder dancevent text-decoration-none"
                   to="/"
                 >
-                  Dancevent
+                  <img height="25" class="d-inline-block align-top" src="img/logo.png" alt="Dancevent"/>
                 </Link>
               </li>
               <li className="nav-item nav-link">
