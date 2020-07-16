@@ -110,7 +110,7 @@ class LoginForm extends React.Component {
           <div id="img-homepage"></div>
           <form className="form-group" id="loginForm" onSubmit={this.userLogin}>
             <div className="form-group">
-              <label htmlFor="rating">Email</label>
+              <label className="label-bold" htmlFor="rating">Email</label>
               <input
                 type="email"
                 className="form-control"
@@ -122,7 +122,7 @@ class LoginForm extends React.Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="rating">Password</label>
+              <label className="label-bold" htmlFor="rating">Password</label>
               <input
                 type="password"
                 className="form-control"
@@ -136,7 +136,7 @@ class LoginForm extends React.Component {
             <div className="form-group">
               <input
                 type="submit"
-                className="btn btn-outline-dark"
+                className="btn button-pink"
                 value="Submit"
               />
             </div>

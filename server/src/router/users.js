@@ -31,20 +31,19 @@ router.get(
         let events = await Event.find()
           .where("_id")
           .in(user.interestedInEvents)
-          .select("-organizer -_id")
+          .select("-organizer")
           .sort({ startDate: 1 })
           .limit(5);
         let requests = await Request.find({ dancerId: new ObjectId(user._id) })
-          .select("-dancerId -_id")
-          .sort({ timestamp: 1 })
-          .limit(5);
+          .select("-dancerId")
+          .sort({ timestamp: 1 });
         response.requests = requests;
         response.events = events;
       }
       //if organizer, add events to the response
       else if (user.userType === "Organizer") {
         let events = await Event.find({ organizer: new ObjectId(user._id) })
-          .select("-organizer -_id")
+          .select("-organizer")
           .sort({ startDate: 1 })
           .limit(5);
         response.events = events;

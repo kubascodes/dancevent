@@ -1,15 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Redirect } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import ProcessImage from '../../services/imageProcessing';
 import RouteRedirect from '../../services/RouteRedirect';
-
-
-//TODO we'd want to use composition to define forms
-//1. Form Component
-//2. Input Component
-//3. Submit Btn Component
+import ProgressBar from 'react-bootstrap/ProgressBar'
 
 class RegistrationFormDancer extends React.Component {
 
@@ -31,14 +26,28 @@ class RegistrationFormDancer extends React.Component {
       proficiencyLevel: null,
       prefAgeMin: null,
       prefAgeMax: null,
-      prefGender: null
+      prefGender: null,
+      //image upload progress
+      uploadProgress: null,
+      hiddenProgress: true,
     };
+    this.setUploadProgress = this.setUploadProgress.bind(this);
   }
+
 
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
         //console.log(this.state);
   };
+
+  setUploadProgress = (progress) => {
+    this.setState({uploadProgress: progress});
+    /*
+    if (this.state.uploadProgress >= 100) {
+      setTimeout(this.setState({hiddenProgress: true}), 3000);
+    }
+    */
+  }
 
   onChangeFile = (event) => {
     //setting the file to the input
@@ -50,17 +59,16 @@ class RegistrationFormDancer extends React.Component {
       async function processImage(file, fileUrl, context) {
         //console.log(file);
         try {
-          let image = await ProcessImage(file, fileUrl, "profilePicture");
+          let image = await ProcessImage(file, fileUrl, "profilePicture", context);
           context.setState({ picture: image });
-          //console.log(context.state.picture);
-          //console.log(context.state);
         }
         catch (error) {
           alert(error);
         }
       };
-
-      //calling the function
+      //displaying progress bar
+      this.setState({hiddenProgress:false});
+      //calling the process function
       processImage(file, fileUrl, context);
     }
 
@@ -169,7 +177,9 @@ class RegistrationFormDancer extends React.Component {
         proficiencyLevel: null,
         prefAgeMin: null,
         prefAgeMax: null,
-        prefGender: null
+        prefGender: null,
+        progressBar: null,
+        hiddenProgress: true
       });
 
       //populate login data
@@ -202,40 +212,40 @@ class RegistrationFormDancer extends React.Component {
 
       <div className="form-group">
         <label className="label-bold" htmlFor="name">Name</label>
-        <input type="text" className="form-control" id="name" name="name" placeholder="Your Name" onChange={this.onChangeInput} value={this.name}/>
+        <input type="text" className="form-control border-red" id="name" name="name" placeholder="Your Name (required)" onChange={this.onChangeInput} value={this.name} required />
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="email">Email</label>
-        <input type="email" className="form-control" id="email" name="email" onChange={this.onChangeInput} placeholder="Required your@email.com" value={this.email}/>
+        <input type="email" className="form-control border-red" id="email" name="email" onChange={this.onChangeInput} placeholder="your@email.com (required)" value={this.email} required/>
       </div>
 
       <div className="form-group">
         <label htmlFor="password">Password</label>
-        <input type="password" className="form-control" id="password" name="password" onChange={this.onChangeInput} placeholder="Required" value={this.password}/>
+        <input type="password" className="form-control border-red" id="password" name="password" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.password} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="yearOfBirth">Year of Birth</label>
-        <input type="text" className="form-control" id="yearOfBirth" placeholder="1994" name="yearOfBirth" onChange={this.onChangeInput} value={this.yearOfBirth}/>
+        <input type="text" className="form-control border-red" id="yearOfBirth" placeholder="1994 (required)" name="yearOfBirth" onChange={this.onChangeInput} value={this.yearOfBirth} required/>
       </div>
 
       <div className="form-group">
-        <label className="radio-inline mr-2" for="gender">Gender</label>
+        <label className="radio-inline mr-2 label-bold" for="gender">Gender</label>
 
-        <input className="" type="radio" name="gender" id="gender" value="male" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="gender" id="gender" value="male" onChange={this.onChangeCheckbox} />
         <label className="radio-inline mr-2" for="inlineRadio1">Male</label>
 
-        <input className="" type="radio" name="gender" id="gender" value="female" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="gender" id="gender" value="female" onChange={this.onChangeCheckbox} />
         <label className="radio-inline mr-2" for="inlineRadio2">Female</label>
 
-        <input className="" type="radio" name="gender" id="gender" value="other" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="gender" id="gender" value="other" onChange={this.onChangeCheckbox} />
         <label className="radio-inline mr-2" for="inlineRadio3">Other</label>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="city">City</label>
-        <input type="text" className="form-control" id="city" placeholder="Munich" name="city" onChange={this.onChangeInput} value={this.city}/>
+        <input type="text" className="form-control border-red" id="city" placeholder="Munich (required)" name="city" onChange={this.onChangeInput} value={this.city} required/>
       </div>
 
       <div className="form-group">
@@ -332,15 +342,15 @@ class RegistrationFormDancer extends React.Component {
       </div>
 
       <div className="form-group">
-        <label className="radio-inline mr-2" for="prefGender">Preferred Gender of Dancers</label>
+        <label className="radio-inline mr-2 label-bold" for="prefGender">Preferred Gender of Dancers</label>
 
-        <input className="" type="radio" name="prefGender" id="prefGender" value="male" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="male" onChange={this.onChangeCheckbox} />
         <label className="radio-inline mr-2" for="inlineRadio1">Male</label>
 
-        <input className="" type="radio" name="prefGender" id="prefGender" value="female" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="female" onChange={this.onChangeCheckbox} />
         <label className="radio-inline mr-2" for="inlineRadio2">Female</label>
 
-        <input className="" type="radio" name="prefGender" id="prefGender" value="other" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="other" onChange={this.onChangeCheckbox} />
         <label className="radio-inline mr-2" for="inlineRadio3">Other</label>
       </div>
 
@@ -351,8 +361,14 @@ class RegistrationFormDancer extends React.Component {
         </div>
       </div>
 
+      <div class="form-group">
+        <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={"Uploading " + this.state.uploadProgress + " %"} hidden={this.state.hiddenProgress} />
+      </div>
+
+      <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
+
       <div className="form-group">
-        <input type="submit" className="btn btn-outline-dark" value="Submit"/>
+        <input type="submit" className="btn button-pink" value="Submit"/>
       </div>
     </form>
 

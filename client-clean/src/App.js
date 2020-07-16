@@ -13,6 +13,7 @@ import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
 import MyEvents from "./components/parts/MyEvents";
 import CreateRequest from "./components/forms/CreateRequest";
+import MyRequests from './components/forms/MyRequests';
 
 export default class App extends Component {
   constructor(props) {
@@ -308,6 +309,7 @@ export default class App extends Component {
               />
             )}
           />
+
           <Route
             path="/myevents"
             render={(props) => (
@@ -320,6 +322,18 @@ export default class App extends Component {
               />
             )}
           />
+
+          <Route
+            path="/myrequests"
+            render={(props) => (
+              <MyRequests
+                {...props}
+                state={this.state}
+                onDeleteEvent={this.deleteEvent}
+              />
+            )}
+          />
+
           <Route
             exact
             path="/createrequest"
