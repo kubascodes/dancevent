@@ -5,10 +5,10 @@ import Select from 'react-select';
 import cities from './cities'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import "react-datepicker/dist/react-datepicker.css";
-import { Typeahead, TypeaheadInputSingle } from 'react-bootstrap-typeahead';
-import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 import ProcessImage from '../../services/imageProcessing';
+
+import {Image, Button, Container, Row, Col, Table } from "react-bootstrap";
 
 import {CriticalAlert} from "../helpers/Alert";
 
@@ -42,10 +42,11 @@ class EventCreationForm extends React.Component {
       city: "Munich",
       location: null,
       listOfDanceStyles: [],
-      listOfProficiencyLevels: null,
+      listOfProficiencyLevels: [],
       price: null,
       promoCode: null,
       picture: null,
+      interval: "once",
 
       //attributes used for Class
       pictureChange: false,
@@ -62,6 +63,30 @@ class EventCreationForm extends React.Component {
       hiddenProgress: true,
     };
   }
+
+  days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   //When update: fetch event from backend
   componentDidMount(){
@@ -110,6 +135,11 @@ class EventCreationForm extends React.Component {
 
 
           })
+          if(this.state.course === "course"){
+            component_scope.setState({
+              interval: data.interval
+            })
+          }
 
         })
         .catch(err => {
@@ -118,6 +148,13 @@ class EventCreationForm extends React.Component {
           console.log(err)});
     }
   }
+
+  selectObject = (prop) => (
+    {value: prop, label: prop.charAt(0).toUpperCase() +prop.slice(1)}
+  )
+  selectObjectList = (prop) => (
+    prop.map(i => this.selectObject(i))
+  )
 
   hideAlert = () => {this.setState({showAltert : !this.state.showAltert})}
 
@@ -171,6 +208,21 @@ class EventCreationForm extends React.Component {
     };*/
     console.log(this.state)
 }
+
+handleSelectList = (selectedOption, action) => {
+  /* this function handles the interaction of the selection component that is like a drop down */
+  console.log("new event")
+  console.log(selectedOption)
+  console.log(action)
+  this.setState({
+      [action.name]: selectedOption ? selectedOption.map(i => i.value) : []
+  });
+  /*if (action.name == 'danceCategory') {
+      this.setState({danceStyle: ''});
+  };*/
+  console.log(this.state)
+}
+
 
 handleMultiSelect = (danceStyle) => {
     /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
@@ -311,6 +363,9 @@ handleMultiSelect = (danceStyle) => {
       if(this.state.pictureChange){
         body['picture'] = this.state.picture
       }
+      if(this.state.course === "course"){
+        body['interval'] = this.state.interval
+      }
 
       //specify HTML Method (put/post)
       if(this.props.update){
@@ -343,6 +398,7 @@ handleMultiSelect = (danceStyle) => {
         })
         .then((res) =>{
           console.log("redirect")
+          this.props.onCreate(res)
           this.setState({ redirect: "/events/single/" + res._id});
 
           /*
@@ -461,41 +517,90 @@ handleMultiSelect = (danceStyle) => {
     if(this.state.redirect){
       return <Redirect to={this.state.redirect} />
     }
-
     if (window.sessionStorage.secret_token != null) {
       return (
-
-
-
-        <div>
-          <CriticalAlert show={this.state.showAltert} change={this.hideAlert}/>
+      <div>
+        <CriticalAlert show={this.state.showAltert} change={this.hideAlert}/>
+        {((this.props.update && typeof(this.state.picture)=== "string") || this.state.pictureChange ) ? (
+          <Image
+            src={this.state.picture}
+            alt={this.state.title}
+            style={{
+              objectFit: "cover",
+              width: "100%",
+              height: "300px",
+            }}
+          />
+            
           
-          {(this.props.update && typeof(this.state.picture)=== "string" )? ( <img src={"/"+this.state.picture} alt="Picture"  height="600"/> ) : null}
-          <form className="form-group" id="EventCreationForm" onSubmit={this.pushEvent}>
+        ) : (
+          <></>
+        )}
+        <form className="form-group" id="EventCreationForm" onSubmit={this.pushEvent}>
+        <Container className="mt-3">
+        {/*<Row>
+        {((this.props.update && typeof(this.state.picture)=== "string") || this.state.pictureChange ) ? (
+          <Image
+            src={this.state.picture}
+            alt={this.state.title}
+            style={{
+              objectFit: "cover",
+              width: "100%",
+              height: "300px",
+            }}
+          />
+            
+          
+        ) : (
+          <></>
+        )}
+        </Row>*/}
+        <Row className="justify-content-md-center"> 
+          <div className="form-group">
+              <div className="custom-file">
+                <input type="file" className="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
+                <label className="custom-file-label" htmlFor="customFile">Upload your event picture</label>
+              </div>
+          </div>
+          </Row>
 
-            <div className="form-group">
-              <label className="label-bold" htmlFor="title">Title</label>
-              <input type="text" className="form-control" id="title" name="title" placeholder="Event Title" onChange={this.onChangeInput} value={this.state.title} required />
-            </div>
-            <div className="form-group">
-              <label className="label-bold" htmlFor="type">Type</label>
-              <select
-                className="form-control"
-                name="type"
-                onChange={this.onChangeInput}
-                value={this.state.type}
-              >
-                <option value="course">Course</option>
-                <option value="ball">Ball</option>
-                <option value="competition">Competition</option>
-                <option value="party">Party</option>
-              </select>
-            </div>
+          <Row>
+            <Col>
+          <div className="form-group">
+              <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={"Uploading " + this.state.uploadProgress + " %"} hidden={this.state.hiddenProgress} />
+          </div>
+          </Col>
+        </Row>
 
-            <div className="form-group">
-              <label className="label-bold"> Startdate </label>
+        <Row>
+            <Col xs={9}>
+              <div className="form-group">
+                <input type="text" className="form-control form-control-lg border-red" id="title" name="title" placeholder="Event Title" onChange={this.onChangeInput} value={this.state.title} required />
+              </div>
+
+              <div className="form-group row">
+                <label className="label-bold col-form-label col-sm-2" htmlFor="type">Dance type</label>
+
+
+                <div className="col-sm-10">
+                  <Select
+                    className="basic-single border-red"
+                    value={this.selectObject(this.state.type)}
+                    placeholder={"Choose a Dance Style..."}
+                    onChange={this.handleSelect}
+                    name="type"
+                    options={this.selectObjectList(["course", "ball", "competition", "party"])}
+                  />
+                </div>
+              </div>
+
+            
+
+            <div className="form-group row">
+              <label className="label-bold col-form-label col-sm-2"> Start date: &nbsp; </label>
+              <div className="col-sm-4">
               <DatePicker
-                className="form-control"
+                className="form-control border-red"
                 name="startDate"
                 selected={this.state.startDate}
                 onChange={date => this.onChangeCalendar(date, "startDate")}
@@ -506,9 +611,11 @@ handleMultiSelect = (danceStyle) => {
                 dateFormat="MMMM d, yyyy h:mm aa"
                 minDate={new Date()}
               />
-              <label className="label-bold"> Enddate </label>
+              </div>
+              <label className="label-bold col-form-label col-sm-2"> &nbsp; Enddate: &nbsp; </label>
+              <div className="col-sm-4">
               <DatePicker
-                className="form-control"
+                className="form-control border-red"
                 name="endDate"
                 selected={this.state.endDate}
                 onChange={date => this.onChangeCalendar(date, "endDate")}
@@ -519,174 +626,227 @@ handleMultiSelect = (danceStyle) => {
                 dateFormat="MMMM d, yyyy h:mm aa"
                 minDate={this.state.startDate}
               />
+              </div>
             </div>
 
-            {/*
-            <div className="form-group">
-              <label className="label-bold" htmlFor="city">City</label>
-              <Typeahead
-                  id="basic-typeahead-single"
-                  onChange={this.onChangeAuto}
-                  options={cities}
-                  placeholder="Choose a city..."
-                  defaultSelected={[this.state.city]}
-                />
-            </div>
-            */}
-
-            <div className="form-group">
-              <label className="label-bold" htmlFor="city">City</label>
-              <Select
-                className="basic-single"
-                classNamePrefix="select"
-                defaultValue={{label: this.state.city, value: this.state.city}}
-                value={{label: this.state.city, value: this.state.city}}
-                placeholder={"Choose a city..."}
-                onChange={this.onChangeAuto}
-                name="city"
-                options={cities}
-
-                        />
-            </div>
-
-            <div className="form-group">
-              <label className="label-bold" htmlFor="location">Location</label>
-              <input type="text" className="form-control" id="location" placeholder="e.g. Steet and Room Number" name="location" onChange={this.onChangeInput} value={this.state.location} required />
-            </div>
-
-            {/*
-            <div className="form-group">
-              <label className="mr-2 label-bold" htmlFor="listOfDanceStyles">Dance Styles</label>
-
-              {danceStyles.map((danceStyle) => (
-                <span>
-                  <input className="mr-1" type="checkbox" name="listOfDanceStyles" value={danceStyle} onChange={this.onChangeCheckbox} />
-                  <label className="checkbox-inline mr-2">{danceStyle.charAt(0).toUpperCase() + danceStyle.slice(1)}</label>
-                </span>
-              ))}
-            </div>
-              */}
-            
-                {/* The following are two selections, where the secound is depending on the first.
-                            Here are the dance style categories and depending on that the user can specify the dancing style in more details if wanted.
-                            This is solves by a switch case... */}
-            <div>
+            {this.state.type === "course" ?
               <div className="form-group">
-              <label className="mr-2 label-bold" htmlFor="listOfProficiencyLevels">Dance style</label>
+                <label className="label-bold" htmlFor="type">Interval</label>
                 <Select
-                  className="basic-single"
+                  className="basic-single border-red"
                   classNamePrefix="select"
-                  defaultValue={this.state.danceCategory}
-                  placeholder={"Dance style category..."}
-                  isClearable={true}
-                  isSearchable={true}
-                  value={{label: this.state.danceCategory, value: this.state.danceCategory}}
+                  value={this.selectObject(this.state.interval)}
+                  placeholder={"Choose a Interval..."}
                   onChange={this.handleSelect}
-                  name="danceCategory"
-                  options={danceStyleCategory}
+                  name="interval"
+                  options={this.selectObjectList(["once", "daily", "weekly", "every two weeks", "monthly"])}
                 />
-                {
-                  {
-                    'latin':
+              </div>
+              :
+              <></>
+            }
+              
+            </Col>
+            <Col className="text-center">
+              <div className="form-group">
+                <input type="submit" className="btn button-pink float-right m-4" value="Submit" />
+              </div>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <Table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <b>Organizer:</b>
+                    </td>
+                    <td>
+                      You
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Dance Styles:</b>
+                    </td>
+                    <td>
+                    
                       <Select
-                        className="basic-multi-select"
+                        className="basic-single border-red"
                         classNamePrefix="select"
-                        onChange={this.handleMultiSelect}
-                        defaultValue={''}
-                        value={this.state.danceStyle}
-                        isMulti={true}
-                        placeholder={"Dance style..."}
-                        isClearable={true}
+                        defaultValue={this.state.danceCategory}
+                        placeholder={"Dance style category..."}
                         isSearchable={true}
-                        name="danceStyle"
-                        options={latin}
-                      />,
-                    'standard':
-                      <Select
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={this.handleMultiSelect}
-                        defaultValue={''}
-                        value={this.state.danceStyle}
-                        isMulti={true}
-                        placeholder={"Dance style..."}
-                        isClearable={true}
-                        isSearchable={true}
-                        name="danceStyle"
-                        options={standard}
-                      />,
-                    'various':
-                      <Select
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                        onChange={this.handleMultiSelect}
-                        defaultValue={''}
-                        value={this.state.danceStyle}
-                        isMulti={true}
-                        placeholder={"Dance style..."}
-                        isClearable={true}
-                        isSearchable={true}
-                        name="danceStyle"
-                        options={various}
+                        value={{label: this.state.danceCategory, value: this.state.danceCategory}}
+                        onChange={this.handleSelect}
+                        name="danceCategory"
+                        options={danceStyleCategory}
                       />
+                      {
+                        {
+                          'latin':
+                            <Select
+                              className="basic-multi-select"
+                              classNamePrefix="select"
+                              onChange={this.handleMultiSelect}
+                              defaultValue={''}
+                              value={this.state.danceStyle}
+                              isMulti={true}
+                              placeholder={"Dance style..."}
+                              isClearable={true}
+                              isSearchable={true}
+                              name="danceStyle"
+                              options={latin}
+                            />,
+                          'standard':
+                            <Select
+                              className="basic-multi-select"
+                              classNamePrefix="select"
+                              onChange={this.handleMultiSelect}
+                              defaultValue={''}
+                              value={this.state.danceStyle}
+                              isMulti={true}
+                              placeholder={"Dance style..."}
+                              isClearable={true}
+                              isSearchable={true}
+                              name="danceStyle"
+                              options={standard}
+                            />,
+                          'various':
+                            <Select
+                              className="basic-multi-select"
+                              classNamePrefix="select"
+                              onChange={this.handleMultiSelect}
+                              defaultValue={''}
+                              value={this.state.danceStyle}
+                              isMulti={true}
+                              placeholder={"Dance style..."}
+                              isClearable={true}
+                              isSearchable={true}
+                              name="danceStyle"
+                              options={various}
+                            />
 
-                  }[this.state.danceCategory]
-                }
-              </div>
-            </div>
+                        }[this.state.danceCategory]
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>This event is for:</b>
+                    </td>
+                    <td>
+                      <Select
+                        className="basic-multi-select border-red"
+                        isMulti
+                        classNamePrefix="select"
+                        value={this.selectObjectList(this.state.listOfProficiencyLevels)}
+                        placeholder={"Choose a Interval..."}
+                        onChange={this.handleSelectList}
+                        name="listOfProficiencyLevels"
+                        options={this.selectObjectList(eventLevels)}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Col>
 
-            <div className="form-group">
-              <label className="mr-2 label-bold" htmlFor="listOfProficiencyLevels">Profiency Level</label>
-              <select multiple className="form-control" id="listOfProficiencyLevels" name="listOfProficiencyLevels" onChange={this.onChangeMultipleSelect} value={this.state.listOfProficiencyLevels} required>
-                {eventLevels.map((level) => (
-                  <option value={level}>
-                    {level.charAt(0).toUpperCase() +
-                      level.slice(1)}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label className="label-bold" htmlFor="price">Price</label>
-              <div className="form-row">
-                <input type="number" className="form-control col" id="price" min="0" step="0.01" placeholder="10.00" name="price" onChange={this.onChangeInput} value={this.state.price} required />
+            <Col>
+              <Table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <b>City:</b>
+                    </td>
+                    <td>
+                    <Select
+                        className="basic-single border-red"
+                        classNamePrefix="select"
+                        defaultValue={this.selectObject(this.state.city)}
+                        value={this.selectObject(this.state.city)}
+                        placeholder={"Choose a city..."}
+                        onChange={this.onChangeAuto}
+                        name="city"
+                        options={cities}
+                        />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Location:</b>
+                    </td>
+                    <td>
+                      <input 
+                        type="text" 
+                        className="form-control border-red" 
+                        id="location" 
+                        placeholder="e.g. Steet and Room Number" 
+                        name="location" 
+                        onChange={this.onChangeInput} 
+                        value={this.state.location} 
+                        required
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Price:</b>
+                    </td>
+                    <td>
+                    
+                    <div className="form-row">
+                      <input type="number" className="form-control col border-red" id="price" min="0" step="0.01" placeholder="10.00" name="price" onChange={this.onChangeInput} value={this.state.price} required />
 
-                <div className="input-group-append">
-                  <div className="input-group-text">
-                    €
-                </div>
-                </div>
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="label-bold" htmlFor="promoCode">PromoCode</label>
-              <input type="text" className="form-control" id="promoCode" placeholder="e.g. Ball150" name="promoCode" onChange={this.onChangeInput} value={this.state.promoCode} />
-            </div>
-            <div className="form-group">
-              <div className="custom-file">
-                <input type="file" className="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
-                <label className="custom-file-label" htmlFor="customFile">Upload your event picture</label>
-              </div>
-            </div>
+                      <div className="input-group-append">
+                        <div className="input-group-text">
+                          €
+                        </div>
+                      </div>
+                    </div>                    
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <b>Promocode:</b>
+                    </td>
+                    <td>
+                    
+                    <input type="text" className="form-control" id="promoCode" placeholder="e.g. Ball150" name="promoCode" onChange={this.onChangeInput} value={this.state.promoCode} />                 
+                    </td>
+                  </tr>
+                </tbody>
+              </Table>
+            </Col>
+            </Row>
+            <Row>
+              <Col>
             <div className="form-group">
               <label className="label-bold">Description</label>
               <textarea className="form-control" name="description" id="description" onChange={this.onChangeInput} value={this.state.description} rows="4" />
             </div>
-
-            <div class="form-group">
-              <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={"Uploading " + this.state.uploadProgress + " %"} hidden={this.state.hiddenProgress} />
+            </Col>
+            </Row>
+            <Row>
+              <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
+            </Row>
+          <Row className="justify-content-md-center"> 
+            <Col md="auto">
+              <div className="form-group">
+              <input type="submit" className="btn button-pink" value="Submit" />
             </div>
+            </Col>
+            </Row>
 
-            <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
+        </Container>
 
-            <div className="form-group">
-              <input type="submit" className="btn btn-outline-dark" value="Submit" />
-            </div>
-          </form>
-        </div>
-
+        
+        </form>                
+      </div>
       )
     }
+
     else{
       return (
         <div> You are not allowed to view this page. </div>

@@ -115,6 +115,11 @@ export default class App extends Component {
     console.log("main state");
   };
 
+
+  addEvent = (event) => {
+    this.state.organizedEvents.push(event)
+  }
+
   // Propagated up from the EventCard
   deleteEvent = (event) => {
     var component_scope = this;
@@ -304,7 +309,11 @@ export default class App extends Component {
             exact
             path="/events/create"
             render={(props) => (
-              <EventCreationForm {...props} auth_token={this.secret_token} />
+              <EventCreationForm 
+                {...props} 
+                auth_token={this.secret_token}
+                onCreate={this.addEvent}
+                />
             )}
           />
           <Route
