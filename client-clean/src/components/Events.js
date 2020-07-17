@@ -6,7 +6,7 @@ import Select from "react-select";
 import EventCard from "./parts/EventCard";
 import DatePicker from "react-datepicker";
 import {CriticalAlert} from "./helpers/Alert";
-import {SelectStyle, SelectTheme} from '../assets/styles.js'
+import {SelectStyle} from '../assets/styles'
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -208,7 +208,8 @@ class Events extends React.Component {
       if (previous) {
         url += "&";
       }
-      url += "endDate=" + this.state.endDate;
+      //+1 Day that the choosen day is inclusive
+      url += "endDate=" + new Date(this.state.endDate.getTime() + 86400000)
       previous = true;
     }
 
