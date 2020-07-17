@@ -190,38 +190,43 @@ class PartnerRequestForm extends React.Component {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>
-        <Row>
-        <Col>
-                <Image
-                src={
-                  user.picture
-                      ? user.picture
-                      : "img/placeholderDancerProfile.png"
-                }
-                alt={user.name}
-                style={{ width: "100px", height: "95px" }}
-                roundedCircle
-                />
-                    </Col>
-                    <Col>
-                {user.name}
-        </Col>
-        </Row>
-                </Modal.Title>
-          </Modal.Header>
+      {" "}
+      <Col>{" "}
+      </Col>
+      <Col>
 
-          <Modal.Body>
+      <Modal.Title>{" "}<Image
+      src={
+          user.picture
+              ? user.picture
+              : "img/placeholderDancerProfile.png"
+      }
+      alt={user.name}
+      style={{ width: "180px", height: "171px" }}
+      roundedCircle
+      /></Modal.Title>
+      </Col>
+
+
+
+      <Col></Col>
+
+
+
+
+      </Modal.Header>
+
+          <Modal.Body closeButton>
             <Container fluid>
               {/* Requesting User Information_______________________*/}
-
+            <h4>{user.name}</h4>
               {/* Requesting User - Age Information*/}
               <Row>
                 <Col>
                   {" "}
     <MdFace className="align-text-bottom" />{" "}<label>My age...</label>{" "}
                 </Col>
-                <Col>
+                <Col className="align-text-right">
                   {" "}
                   <label>{this.calculate_age(user.yearOfBirth)} </label>
                 </Col>
@@ -369,9 +374,11 @@ class PartnerRequestForm extends React.Component {
               </Row>
             </Container>
           </Modal.Body>
-          <Modal.Footer>
+      <Modal.Footer>
+
     <MdEvent className="align-text-left" /> Created on:{" "}
-    {moment(request.timestamp).format("dddd D.M.YYYY")}
+      {" "}<label>{moment(request.timestamp).format("dddd D.M.YYYY")}</label>
+
             <Button variant="light"  onClick={this.handleCancel}>
               {" "}
               Cancel{" "}
