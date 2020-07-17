@@ -290,7 +290,7 @@ class Events extends React.Component {
 
     return (
       <div>
-      <CriticalAlert show={this.state.showAltert} change={this.hideAlert}/>
+      <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
       <Container fluid>
         <Row>
           {/*    Filter Sidebar   */}
@@ -302,7 +302,7 @@ class Events extends React.Component {
                 <div className="form-group">
                   <label className="label-bold">I'm looking for a...</label>
                   <Select
-                        className="basic-single border-red"
+                        className="basic-single"
                         placeholder={"Choose a Dance Style..."}
                         onChange={this.handleSelect}
                         name="eventtype"
@@ -392,7 +392,7 @@ class Events extends React.Component {
                   <label className="label-bold">Eventlevel</label>
 
                   <Select
-                        className="basic-single border-red"
+                        className="basic-single"
                         placeholder={"Choose a dance level..."}
                         onChange={this.handleSelect}
                         name="danceLevel"
@@ -448,7 +448,7 @@ class Events extends React.Component {
                 <div className="form-group">
                   <input
                     type="submit"
-                    className="btn btn-outline-dark"
+                    className="btn button-pink"
                     value="Submit"
                   />
                 </div>

@@ -344,6 +344,7 @@ class EventCreationForm extends React.Component {
 
         })
         .catch(err => {
+          console.log(err)
           if (component_scope.props.update) {
             component_scope.setState({
               showAltert: true,
@@ -355,7 +356,6 @@ class EventCreationForm extends React.Component {
               errorMessage: "Error occured while sending to server. Event might not have been created."
             })
           }
-          console.log(err)
         }
         );
     } else {
@@ -414,7 +414,7 @@ class EventCreationForm extends React.Component {
     if (window.sessionStorage.secret_token != null) {
       return (
         <div>
-          <CriticalAlert show={this.state.showAltert} change={this.hideAlert} />
+          <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage} />
           {((this.props.update && typeof (this.state.picture) === "string") || this.state.pictureChange) ? (
             <Image
               src={this.state.picture}
