@@ -12,6 +12,7 @@ import {
 } from "react-bootstrap";
 import {
   MdMailOutline,
+  MdPerson,
   MdLocationOn,
   MdPhone,
   MdLockOutline,
@@ -19,8 +20,9 @@ import {
   MdFace,
   MdStarHalf,
   MdEvent,
-  MdCreditCard,
+  MdCreditCard, MdKeyboardArrowRight,
 } from "react-icons/md";
+import {GiPartyFlags, GiBodyHeight} from "react-icons/gi";
 import Select from "react-select";
 import { Link } from "react-router-dom";
 import moment from "moment";
@@ -133,43 +135,42 @@ class PartnerRequestForm extends React.Component {
             <Card.Title> {user.name} </Card.Title>
             <Card.Text>
               <li className="cart-text list-unstyled">
-                <MdFace className="align-text-bottom" /> {request.listofGenders}
+        <MdFace className="align-text-bottom" />{this.calculate_age(user.yearOfBirth)}
                </li>
               <li className="cart-text list-unstyled">
-                <MdEvent className="align-text-bottom" /> Created on:{" "}
-                {moment(request.timestamp).format("dddd D.M.YYYY")}
-              </li>
+        <MdStarHalf className="align-text-bottom" />{request.listOfProficiencyLevels}
+               </li>
+                <li className="cart-text list-unstyled">
+                <GiPartyFlags className="align-text-bottom"/> {request.event.title}
+                </li>
+        <li className="cart-text list-unstyled">
+        <MdLocationOn className="align-text-bottom"/> {request.event.city}
+        </li>
               <li className="cart-text list-unstyled">
-                <MdFace className="align-text-bottom" /> {request.listOfProficiencyLevels}
+                <MdEvent className="align-text-bottom" />
+                {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
+                  {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
+                  {request.event.type === "course" ? (
+                      <>
+                      {" "}
+                      &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
+                    {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
+                      {request.event.interval})
+                  </>
+                  ) : (
+                      ""
+                  )}
               </li>
-
-              <label>{this.calculate_age(user.yearOfBirth)}</label>
-    {' '}
-                <label>{user.proficiencyLevel}</label>
-        <label>{request.event.title}</label>
-              <label>
-              {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
-    {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
-    {request.event.type === "course" ? (
-        <>
-        {" "}
-        &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
-      {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
-        {request.event.interval})
-    </>
-    ) : (
-        ""
-    )}
-  </label>
-    <label>{request.event.city}</label>
-
             </Card.Text>
             {/*TODO: Add event location*/}
             {/*TODO: Add event date*/}
           </Card.Body>
+    <div class="card-footer bg-transparent">
+        <Link onClick={this.handleShow} className="ml-auto mr-2 black-link align-text-bottom">More Details<MdKeyboardArrowRight className="align-text-bottom" /></Link>
           {/*<Card.Footer>
                                  <Button id="deleteRequest" onClick={()=>{this.props.deleteRequest(request._id)}}>Delete Request</Button>
                              </Card.Footer>*/}
+                             </div>
         </Card>
 
         <Modal
@@ -182,28 +183,36 @@ class PartnerRequestForm extends React.Component {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title><Image
-    src={
-      user.picture
-          ? user.picture
-          : "img/placeholderDancerProfile.png"
-    }
-    alt={user.name}
-    style={{ width: "100px", height: "95px" }}
-    roundedCircle
-    /></Modal.Title>
+            <Modal.Title>
+        <Row>
+        <Col>
+                <Image
+                src={
+                  user.picture
+                      ? user.picture
+                      : "img/placeholderDancerProfile.png"
+                }
+                alt={user.name}
+                style={{ width: "100px", height: "95px" }}
+                roundedCircle
+                />
+                    </Col>
+                    <Col>
+                {user.name}
+        </Col>
+        </Row>
+                </Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
             <Container fluid>
-              <h4> {user.name}</h4>
               {/* Requesting User Information_______________________*/}
 
               {/* Requesting User - Age Information*/}
               <Row>
                 <Col>
                   {" "}
-                  <label>My age...</label>{" "}
+    <MdFace className="align-text-bottom" />{" "}<label>My age...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -215,7 +224,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>My height...</label>{" "}
+    <GiBodyHeight className="align-text-bottom"/>  {" "}<label>My height...</label>{" "}
                 </Col>
 
                 <Col>
@@ -228,7 +237,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>My proficiency experience...</label>{" "}
+    <MdStarHalf className="align-text-bottom" />{" "}<label>My proficiency experience...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -240,7 +249,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>I usually enjoy to dance...</label>{" "}
+    <MdFavorite className="align-text-bottom"/>{" "}<label>I usually enjoy to dance...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -262,7 +271,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label> Gender... </label>{" "}
+    <MdPerson className="align-text-bottom" />{" "}<label> Gender... </label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -274,7 +283,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>Age range...</label>{" "}
+    <MdFace className="align-text-bottom" />{" "}<label>Age range...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -289,7 +298,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>Dancing proficiency level...</label>{" "}
+    <MdStarHalf className="align-text-bottom" />{" "}<label>Dancing proficiency level...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -300,7 +309,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>To dance...</label>{" "}
+    <MdFavorite className="align-text-bottom"/>{" "}<label>To dance...</label>{" "}
                 </Col>
                 <Col>
                   <ul>{requestDanceStyles} </ul>
@@ -310,7 +319,7 @@ class PartnerRequestForm extends React.Component {
     <Row>
     <Col>
     {" "}
-    <label>At: </label>{" "}
+    <GiPartyFlags className="align-text-bottom"/>  {" "}<label>At: </label>{" "}
     </Col>
     <Col> {request.event.title}</Col>
     </Row>
@@ -319,7 +328,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label> In: </label>{" "}
+    <MdLocationOn className="align-text-bottom"/><label> In: </label>{" "}
                 </Col>
                 <Col> {request.event.city} </Col>
               </Row>
@@ -330,7 +339,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>On: </label>{" "}
+    <MdEvent className="align-text-bottom"/> {" "}<label>On: </label>{" "}
                 </Col>
                 <Col><label>
     {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
@@ -350,7 +359,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
               <Col>
               {" "}
-                <label>From: </label>{" "}
+    <MdEvent className="align-text-bottom"/> {" "} <label>Time: </label>{" "}
               </Col>
               <Col> {this.convertTime24to12(
                         new Date(request.event.startDate).getHours(),
@@ -375,9 +384,18 @@ class PartnerRequestForm extends React.Component {
                   <label> {request.description} </label>{" "}
                 </Col>
               </Row>
+
+              <Row>
+                <Col>
+
+                </Col>
+
+              </Row>
             </Container>
           </Modal.Body>
           <Modal.Footer>
+    <MdEvent className="align-text-left" /> Created on:{" "}
+    {moment(request.timestamp).format("dddd D.M.YYYY")}
             <Button variant="secondary" onClick={this.handleCancel}>
               {" "}
               Cancel{" "}
