@@ -6,6 +6,8 @@ import Select from "react-select";
 import EventCard from "./parts/EventCard";
 import DatePicker from "react-datepicker";
 import {CriticalAlert} from "./helpers/Alert";
+import {SelectStyle, SelectTheme} from '../assets/styles.js'
+
 import "react-datepicker/dist/react-datepicker.css";
 
 import cities from "./forms/cities";
@@ -306,6 +308,7 @@ class Events extends React.Component {
                         placeholder={"Choose a Dance Style..."}
                         onChange={this.handleSelect}
                         name="eventtype"
+                        styles={SelectStyle}
                         options={this.selectObjectList(types)}
                   />
                 </div>
@@ -328,6 +331,7 @@ class Events extends React.Component {
                     onChange={this.handleSelect}
                     name="danceCategory"
                     options={danceStyleCategory}
+                    styles={SelectStyle}
                   />
                   {
                     {
@@ -342,6 +346,7 @@ class Events extends React.Component {
                           isSearchable={true}
                           name="danceStyle"
                           options={all}
+                          styles={SelectStyle}
                         />
                       ),
                       latin: (
@@ -355,6 +360,7 @@ class Events extends React.Component {
                           isSearchable={true}
                           name="danceStyle"
                           options={latin}
+                          styles={SelectStyle}
                         />
                       ),
                       standard: (
@@ -368,6 +374,7 @@ class Events extends React.Component {
                           isSearchable={true}
                           name="danceStyle"
                           options={standard}
+                          styles={SelectStyle}
                         />
                       ),
                       various: (
@@ -381,6 +388,7 @@ class Events extends React.Component {
                           isSearchable={true}
                           name="danceStyle"
                           options={various}
+                          styles={SelectStyle}
                         />
                       ),
                     }[this.state.danceCategory]
@@ -397,6 +405,7 @@ class Events extends React.Component {
                         onChange={this.handleSelect}
                         name="danceLevel"
                         options={this.selectObjectList(eventLevels)}
+                        styles={SelectStyle}
                   />
                 </div>
 
@@ -413,6 +422,7 @@ class Events extends React.Component {
                     onChange={this.onChangeCity}
                     name="city"
                     options={cities}
+                    styles={SelectStyle}
                   />
                 </div>
 

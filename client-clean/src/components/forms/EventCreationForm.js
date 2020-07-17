@@ -5,6 +5,7 @@ import Select from 'react-select';
 import cities from './cities'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import "react-datepicker/dist/react-datepicker.css";
+import {SelectStyle} from '../../assets/styles.js';
 
 import ProcessImage from '../../services/imageProcessing';
 
@@ -435,8 +436,8 @@ class EventCreationForm extends React.Component {
               <Row className="justify-content-md-center">
                 <div className="form-group">
                   <div className="custom-file">
-                    <input type="file" className="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
-                    <label className="custom-file-label" htmlFor="customFile">Upload your event picture</label>
+                    <input type="file" className="custom-file-input form-control" name="picture" onChange={this.onChangeFile} id="customFile" />
+                    <label className="custom-file-label form-control" htmlFor="customFile">Upload your event picture</label>
                   </div>
                 </div>
               </Row>
@@ -463,9 +464,10 @@ class EventCreationForm extends React.Component {
                       <Select
                         className="basic-single border-red"
                         value={this.selectObject(this.state.type)}
-                        placeholder={"Choose a Dance Style..."}
+                        placeholder={"Choose a dance type..."}
                         onChange={this.handleSelect}
                         name="type"
+                        styles={SelectStyle}
                         options={this.selectObjectList(["course", "ball", "competition", "party"])}
                       />
                     </div>
@@ -565,6 +567,7 @@ class EventCreationForm extends React.Component {
                             onChange={this.handleSelect}
                             name="danceCategory"
                             options={danceStyleCategory}
+                            styles={SelectStyle}
                           />
                           {
                             {
@@ -581,6 +584,7 @@ class EventCreationForm extends React.Component {
                                   isSearchable={true}
                                   name="danceStyle"
                                   options={latin}
+                                  styles={SelectStyle}
                                 />,
                               'standard':
                                 <Select
@@ -595,6 +599,7 @@ class EventCreationForm extends React.Component {
                                   isSearchable={true}
                                   name="danceStyle"
                                   options={standard}
+                                  styles={SelectStyle}
                                 />,
                               'various':
                                 <Select
@@ -609,6 +614,7 @@ class EventCreationForm extends React.Component {
                                   isSearchable={true}
                                   name="danceStyle"
                                   options={various}
+                                  styles={SelectStyle}
                                 />
 
                             }[this.state.danceCategory]
@@ -629,6 +635,7 @@ class EventCreationForm extends React.Component {
                             onChange={this.handleSelectList}
                             name="listOfProficiencyLevels"
                             options={this.selectObjectList(eventLevels)}
+                            styles={SelectStyle}
                           />
                         </td>
                       </tr>
@@ -653,6 +660,7 @@ class EventCreationForm extends React.Component {
                             onChange={this.handleSelect}
                             name="city"
                             options={cities}
+                            styles={SelectStyle}
                           />
                         </td>
                       </tr>
