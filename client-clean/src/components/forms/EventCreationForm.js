@@ -258,7 +258,7 @@ class EventCreationForm extends React.Component {
       
       //if a dancestyle subCategory is selected add the supercategory
       if (this.state.danceStyle.length == 0) {
-        danceStyles = [this.state.danceStyleCategory]
+        danceStyles = [this.state.danceCategory]
       } else {
 
         
@@ -625,7 +625,7 @@ class EventCreationForm extends React.Component {
                             isMulti
                             classNamePrefix="select"
                             value={this.selectObjectList(this.state.listOfProficiencyLevels)}
-                            placeholder={"Choose a Interval..."}
+                            placeholder={"Choose a level..."}
                             onChange={this.handleSelectList}
                             name="listOfProficiencyLevels"
                             options={this.selectObjectList(eventLevels)}
@@ -650,7 +650,7 @@ class EventCreationForm extends React.Component {
                             defaultValue={this.selectObject(this.state.city)}
                             value={this.selectObject(this.state.city)}
                             placeholder={"Choose a city..."}
-                            onChange={this.handleSelectList}
+                            onChange={this.handleSelect}
                             name="city"
                             options={cities}
                           />
