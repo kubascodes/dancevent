@@ -95,7 +95,7 @@ class PartnerRequestForm extends React.Component {
         <Popover.Content>
           {" "}
           This functionality will be automated soon. For now just contact the{" "}
-          {user.name} here: {/*request.counterfeitEmail*/}{" "}
+          {user.name} here: {user.email}{" "}
         </Popover.Content>
       </Popover>
     );

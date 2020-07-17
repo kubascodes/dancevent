@@ -193,6 +193,28 @@ class FilterRequest extends React.Component {
             }
         }}
     }
+    // belong to event
+      if (this.state.city) {
+          if (previous) {
+              url += "&";
+          }
+          url += "city=" + this.state.city;
+          previous = true;
+      }
+      if (this.state.startDate) {
+          if (previous) {
+              url += "&";
+          }
+          url += "startDate=" + this.state.startDate;
+          previous = true;
+      }
+      if (this.state.endDate) {
+          if (previous) {
+              url += "&";
+          }
+          url += "endDate=" + this.state.endDate;
+          previous = true;
+      }
 
     /*if (this.state.city != "") {
       if (previous) {
@@ -315,6 +337,7 @@ class FilterRequest extends React.Component {
               className="form-control col"
               name="prefAgeMin"
               step="5"
+                min="0"
               onChange={this.onChange}
               value={this.state.prefAgeMin}
               />
@@ -327,6 +350,7 @@ class FilterRequest extends React.Component {
               placeholder={this.state.prefAgeMax}
               className="form-control col"
               name="prefAgeMax"
+                min="0"
               step="5"
               onChange={this.onChange}
               value={this.state.prefAgeMax}
@@ -379,7 +403,6 @@ class FilterRequest extends React.Component {
           </div>
 
         {/* Date Type 1 - selection*/}
-        {/* TODO: Multi Selection?*/}
   <label className="label-bold"> In the time...</label>
         <div className="form-group">
           <label> On... </label>
@@ -387,7 +410,7 @@ class FilterRequest extends React.Component {
               className="basic-single"
               classNamePrefix="select"
               defaultValue={this.state.prefDateSelection}
-              placeholder={"Date selection..."}
+              placeholder={"E.g. Tomorrow"}
               isClearable={true}
               isSearchable={true}
               onChange={this.handleTextDate}
@@ -420,7 +443,7 @@ class FilterRequest extends React.Component {
                           selectsEnd
                           dateFormat="MMMM d, yyyy"
                           minDate={this.state.startDate}
-                        placeholderText="Select a end date"
+                        placeholderText="Open End"
                         startDate={this.state.startDate}
                          endDate={this.state.endDate}
                         />
@@ -513,7 +536,7 @@ class FilterRequest extends React.Component {
         <div class="form-group">
           <input
               type="submit"
-              class="btn btn-outline-dark"
+                className="btn button-pink"
               value="Submit"
           />
         </div>
