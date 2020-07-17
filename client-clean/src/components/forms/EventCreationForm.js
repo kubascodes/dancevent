@@ -650,7 +650,7 @@ class EventCreationForm extends React.Component {
                             defaultValue={this.selectObject(this.state.city)}
                             value={this.selectObject(this.state.city)}
                             placeholder={"Choose a city..."}
-                            onChange={this.handleSelectList}
+                            onChange={this.handleSelect}
                             name="city"
                             options={cities}
                           />
