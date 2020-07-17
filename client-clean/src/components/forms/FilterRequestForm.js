@@ -309,27 +309,25 @@ class FilterRequest extends React.Component {
           </div>
           <div>
 <Row>
-          <Col>
+          <Col xs={5}>
               <input type="number"
               placeholder={this.state.prefAgeMin}
               className="form-control col"
               name="prefAgeMin"
               step="5"
               onChange={this.onChange}
-            style={{ width: "70px" }}
               value={this.state.prefAgeMin}
               />
                   </Col>
                   <Col>
               <label> -  </label>
               </Col>
-              <Col>
+              <Col xs={5}>
               <input type="number"
               placeholder={this.state.prefAgeMax}
               className="form-control col"
               name="prefAgeMax"
               step="5"
-            style={{ width: "70px" }}
               onChange={this.onChange}
               value={this.state.prefAgeMax}
               />
