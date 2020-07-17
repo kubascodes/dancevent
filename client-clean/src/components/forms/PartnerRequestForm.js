@@ -56,6 +56,13 @@ class PartnerRequestForm extends React.Component {
     return age_now;
   };
 
+    capitalize = (input) => {
+        const capitalStr = input.replace(/\b\w/g, function (string) {
+            return string.toUpperCase();
+        });
+        return capitalStr;
+    };
+
   convertTime24to12 = (time24h, minutes) => {
     const AmOrPm = time24h >= 12 ? "PM" : "AM";
     const hours = time24h % 12 || 12;
@@ -97,7 +104,7 @@ class PartnerRequestForm extends React.Component {
 
     // TODO: test if really needed
     const requestDanceStyles = request.listOfDanceStyles ? (
-      request.listOfDanceStyles.map((style) => <li>{style}</li>)
+      request.listOfDanceStyles.map((style) => <li>{this.capitalize(style)}</li>)
     ) : (
       <li> You have not entered any dance styles.</li>
     );
@@ -105,7 +112,7 @@ class PartnerRequestForm extends React.Component {
     // Contact Email popover as this is implemented later if there isstill time
     const popover = (
       <Popover id="popover-basic">
-        <Popover.Title as="h3">Contact data of {user.name} </Popover.Title>
+        <Popover.Title as="h3">Contact data of {this.capitalize(user.name)} </Popover.Title>
         <Popover.Content>
           {" "}
           This functionality will be automated soon. For now just contact the{" "}
@@ -135,13 +142,13 @@ class PartnerRequestForm extends React.Component {
             <Card.Title> {user.name} </Card.Title>
             <Card.Text>
               <li className="cart-text list-unstyled">
-        <MdFace className="align-text-bottom" />{this.calculate_age(user.yearOfBirth)}
+        <MdFace className="align-text-bottom" />{" "}{this.calculate_age(user.yearOfBirth)}
                </li>
               <li className="cart-text list-unstyled">
-        <MdStarHalf className="align-text-bottom" />{request.listOfProficiencyLevels}
+        <MdStarHalf className="align-text-bottom" />{" "}{this.capitalize(user.proficiencyLevel)}
                </li>
                 <li className="cart-text list-unstyled">
-                <GiPartyFlags className="align-text-bottom"/> {request.event.title}
+                <GiPartyFlags className="align-text-bottom"/> {" "}{request.event.title}
                 </li>
         <li className="cart-text list-unstyled">
         <MdLocationOn className="align-text-bottom"/> {request.event.city}
@@ -241,7 +248,7 @@ class PartnerRequestForm extends React.Component {
                 </Col>
                 <Col>
                   {" "}
-                  <label>{user.proficiencyLevel}</label>{" "}
+                  <label>{this.capitalize(user.proficiencyLevel)}</label>{" "}
                 </Col>
               </Row>
 
@@ -255,7 +262,7 @@ class PartnerRequestForm extends React.Component {
                   {" "}
                   <ul>
                     {user.listOfDanceStyles ? ( user.listOfDanceStyles.map((style) => {
-                      return <li>{style}</li>;
+                      return <li>{this.capitalize(style)}</li>;
                     })) : (<li></li>)
                     }{" "}
                   </ul>{" "}
@@ -275,7 +282,9 @@ class PartnerRequestForm extends React.Component {
                 </Col>
                 <Col>
                   {" "}
-                  <label>{request.listofGenders}</label>{" "}
+      <label>{request.listofGenders.map((gender)=>
+              <li className="cart-text list-unstyled">{this.capitalize(gender)}</li>
+  )}</label>{" "}
                 </Col>
               </Row>
 
@@ -302,7 +311,10 @@ class PartnerRequestForm extends React.Component {
                 </Col>
                 <Col>
                   {" "}
-                  <label>{request.listOfProficiencyLevels}</label>{" "}
+                  <label>{request.listOfProficiencyLevels.map((level)=>
+               <li className="cart-text list-unstyled">{this.capitalize(level)}</li>
+          )}</label>{" "}
+
                 </Col>
               </Row>
 
@@ -360,7 +372,7 @@ class PartnerRequestForm extends React.Component {
           <Modal.Footer>
     <MdEvent className="align-text-left" /> Created on:{" "}
     {moment(request.timestamp).format("dddd D.M.YYYY")}
-            <Button variant="secondary" onClick={this.handleCancel}>
+            <Button variant="light"  onClick={this.handleCancel}>
               {" "}
               Cancel{" "}
             </Button>

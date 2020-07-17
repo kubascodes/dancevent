@@ -366,7 +366,7 @@ class Event extends React.Component {
               )}
 
               {this.props.state.userType === "Dancer" ? (
-                <Button variant="light" onClick={this.showCreateRequestForm}>
+                <Button className="btn button-pink"onClick={this.showCreateRequestForm}>
                   Create a partner request
                 </Button>
               ) : (
