@@ -363,33 +363,38 @@ class CreateRequestForm extends React.Component {
             centered
           >
             <Modal.Header closeButton>
-              {" "}
-              <Modal.Title>
-          <Row>
+          {" "}
+          <Col>{" "}
+          </Col>
           <Col>
-          <Image
+
+          <Modal.Title>{" "}<Image
           src={
               user.picture
                   ? user.picture
                   : "img/placeholderDancerProfile.png"
           }
           alt={user.name}
-          style={{ width: "100px", height: "95px" }}
+          style={{ width: "180px", height: "171px" }}
           roundedCircle
-          />
+          /></Modal.Title>
           </Col>
-          <Col>
-          {user.name}
-          </Col>
-          </Row>
 
-              </Modal.Title>
-            </Modal.Header>
+
+
+          <Col></Col>
+
+
+
+
+          </Modal.Header>
+
 
             <Modal.Body>
               <Container fluid>
                 <div className="form-group">
                   <form onSubmit={this.handleSubmit}>
+              <h4>{user.name}</h4>
                     {/* User-Age Information*/}
                     <Row>
                       <Col>
@@ -468,46 +473,22 @@ class CreateRequestForm extends React.Component {
           <MdFace className="align-text-bottom" />{" "} <label>Age range...</label>
                       </Col>
                       <Col>
-            <Row>
-                          <Col xs={3}>
+                        <Row>
+                          <Col xs={4}>
                             <input type="number"
                               placeholder={this.state.prefAgeMin}
                               className="form-control col"
                               name="prefAgeMin"
                               step="5"
-          style={{ width: "70px" }}
+                                style={{ width: "70px" }}
                               onChange={this.onChange}
                               value={this.state.prefAgeMin}
                             />
                           </Col>
                           <Col >
-                            <div class="age-slider">
-                            <input
-                              type="range"
-                              className="custom-range"
-                              id="prefAgeMin"
-                              name="prefAgeMin"
-                              min="0"
-                              max="100"
-                              step="5"
-                              value={this.state.prefAgeMin}
-                              onChange={this.onChange}
 
-                            />
-                            <input
-                                type="range"
-                                className="custom-range"
-                                id="prefAgeMax"
-                                name="prefAgeMax"
-                                min="0"
-                                max="100"
-                                step="5"
-                                value={this.state.prefAgeMax}
-                                onChange={this.onChange}
-                                />
-                                </div>
                           </Col>
-                          <Col xs={3}>
+                          <Col xs={4}>
                             <input type="number"
                               placeholder={this.state.prefAgeMax}
                               className="form-control col"
@@ -519,6 +500,31 @@ class CreateRequestForm extends React.Component {
                             />
                           </Col>
                                 </Row>
+                            <div class="age-slider">
+                                  <input
+                              type="range"
+                              className="custom-range"
+                              id="prefAgeMin"
+                              name="prefAgeMin"
+                              min="0"
+                              max="100"
+                              step="5"
+                              value={this.state.prefAgeMin}
+                              onChange={this.onChange}
+
+                              />
+                              <input
+                              type="range"
+                              className="custom-range"
+                              id="prefAgeMax"
+                              name="prefAgeMax"
+                              min="0"
+                              max="100"
+                              step="5"
+                              value={this.state.prefAgeMax}
+                              onChange={this.onChange}
+                              />
+                              </div>
                       </Col>
                     </Row>
 
