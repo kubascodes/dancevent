@@ -3,31 +3,35 @@ import { Redirect } from 'react-router-dom';
 import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import ProcessImage from '../../services/imageProcessing';
-import RouteRedirect from '../../services/RouteRedirect';
-import ProgressBar from 'react-bootstrap/ProgressBar'
+import RouteAuthentication from '../../services/RouteAuthentication';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 import { CriticalAlert } from "../helpers/Alert";
+import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
+const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
 
-class RegistrationFormDancer extends React.Component {
+class EditFormDancer extends React.Component {
 
   // this constructor needs care. Session state should be inherited from parent.
   constructor(props) {
     super(props);
+    let user = props.location.state;
     this.state = {
       //user schema attributes
-      name: null,
-      email: null,
-      password: null,
-      city: null,
-      picture: null,
+      name: user.name,
+      email: user.email,
+      city: user.city,
+      picture: user.picture,
       //dancer schema attributes
-      gender: null,
-      height: null,
-      yearOfBirth: null,
-      listOfDanceStyles: null,
-      proficiencyLevel: null,
-      prefAgeMin: null,
-      prefAgeMax: null,
-      prefGender: null,
+      gender: user.gender,
+      height: user.height,
+      yearOfBirth: user.yearOfBirth,
+      listOfDanceStyles: user.listOfDanceStyles,
+      proficiencyLevel: user.proficiencyLevel,
+      prefAgeMin: user.prefAgeMin,
+      prefAgeMax: user.prefAgeMax,
+      prefGender: user.prefGender,
       //image upload progress
       uploadProgress: null,
       hiddenProgress: true,
@@ -125,6 +129,22 @@ class RegistrationFormDancer extends React.Component {
 
   };
 
+  checkItem(child) {
+    let item = child.name;
+    console.log(child.name)
+    let value = child.value;
+    let checkArray = [];
+    for (var key in this.state) {
+      if (key === item) {
+        for (let i=0;i<this.state[key].length;i++) {
+          if (this.state[key] == value) {
+            return "checked";
+          }
+        }
+      }
+    }
+  }
+
   formCleaning = async () => {
     //form inputs we want to upload
     let keys = ["name", "email", "password", "city", "picture", "gender", "height", "yearOfBirth", "listOfDanceStyles", "proficiencyLevel", "prefAgeMin", "prefAgeMax", "prefGender"];
@@ -161,8 +181,8 @@ class RegistrationFormDancer extends React.Component {
     console.log(form);
     //post to dancer's registration api
 
-    fetch('/register/dancer', {
-      method: 'POST',
+    fetch('/update/dancer', {
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
@@ -232,25 +252,43 @@ class RegistrationFormDancer extends React.Component {
     return (
 
       <form className="form-group" id="RegistrationFormDancer" onSubmit={this.registerUser}>
+
       <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
+
+      <div className="row justify-content-start align-items-center ml-0 mr-0">
+      <Avatar
+        round="50%"
+        size="150"
+        src={this.state.picture}
+        name={this.state.name}
+        className="img-fluid mr-2 mt-1 mb-1"
+      />
+      <div class="form-group mb-0 mt-1 ml-1 mr-1">
+        <div class="custom-file">
+          <input type="file" accept="image/*" class="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
+          <label class="custom-file-label" for="customFile">Change your profile picture</label>
+        </div>
+      </div>
+
+      <Link to={{ pathname: '/password' }} style={{textDecoration: "none"}} className="ml-1 mr-1 mt-1">
+      <Button variant="outline-dark" className="">Change Password
+      </Button>
+      </Link>
+      </div>
+
       <div className="form-group">
         <label className="label-bold" htmlFor="name">Name</label>
-        <input type="text" className="form-control border-red" id="name" name="name" placeholder="Your Name (required)" onChange={this.onChangeInput} value={this.name} required />
+        <input type="text" className="form-control border-red" id="name" name="name" placeholder="Your Name (required)" onChange={this.onChangeInput} value={this.state.name} required />
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="email">Email</label>
-        <input type="email" className="form-control border-red" id="email" name="email" onChange={this.onChangeInput} placeholder="your@email.com (required)" value={this.email} required/>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="password">Password</label>
-        <input type="password" className="form-control border-red" id="password" name="password" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.password} required/>
+        <input type="email" className="form-control border-red" id="email" name="email" onChange={this.onChangeInput} placeholder="your@email.com (required)" value={this.state.email} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="yearOfBirth">Year of Birth</label>
-        <input type="number" className="form-control border-red" id="yearOfBirth" placeholder="1994 (required)" name="yearOfBirth" onChange={this.onChangeInput} value={this.yearOfBirth} required/>
+        <input type="number" className="form-control border-red" id="yearOfBirth" placeholder="1994 (required)" name="yearOfBirth" onChange={this.onChangeInput} value={this.state.yearOfBirth} required/>
       </div>
 
       <div className="form-group">
@@ -268,12 +306,12 @@ class RegistrationFormDancer extends React.Component {
 
       <div className="form-group">
         <label className="label-bold" htmlFor="city">City</label>
-        <input type="text" className="form-control border-red" id="city" placeholder="Munich (required)" name="city" onChange={this.onChangeInput} value={this.city} required/>
+        <input type="text" className="form-control border-red" id="city" placeholder="Munich (required)" name="city" onChange={this.onChangeInput} value={this.state.city} required/>
       </div>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="height">Height</label>
-        <input type="number" className="form-control" id="height" placeholder="183 (cm)" name="height" onChange={this.onChangeInput} value={this.height}/>
+        <input type="number" className="form-control" id="height" placeholder="183 (cm)" name="height" onChange={this.onChangeInput} value={this.state.height}/>
       </div>
 
       <div className="form-group">
@@ -359,8 +397,8 @@ class RegistrationFormDancer extends React.Component {
         Preferred Age of Dancers
         </div>
         </div>
-        <input type="number" aria-label="Min Age" placeholder="Min age (years)" className="form-control col" name="prefAgeMin" onChange={this.onChangeInput} value={this.prefAgeMin} />
-        <input type="number" aria-label="Max Age" placeholder="Max age (years)" className="form-control col" name="prefAgeMax" onChange={this.onChangeInput} value={this.prefAgeMax} />
+        <input type="number" aria-label="Min Age" placeholder="Min age (years)" className="form-control col" name="prefAgeMin" onChange={this.onChangeInput} value={this.state.prefAgeMin} />
+        <input type="number" aria-label="Max Age" placeholder="Max age (years)" className="form-control col" name="prefAgeMax" onChange={this.onChangeInput} value={this.state.prefAgeMax} />
       </div>
       </div>
 
@@ -377,22 +415,18 @@ class RegistrationFormDancer extends React.Component {
         <label className="radio-inline mr-2" for="inlineRadio3">Other</label>
       </div>
 
-      <div class="form-group">
-        <div class="custom-file">
-          <input type="file" accept="image/*" class="custom-file-input" name="picture" onChange={this.onChangeFile} id="customFile" />
-          <label class="custom-file-label" for="customFile">Upload your profile picture</label>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={"Uploading " + this.state.uploadProgress + " %"} hidden={this.state.hiddenProgress} />
-      </div>
-
       <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
 
-      <div className="form-group">
+      <div className="row justify-content-center">
+      <Link to={{ pathname: '/profile' }} style={{textDecoration: "none"}} className="mr-1">
+      <Button variant="outline-dark" className="d-flex ml-auto">Cancel
+      </Button>
+      </Link>
+      <div className="form-group ml-1">
         <input type="submit" className="btn button-pink" value="Submit"/>
       </div>
+      </div>
+
     </form>
 
       )
@@ -401,4 +435,4 @@ class RegistrationFormDancer extends React.Component {
 
 }
 
-export default RouteRedirect(RegistrationFormDancer);
+export default RouteAuthentication(EditFormDancer);
