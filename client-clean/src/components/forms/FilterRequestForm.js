@@ -2,6 +2,7 @@ import React from "react";
 import Select from 'react-select';
 import cities from './cities';
 import DatePicker from "react-datepicker";
+import {Row, Col} from "react-bootstrap";
 
 
 class FilterRequest extends React.Component {
@@ -223,8 +224,6 @@ class FilterRequest extends React.Component {
         { value: 'other', label: 'Other'},
     ];
 
-    // Age - slider //TODO: add age slider
-
 
     // Skill level
     const proficiencyLevels = [
@@ -304,14 +303,39 @@ class FilterRequest extends React.Component {
         />
         </div>
 
-        {/*Age Slider */}
-        {/*TODO add
-        */}
-
           {/* Preferred - Age Range*/}
           <div>
-            <label>Age Range: {this.state.prefAgeMin} - {this.state.prefAgeMax} </label>
+            <label>Age Range:  </label>
           </div>
+          <div>
+<Row>
+          <Col>
+              <input type="number"
+              placeholder={this.state.prefAgeMin}
+              className="form-control col"
+              name="prefAgeMin"
+              step="5"
+              onChange={this.onChange}
+            style={{ width: "70px" }}
+              value={this.state.prefAgeMin}
+              />
+                  </Col>
+                  <Col>
+              <label> -  </label>
+              </Col>
+              <Col>
+              <input type="number"
+              placeholder={this.state.prefAgeMax}
+              className="form-control col"
+              name="prefAgeMax"
+              step="5"
+            style={{ width: "70px" }}
+              onChange={this.onChange}
+              value={this.state.prefAgeMax}
+              />
+              </Col>
+                  </Row>
+                  </div>
 
           <div class="age-slider">
               <input type="range" className="custom-range" id="prefAgeMin" name="prefAgeMin"
