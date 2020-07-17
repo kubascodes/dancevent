@@ -17,8 +17,8 @@ import {
   MdCreditCard,
 } from "react-icons/md";
 //profile avatar
-import { createAvatarComponent, SrcSource } from "react-avatar";
-const Avatar = createAvatarComponent({ sources: [SrcSource] });
+import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
+const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
 
 const ProfileDancer = (props) => {
   const capitalize = (input) => {
@@ -30,6 +30,12 @@ const ProfileDancer = (props) => {
 
   return (
     <div className="container d-flex flex-wrap flex-column">
+
+    <Link to={{ pathname: '/edit/dancer', state: props.state.user }} style={{textDecoration: "none"}}>
+    <Button variant="outline-dark" className="d-flex ml-auto">Edit
+    </Button>
+    </Link>
+
       <Avatar
         round="50%"
         size="150"

@@ -65,6 +65,27 @@ router.get(
   }
 );
 
+router.post(
+  "/password",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
+    //console.log(req.user);
+    try {
+      //setting the response object
+      let pwdChange = await User.findOneAndUpdate({ _id: req.user._id },{ password: req.password});
+      return res.status(200).json("Success!");
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: error.message,
+      });
+    }
+  }
+);
+
+
+
 //access just the user information with /user
 router.get(
   "/user",
@@ -304,6 +325,80 @@ router.post("/register/organizer", async (req, res) => {
 
 //Register as a Dancer
 router.post("/register/dancer", async (req, res) => {
+  //Validate the request body
+  console.log(req.body);
+  if (Object.keys(req.body).length === 0)
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "The request body is empty",
+    });
+
+  try {
+    //create a new dancer
+    let dancer = await Dancer.create(req.body);
+    //populate the body request for the JWT token issuing with the newly created dancer
+    const body = {
+      _id: dancer._id,
+      email: dancer.email,
+    };
+    //sign the JWT token and populate the payload with the user email and id
+    const token = await jwt.sign({ user: body }, config.JwtSecret);
+    //return the token to the user (redirect to homepage will happen on the client);
+    const response = {
+      name: dancer.name,
+      email: dancer.email,
+      picture: dancer.picture,
+      userType: dancer.userType,
+      token: token,
+    };
+    return res.status(201).json(response);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: error.message,
+    });
+  }
+});
+
+//updating users
+//Register as an Organizer
+router.post("/update/organizer", passport.authenticate("jwt", { session: false }), async (req, res) => {
+  //Validate the request body
+  if (Object.keys(req.body).length === 0)
+    return res.status(400).json({
+      error: "Bad Request",
+      message: "The request body is empty",
+    });
+
+  try {
+    //create a new organizer
+    let organizer = await Organizer.findOneAndUpdate(req.body);
+    //populate the body request for the JWT token issuing with the newly created organizer
+    const body = {
+      _id: organizer._id,
+      email: organizer.email,
+    };
+    //sign the JWT token and populate the payload with the user email and id
+    const token = await jwt.sign({ user: body }, config.JwtSecret);
+    //return the token to the user (redirect to homepage will happen on the client);
+    const response = {
+      name: organizer.name,
+      email: organizer.email,
+      picture: organizer.picture,
+      userType: organizer.userType,
+      token: token,
+    };
+    return res.status(201).json(response);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: error.message,
+    });
+  }
+});
+
+//Register as a Dancer
+router.post("/update/dancer", passport.authenticate("jwt", { session: false }), async (req, res) => {
   //Validate the request body
   console.log(req.body);
   if (Object.keys(req.body).length === 0)
