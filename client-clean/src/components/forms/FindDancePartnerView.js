@@ -16,8 +16,9 @@ class FindDancePartnerView extends React.Component {
   componentDidMount() {
     /* The function call is in the buildup and loads all the requests */
     this.getRequests(window.location.pathname);
-    console.log(this.state.requests);
+    //console.log(this.state.requests);
   }
+
 
   getRequests = (url) => {
     /* fetches all requests from the backend*/
@@ -32,7 +33,7 @@ class FindDancePartnerView extends React.Component {
       .then((res) => res.json(res))
       .then((requests) => {
         this.setState({ requests });
-        console.log(this.state.requests);
+        //console.log(this.state.requests);
       })
       .catch((err) => alert(err));
   };

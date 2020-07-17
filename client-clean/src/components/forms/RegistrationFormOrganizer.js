@@ -5,6 +5,7 @@ import RegistrationForm from './RegistrationForm';
 import ProcessImage from '../../services/imageProcessing';
 import RouteRedirect from '../../services/RouteRedirect';
 import ProgressBar from 'react-bootstrap/ProgressBar'
+import { CriticalAlert } from "../helpers/Alert";
 
 class RegistrationFormOrganizer extends React.Component {
 
@@ -27,9 +28,16 @@ class RegistrationFormOrganizer extends React.Component {
       phone: null,
       uploadProgress: 0,
       hiddenProgress: true,
+
+      showAltert : false,
+      errorMessage: "",
+
     };
     this.setUploadProgress = this.setUploadProgress.bind(this);
   }
+
+  hideAlert = () => { this.setState({ showAltert: !this.state.showAltert }) }
+
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
         //console.log(this.state);
@@ -110,7 +118,12 @@ class RegistrationFormOrganizer extends React.Component {
       },
       body: JSON.stringify(form),
     }) //create a get request which is a Promise
-    .then(res => res.json(res))
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json()
+    })
     .then(function(res){
       //console.log("Logging Response");
       //console.log(res);
@@ -144,7 +157,13 @@ class RegistrationFormOrganizer extends React.Component {
       context.props.logIn(data);
 
     })
-    .catch(err => alert(err));
+    .catch(err => {
+      this.setState({
+        showAltert: true,
+        errorMessage: "Error occured while sending to server. Request might not have been updated."
+      })
+      console.log(err)
+  });
   };
 
 
@@ -152,6 +171,8 @@ class RegistrationFormOrganizer extends React.Component {
 
     return (
       <form className="form-group" id="RegistrationFormOrganizer" onSubmit={this.registerUser}>
+      
+      <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
 
       <div className="form-group">
         <label className="label-bold" htmlFor="name">Organization Name</label>

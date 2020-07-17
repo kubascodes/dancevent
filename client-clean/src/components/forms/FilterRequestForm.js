@@ -1,25 +1,16 @@
 import React from "react";
 import Select from 'react-select';
-import Form from 'react-bootstrap/Form'
+import cities from './cities';
+import DatePicker from "react-datepicker";
 
-//formats object date into Sting: yyyy-mm-dd
-function formatDate(date) {
-    var d = new Date(date),
-        month = "" + (d.getMonth() + 1),
-        day = "" + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2) month = "0" + month;
-    if (day.length < 2) day = "0" + day;
-
-    return [year, month, day].join("-");
-}
 
 class FilterRequest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      city: "",
+      city: "Munich",
+        prefAgeMin: 0,
+        prefAgeMax: 100,
       gender: "",
         proficiencyLevel: "",
       prefEventDate: "",
@@ -27,32 +18,14 @@ class FilterRequest extends React.Component {
       eventType: "",
       danceCategory: "",
       danceStyle: "",
-      ageOffset:20,
-      ageOffsetMin:1,
-      ageOffsetMax: 100,
-        startDate: formatDate(new Date()),
-        endDate: formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
+      //ageOffset:20,
+      //ageOffsetMin:1,
+      //ageOffsetMax: 100,
+        startDate: new Date(),
+        endDate: null,
 
     };
   }
-  componentDidMount() {
-      // set the dates
-      /*let today = Date.now();
-      let nextYear = this.formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1)));
-      this.setState({
-          startDate: today,
-          endDate: nextYear
-      });*/
-  }
-
-    updatePriceLabels() { //avoids slider overlap
-     var sliders = document.querySelectorAll(".price-slider input");
-     var val1 = parseInt(sliders[0].value);
-     var val2 = parseInt(sliders[1].value);
-     if (val1 >= val2) { sliders[0].value = val2 - 3; return; }
-     if (val2 <= val1) { sliders[1].value = val1 + 3; return; }
-  }
-
 
 
   //TODO: write Submit
@@ -69,48 +42,61 @@ class FilterRequest extends React.Component {
     this.props.filterRequests(this.state); //TODO: change
   };
 
-    onChangeDate = (date) => {
-        /*this.setState({
-            startDate: start,
-            endDate: end
-        });*/
-    }
-
   onChange = (e) => {
     /*This function is called if the user changes a variable of the filter options*/
     e.preventDefault();
-    this.setState({
-            [e.target.name]: e.target.value
-        })
+
+      var allow = true;
+      // check that the min in not bigger than the max and the other way around
+      if (e.target.name == "prefAgeMin") {
+          if (e.target.value >= this.state.prefAgeMax) {
+              allow = false;
+          }
+      }
+      if (e.target.name == "prefAgeMax") {
+          if (e.target.value <= this.state.prefAgeMin) {
+              allow = false;
+          }
+      };
+      if (allow) {
+          this.setState({[e.target.name]: e.target.value});
+      };
   };
-// action.name == 'dateSelection'
+
+    //Changes the state for REACT-SELECT inputs
+    onChangeCity = (event) => {
+        console.log(event)
+        this.setState({city : event.value})
+    }
+
     handleTextDate = (selectedOption, action) => {
+        /*this function gets a text like "tomorrow" and evaluates than the start and end date*/
         if(selectedOption){
 
             var startDate ;
             var endDate;
             switch(selectedOption.value){
                 case "today":
-                    startDate = formatDate(new Date());
+                    startDate = new Date();
                     endDate = startDate;
                     break;
                 case "tomorrow":
-                    startDate = formatDate(new Date(new Date().setTime( new Date().getTime() + 1 * 86400000 )));
+                    startDate = new Date(new Date().setTime( new Date().getTime() + 1 * 86400000 ));
                     endDate = startDate;
                     break;
                 case "week":
                     var curr = new Date; // get current date
                     var monday = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
                     var sunday = monday + 6; // last day is the first day + 6
-                    startDate = formatDate(new Date(new Date().setDate(monday)));
-                    endDate = formatDate(new Date(new Date().setDate(sunday)));
+                    startDate = new Date(new Date().setDate(monday));
+                    endDate = new Date(new Date().setDate(sunday));
                     break;
                 case "weekend":
                     var curr = new Date; // get current date
                     var friday = curr.getDate() - curr.getDay() + 5; // First day is the day of the month - the day of the week
                     var sunday = friday + 2; // last day is the first day + 6
-                    startDate = formatDate(new Date(new Date().setDate(friday)));
-                    endDate = formatDate(new Date(new Date().setDate(sunday)));
+                    startDate = new Date(new Date().setDate(friday));
+                    endDate = new Date(new Date().setDate(sunday));
                     break;
 
             }
@@ -121,8 +107,8 @@ class FilterRequest extends React.Component {
         }
         else{
             this.setState({
-                startDate: formatDate(new Date()),
-                endDate: formatDate(new Date(new Date().setFullYear(new Date().getFullYear() + 1))),
+                startDate: new Date(),
+                endDate: null,
             });
         }
     }
@@ -163,17 +149,33 @@ class FilterRequest extends React.Component {
     let previous = false;
     let url = "/dancepartner/?";
 
+    // set Filter for dancer belonging to request
     if (this.state.gender != "") {
-      url += "listofGenders=" + this.state.gender;
+      url += "listofGendersDancer=" + this.state.gender;
       previous = true;
     }
+      if (this.state.prefAgeMin != "") {
+          if (previous) {
+              url += "&";
+          }
+          url += "prefAgeMinDancer=" + this.state.prefAgeMin;
+          previous = true;
+      }
+      if (this.state.prefAgeMax != "") {
+          if (previous) {
+              url += "&";
+          }
+          url += "prefAgeMaxDancer=" + this.state.prefAgeMax;
+          previous = true;
+      }
     if (this.state.proficiencyLevel != "") {
       if (previous) {
         url += "&";
       }
-      url += "listOfProficiencyLevels=" + this.state.proficiencyLevel;
+      url += "listOfProficiencyLevelsDancer=" + this.state.proficiencyLevel;
       previous = true;
     }
+    //beong to the request
     if (this.state.danceCategory != "") {
       if (previous) {
         url += "&";
@@ -191,21 +193,25 @@ class FilterRequest extends React.Component {
         }}
     }
 
-    if (this.state.city != "") {
+    /*if (this.state.city != "") {
       if (previous) {
         url += "&";
       }
       url += "city=" + this.state.city;
       previous = true;
-    }
-
+    }*/
 
     //TODO: date, event, age
 
     //fetch requests from backend
     this.props.getRequests(url);
   };
-
+    //Changes the state for calendar inputs
+    //type should specify if it is a start- or endDate
+    onChangeCalendar = (date, type) => {
+        console.log(this)
+        this.setState({ [type]: date });
+    };
 
   render() {
 
@@ -237,9 +243,6 @@ class FilterRequest extends React.Component {
       { value: 'week', label: 'This Week' },
     ];
 
-    // Date 2 Option - calender
-
-
     // Dance Styles
       const danceStyleCategory = [
           {value: 'latin', label: 'Latin/Rythm'},
@@ -262,7 +265,7 @@ class FilterRequest extends React.Component {
           {value: 'viennese waltz', label: 'Viennese Waltz'},
           {value: 'tango', label: 'Tango'},
           {value: 'foxtrot', label: 'Foxtrot'},
-          {value: 'qickstep', label: 'Qickstep'},
+          {value: 'quickstep', label: 'Quickstep'},
       ];
       const various = [
           {value: 'salsa', label: 'Salsa'},
@@ -305,6 +308,23 @@ class FilterRequest extends React.Component {
         {/*TODO add
         */}
 
+          {/* Preferred - Age Range*/}
+          <div>
+            <label>Age Range: {this.state.prefAgeMin} - {this.state.prefAgeMax} </label>
+          </div>
+
+          <div class="age-slider">
+              <input type="range" className="custom-range" id="prefAgeMin" name="prefAgeMin"
+                  min="0" max="100" step="5"
+                  value={this.state.prefAgeMin}
+                  onChange={this.onChange}/>
+
+              <input type="range" className="custom-range" id="prefAgeMax" name="prefAgeMax"
+                min="0" max="100" step="5"
+                value={this.state.prefAgeMax}
+                onChange={this.onChange}/>
+          </div>
+
 
         {/*Skill-Level Type */}
         <div className="form-group">
@@ -323,22 +343,22 @@ class FilterRequest extends React.Component {
         </div>
 
         {/*City Type*/}
-        {/*TODO: Add autofill*/}
-        <div>
-          <label>In...</label>
-          <input
-            type="text"
-            className="form-control"
-            id="city"
-            placeholder="Munich"
-            name="city"
-            onChange={this.onChangeInput}
-            value={this.city}
-          />
-        </div>
+          <div className="form-group">
+                  <label className="label-bold" htmlFor="city">City</label>
+                  <Select
+              className="basic-single"
+              classNamePrefix="select"
+              placeholder={"Choose a city..."}
+              onChange={this.onChangeCity}
+              name="city"
+              options={cities}
+
+              />
+          </div>
 
         {/* Date Type 1 - selection*/}
         {/* TODO: Multi Selection?*/}
+  <label className="label-bold"> In the time...</label>
         <div className="form-group">
           <label> On... </label>
           <Select
@@ -353,35 +373,36 @@ class FilterRequest extends React.Component {
               options={dateSelection}
           />
         </div>
+                  <div className="form-group">
 
-        {/* Date Type 2 - calender*/}
-        {/* TODO*/}
-          <div class="form-group">
-             <label for="start">Start date:</label>
-                  <input
-                  type="date"
-                  id="startDate"
-                  name="startDate"
-                  value={this.state.startDate}
-                  min={formatDate(new Date())}
-                  max="2022-12-31"
-                  onChange={this.onChange}
-                  />
-              </div>
-              {/* Date Type 2 - calender*/}
-              {/* TODO*/}
-                <div class="form-group">
-                  <label for="start">End date:</label>
-                  <input
-                  type="date"
-                  id="endDate"
-                  name="endDate"
-                    value={this.state.endDate}
-                    min={formatDate(new Date(new Date().setMonth(new Date().getMonth() + 1)))}
-                  max="2022-12-31"
-                  onChange={this.onChange}
-                  />
-                </div>
+                    <label> From...</label>
+                      <DatePicker
+                          className="form-control"
+                          name="startDate"
+                          selected={this.state.startDate}
+                          onChange={date => this.onChangeCalendar(date, "startDate")}
+                          selectsStart
+                          dateFormat="MMMM d, yyyy"
+                          minDate={new Date()}
+                          startDate={this.state.startDate}
+                          endDate={this.state.endDate}
+                      />
+                  </div>
+                  <div className="form-group">
+                        <label > Till...  </label>
+                        <DatePicker
+                          className="form-control"
+                          name="endDate"
+                        selected={this.state.endDate}
+                          onChange={date => this.onChangeCalendar(date, "endDate")}
+                          selectsEnd
+                          dateFormat="MMMM d, yyyy"
+                          minDate={this.state.startDate}
+                        placeholderText="Select a end date"
+                        startDate={this.state.startDate}
+                         endDate={this.state.endDate}
+                        />
+                    </div>
 
         {/* Dance Style Type */}
         {/*TODO: change*/}

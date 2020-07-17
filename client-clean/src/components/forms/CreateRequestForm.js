@@ -12,6 +12,7 @@ import {
 import Select from "react-select";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import { CriticalAlert } from "../helpers/Alert";
 
 class CreateRequestForm extends React.Component {
   constructor(props) {
@@ -33,8 +34,13 @@ class CreateRequestForm extends React.Component {
       showPopover: false,
       targetPopover: null,
       showModalUnvarified: false,
+
+      showAltert : false,
+      errorMessage: "",
     };
   }
+
+  hideAlert = () => { this.setState({ showAltert: !this.state.showAltert }) }
 
   handleCancel = () => {
     /* this function is called, 1. when the modal is canceled and 2. when the request is submitted to reset the changes and close the modal*/
@@ -191,12 +197,23 @@ class CreateRequestForm extends React.Component {
       },
       body: JSON.stringify(newRequest),
     })
-      .then((res) => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json()
+      })
       .then((res) => {
         if (res) {
           this.handleCancel();
         }
-      });
+      }).catch(err => {
+        this.setState({
+          showAltert: true,
+          errorMessage: "Error occured while sending to server. Request might not have been updated."
+        })
+        console.log(err)
+    })
   };
 
   getUser() {
@@ -330,6 +347,9 @@ class CreateRequestForm extends React.Component {
         );
 
         return (
+          <div>
+          <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
+          
           <Modal
             show={this.state.showModal}
             onHide={this.handleCancel}
@@ -672,6 +692,7 @@ class CreateRequestForm extends React.Component {
               </div>
             </Modal.Footer>
           </Modal>
+          </div>
         );
       } else {
         return <label>Loading... </label>;

@@ -5,6 +5,7 @@ import RegistrationForm from './RegistrationForm';
 import ProcessImage from '../../services/imageProcessing';
 import RouteRedirect from '../../services/RouteRedirect';
 import ProgressBar from 'react-bootstrap/ProgressBar'
+import { CriticalAlert } from "../helpers/Alert";
 
 class RegistrationFormDancer extends React.Component {
 
@@ -30,10 +31,15 @@ class RegistrationFormDancer extends React.Component {
       //image upload progress
       uploadProgress: null,
       hiddenProgress: true,
+      //error Handler
+      showAltert : false,
+      errorMessage: "",
     };
     this.setUploadProgress = this.setUploadProgress.bind(this);
   }
 
+
+  hideAlert = () => { this.setState({ showAltert: !this.state.showAltert }) }
 
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
@@ -157,7 +163,13 @@ class RegistrationFormDancer extends React.Component {
       },
       body: JSON.stringify(form),
     })
-    .then(res => res.json(res))
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json()
+    }
+)
     .then(function(res){
       console.log(res);
       alert("Successfully signed up!");
@@ -198,7 +210,13 @@ class RegistrationFormDancer extends React.Component {
       context.props.logIn(data);
 
     })
-    .catch(err => alert(err));
+    .catch(err => {
+      this.setState({
+        showAltert: true,
+        errorMessage: "Error occured while sending to server. Request might not have been updated."
+      })
+      console.log(err)
+    });
 
   };
 
@@ -209,7 +227,7 @@ class RegistrationFormDancer extends React.Component {
     return (
 
       <form className="form-group" id="RegistrationFormDancer" onSubmit={this.registerUser}>
-
+      <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
       <div className="form-group">
         <label className="label-bold" htmlFor="name">Name</label>
         <input type="text" className="form-control border-red" id="name" name="name" placeholder="Your Name (required)" onChange={this.onChangeInput} value={this.name} required />
@@ -227,7 +245,7 @@ class RegistrationFormDancer extends React.Component {
 
       <div className="form-group">
         <label className="label-bold" htmlFor="yearOfBirth">Year of Birth</label>
-        <input type="text" className="form-control border-red" id="yearOfBirth" placeholder="1994 (required)" name="yearOfBirth" onChange={this.onChangeInput} value={this.yearOfBirth} required/>
+        <input type="number" className="form-control border-red" id="yearOfBirth" placeholder="1994 (required)" name="yearOfBirth" onChange={this.onChangeInput} value={this.yearOfBirth} required/>
       </div>
 
       <div className="form-group">
