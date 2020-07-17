@@ -8,10 +8,22 @@ import {
   Popover,
   OverlayTrigger,
   Image,
+    Modal,
 } from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
+import {
+  MdMailOutline,
+  MdLocationOn,
+  MdPhone,
+  MdLockOutline,
+  MdFavorite,
+  MdFace,
+  MdStarHalf,
+  MdEvent,
+  MdCreditCard,
+} from "react-icons/md";
 import Select from "react-select";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 class PartnerRequestForm extends React.Component {
   constructor(props) {
@@ -120,6 +132,17 @@ class PartnerRequestForm extends React.Component {
             <Card.Title> </Card.Title>
             <Card.Title> {user.name} </Card.Title>
             <Card.Text>
+              <li className="cart-text list-unstyled">
+                <MdFace className="align-text-bottom" /> {request.listofGenders}
+               </li>
+              <li className="cart-text list-unstyled">
+                <MdEvent className="align-text-bottom" /> Created on:{" "}
+                {moment(request.timestamp).format("dddd D.M.YYYY")}
+              </li>
+              <li className="cart-text list-unstyled">
+                <MdFace className="align-text-bottom" /> {request.listOfProficiencyLevels}
+              </li>
+
               <label>{this.calculate_age(user.yearOfBirth)}</label>
     {' '}
                 <label>{user.proficiencyLevel}</label>
@@ -159,21 +182,21 @@ class PartnerRequestForm extends React.Component {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>{user.name}</Modal.Title>
+            <Modal.Title><Image
+    src={
+      user.picture
+          ? user.picture
+          : "img/placeholderDancerProfile.png"
+    }
+    alt={user.name}
+    style={{ width: "100px", height: "95px" }}
+    roundedCircle
+    /></Modal.Title>
           </Modal.Header>
 
           <Modal.Body>
             <Container fluid>
-              <Image
-                src={
-                  user.picture
-                    ? user.picture
-                    : "img/placeholderDancerProfile.png"
-                }
-                alt={user.name}
-                style={{ width: "100px", height: "95px" }}
-                roundedCircle
-              />
+              <h4> {user.name}</h4>
               {/* Requesting User Information_______________________*/}
 
               {/* Requesting User - Age Information*/}
