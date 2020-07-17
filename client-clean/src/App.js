@@ -4,9 +4,10 @@ import NavBar from "./components/parts/NavBar";
 import Homepage from "./components/Homepage";
 import Events from "./components/Events";
 import Event from "./components/Event";
-/*import RegistrationForm from './components/forms/RegistrationForm';*/
 import RegistrationFormDancer from "./components/forms/RegistrationFormDancer";
 import RegistrationFormOrganizer from "./components/forms/RegistrationFormOrganizer";
+import EditFormDancer from "./components/forms/EditFormDancer";
+import EditFormOrganizer from "./components/forms/EditFormOrganizer";
 import Profile from "./components/pages/Profile";
 import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
@@ -14,6 +15,7 @@ import EventCreationForm from "./components/forms/EventCreationForm";
 import MyEvents from "./components/parts/MyEvents";
 import CreateRequestForm from "./components/forms/CreateRequestForm";
 import MyRequests from "./components/forms/MyRequests";
+import PasswordChange from "./components/forms/PasswordChange";
 
 export default class App extends Component {
   constructor(props) {
@@ -231,6 +233,7 @@ export default class App extends Component {
               />
             )}
           />
+
           <Route
             path="/register/organizer"
             render={(props) => (
@@ -241,6 +244,31 @@ export default class App extends Component {
               />
             )}
           />
+
+          <Route
+            exact
+            path="/edit/organizer"
+            render={(props) => (
+              <EditFormOrganizer
+                {...props}
+                logIn={this.logIn}
+                state={this.state}
+              />
+            )}
+          />
+
+          <Route
+            exact
+            path="/password"
+            render={(props) => (
+              <PasswordChange
+                {...props}
+                logIn={this.logIn}
+                state={this.state}
+              />
+            )}
+          />
+
           <Route
             path="/profile"
             render={(props) => (
@@ -259,6 +287,18 @@ export default class App extends Component {
             path="/register/dancer"
             render={(props) => (
               <RegistrationFormDancer
+                {...props}
+                logIn={this.logIn}
+                state={this.state}
+              />
+            )}
+          />
+
+          <Route
+            exact
+            path="/edit/dancer"
+            render={(props) => (
+              <EditFormDancer
                 {...props}
                 logIn={this.logIn}
                 state={this.state}
@@ -309,8 +349,8 @@ export default class App extends Component {
             exact
             path="/events/create"
             render={(props) => (
-              <EventCreationForm 
-                {...props} 
+              <EventCreationForm
+                {...props}
                 auth_token={this.secret_token}
                 onCreate={this.addEvent}
                 />

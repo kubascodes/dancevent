@@ -16,8 +16,8 @@ import {
   MdCreditCard,
 } from "react-icons/md";
 //profile avatar
-import { createAvatarComponent, SrcSource } from "react-avatar";
-const Avatar = createAvatarComponent({ sources: [SrcSource] });
+import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
+const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
 
 const ProfileOrganizer = (props) => {
   const capitalize = (input) => {
@@ -29,6 +29,11 @@ const ProfileOrganizer = (props) => {
 
   return (
     <div className="container d-flex flex-wrap flex-column">
+      <Link to={{ pathname: '/edit/organizer', state: props.state.user }} style={{textDecoration: "none"}}>
+      <Button variant="outline-dark" className="d-flex ml-auto">Edit
+      </Button>
+      </Link>
+
       <div className="crop-box crop-to-fit">
         <Avatar
           round="50%"
@@ -53,7 +58,7 @@ const ProfileOrganizer = (props) => {
             <MdLocationOn />
           </h6>
           <h6 className="ml-1">
-            {props.state.user.street} {props.state.user.city}
+            {props.state.user.street}, {props.state.user.city}
           </h6>
           <h6 className="ml-3">
             <MdMailOutline />
@@ -65,8 +70,6 @@ const ProfileOrganizer = (props) => {
           <h6 className="ml-1">{props.state.user.phone}</h6>
         </div>
       </div>
-
-      <hr></hr>
 
       <div>
         <h5 className="text-center mt-2">
@@ -89,7 +92,7 @@ const ProfileOrganizer = (props) => {
           }}
           onUnsaveEvent={(event) => props.onUnsaveEvent(event)}
         />
-        {/** 
+        {/**
         <EventCardDeckOld state={state} />
 */}
       </div>
