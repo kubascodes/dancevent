@@ -10,25 +10,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import cities from "./forms/cities";
 
-/*
-    TODOs:
-    - check for date Range (mostly backend changes)
-    - Design
-*/
-
-//formats object date into Sting: yyyy-mm-dd
-function formatDate(date) {
-  var d = new Date(date),
-    month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
-    year = d.getFullYear();
-
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
-
-  return [year, month, day].join("-");
-}
-
 class Events extends React.Component {
   constructor(props) {
     super(props);
@@ -54,6 +35,8 @@ class Events extends React.Component {
     };
   }
 
+
+
   componentDidMount() {
     /*
     this function is called by react in the build up.
@@ -73,6 +56,14 @@ class Events extends React.Component {
       console.log(this.state);
 
   }
+
+  // <Select> needs value and label as input
+  selectObject = (prop) => (
+    { value: prop, label: prop.charAt(0).toUpperCase() + prop.slice(1) }
+  )
+  selectObjectList = (prop) => (
+    prop.map(i => this.selectObject(i))
+  )
 
   hideAlert = () => {this.setState({showAltert : !this.state.showAltert})}
 
@@ -102,9 +93,6 @@ class Events extends React.Component {
 
   handleSelect = (selectedOption, action) => {
     /* this function handles the interaction of the selection component that is like a drop down */
-    console.log("new event");
-    console.log(selectedOption);
-    console.log(action);
     this.setState({
       [action.name]: selectedOption ? selectedOption.value : "",
     });
@@ -113,7 +101,7 @@ class Events extends React.Component {
     };*/
     console.log(this.state)
     
-}
+  }
 
   handleMultiSelect = (danceStyle) => {
     /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
@@ -259,30 +247,8 @@ class Events extends React.Component {
 
   render() {
     //possible selector variables
-    const latinStyles = [
-      "latin",
-      "cha-cha-cha",
-      "samba",
-      "jive",
-      "paso doble",
-      "boldero",
-      "rumba",
-      "mambo",
-      "east coast swing",
-    ];
-    const standardStyles = [
-      "standard",
-      "waltz",
-      "viennese waltz",
-      "tango",
-      "foxtrot",
-      "quickstep",
-      "hustle",
-      "west coast swing",
-      "salsa",
-      "bachata",
-    ];
-    const eventLevels = ["beginner", "intermediate", "advanced"];
+    const eventLevels = ["all", "beginner", "intermediate", "advanced"];
+    const types = ["all", "course", "ball", "competition", "party"];
 
     const danceStyleCategory = [
       {value: 'all', label: 'All Styles'},
@@ -330,74 +296,28 @@ class Events extends React.Component {
           {/*    Filter Sidebar   */}
           <Col xs={2} id="sidebar-wrapper">
             <div>
-              <h3>Filter Events </h3>
               <form onSubmit={this.submitFilter}>
+                <h4>Filter Events </h4>
                 {/*    Eventtype   */}
                 <div className="form-group">
-                  <label className="label-bold">I'm looking for</label>
-                  <select
-                    className="form-control"
-                    name="eventtype"
-                    onChange={this.onChange}
-                  >
-                    <option value="all">All Types</option>
-                    <option value="course">Course</option>
-                    <option value="ball">Ball</option>
-                    <option value="competition">Competition</option>
-                    <option value="party">Party</option>
-                  </select>
+                  <label className="label-bold">I'm looking for a...</label>
+                  <Select
+                        className="basic-single border-red"
+                        placeholder={"Choose a Dance Style..."}
+                        onChange={this.handleSelect}
+                        name="eventtype"
+                        options={this.selectObjectList(types)}
+                  />
                 </div>
-                {/*    Dance Style   */}
-                <div className="form-group">
-                  <label className="label-bold">To dance</label>
-                  <select
-                    className="form-control"
-                    name="danceStyle"
-                    onChange={this.onChange}
-                  >
-                    <option value="various">Various</option>
-                    <optgroup label="Latin">
-                      {latinStyles.map((danceStyle) => (
-                        <option value={danceStyle}>
-                          {danceStyle.charAt(0).toUpperCase() +
-                            danceStyle.slice(1)}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="Standard">
-                      {standardStyles.map((danceStyle) => (
-                        <option value={danceStyle}>
-                          {danceStyle.charAt(0).toUpperCase() +
-                            danceStyle.slice(1)}
-                        </option>
-                      ))}
-                    </optgroup>
-                  </select>
-                </div>
-                {/*    Dance Level   */}
-                <div className="form-group">
-                  <label className="label-bold">Eventlevel</label>
-                  <select
-                    className="form-control"
-                    name="danceLevel"
-                    onChange={this.onChange}
-                  >
-                    <option value="all">All</option>
-                    {eventLevels.map((danceStyle) => (
-                      <option value={danceStyle}>
-                        {danceStyle.charAt(0).toUpperCase() +
-                          danceStyle.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
+                
+                
+                 {/*    Dance Style   */}
                 <div className="form-group">
                   <label
                     className="mr-2 label-bold"
                     htmlFor="listOfProficiencyLevels"
                   >
-                    Dance style
+                    To dance
                   </label>
                   <Select
                     className="basic-single"
@@ -467,21 +387,20 @@ class Events extends React.Component {
                   }
                 </div>
 
-                {/*    City   */}
+                 {/*    Dance Level   */}
+                 <div className="form-group">
+                  <label className="label-bold">Eventlevel</label>
 
-                {/*
-                <div className="form-group">
-                  <label className="label-bold">City</label>
-                  <input
-                    className="form-control"
-                    id="city"
-                    name="city"
-                    placeholder={this.state.city}
-                    onChange={this.onChange}
-                    value={this.city}
+                  <Select
+                        className="basic-single border-red"
+                        placeholder={"Choose a dance level..."}
+                        onChange={this.handleSelect}
+                        name="danceLevel"
+                        options={this.selectObjectList(eventLevels)}
                   />
                 </div>
-                */}
+
+                {/*    City   */}
 
                 <div className="form-group">
                   <label className="label-bold" htmlFor="city">
@@ -498,18 +417,6 @@ class Events extends React.Component {
                 </div>
 
                 {/*    Startdate   */}
-                {/*<div class="form-group">
-                  <label for="start">Start date:</label>
-                  <input
-                    type="date"
-                    id="start"
-                    name="startDate"
-                    value={this.state.startDate}
-                    min={formatDate(Date.now())}
-                    max="2022-12-31"
-                    onChange={this.onChange}
-                  />
-                        </div>*/}
                 <div className="form-group">
                   <label className="label-bold"> Earliest start date </label>
                   <DatePicker
@@ -523,15 +430,17 @@ class Events extends React.Component {
                     minDate={new Date()}
                   />
                 </div>
+                {/*    Enddate   */}
                 <div className="form-group">
                   <label className="label-bold"> Latest start date </label>
                   <DatePicker
                     className="form-control"
                     name="endDate"
+                    selected={this.state.endDate}
                     onChange={(date) => this.onChangeCalendar(date, "endDate")}
                     dateFormat="MMMM d, yyyy"
                     minDate={this.state.startDate}
-                    placeholderText="Insert a date"
+                    placeholderText="Open End"
                   />
                 </div>
 
