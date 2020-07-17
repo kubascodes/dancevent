@@ -44,7 +44,7 @@ const ProfileDancer = (props) => {
       <div className="d-flex align-self-center">
         <div className="d-flex flex-row align-items-center justify-content-center">
           <h6 className="ml-3 d-inline-flex align-self-center">
-            <MdFace />
+            <MdFace className="align-text-bottom" />
           </h6>
           <h6 className="ml-1 d-inline-flex align-self-center">
             {moment().diff(
@@ -54,15 +54,15 @@ const ProfileDancer = (props) => {
             years
           </h6>
           <h6 className="ml-3">
-            <MdLocationOn />
+            <MdLocationOn className="align-text-bottom" />
           </h6>
           <h6 className="ml-1"> {props.state.user.city}</h6>
           <h6 className="ml-3 d-inline-flex justify-content-center">
-            <MdMailOutline />
+            <MdMailOutline className="align-text-bottom" />
           </h6>
           <h6 className="ml-1">{props.state.user.email}</h6>
           <h6 className="ml-3 d-inline-flex justify-content-center">
-            <MdStarHalf />
+            <MdStarHalf className="align-text-bottom" />
           </h6>
           <h6 className="ml-1">{props.state.user.proficiencyLevel}</h6>
         </div>
@@ -70,7 +70,7 @@ const ProfileDancer = (props) => {
 
       <div className="d-flex align-self-center">
         <div className="d-flex flex-row align-items-center justify-content-center">
-          <MdFavorite className="mr-1" />{" "}
+          <MdFavorite className="mr-1 align-text-bottom" />{" "}
           {props.state.user.listOfDanceStyles.map((danceStyle) => (
             <span className="mr-1 badge border-pink">
               {capitalize(danceStyle)}
@@ -97,7 +97,7 @@ const ProfileDancer = (props) => {
           onSaveEvent={(event) => props.onSaveEvent(event)}
           onUnsaveEvent={(event) => props.onUnsaveEvent(event)}
         />
-        {/** 
+        {/**
         <EventCardDeckOld state={props.state} />
 */}
         <h5 className="text-center mt-2">

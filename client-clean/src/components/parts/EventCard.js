@@ -14,6 +14,10 @@ import {
   MdStarHalf,
   MdEvent,
   MdCreditCard,
+  MdFavoriteBorder,
+  MdTrendingFlat,
+  MdKeyboardArrowRight,
+  MdDelete
 } from "react-icons/md";
 
 class EventCard extends React.Component {
@@ -126,53 +130,48 @@ class EventCard extends React.Component {
               </Link>
             </div>
             <div class="card-body d-flex flex-column">
-              <Link
-                to={`/events/single/${this.props.event._id}`}
-                style={{ textDecoration: "none", color: "black" }}
-              >
+                <Link
+                  to={`/events/single/${this.props.event._id}`}
+                  style={{ textDecoration: "none", color: "black" }}
+                >
                 <h5 class="card-title">{this.props.event.title}</h5>
-              </Link>
+                </Link>
               <li className="cart-text list-unstyled">
-                <MdLocationOn /> {this.props.event.location}{" "}
+                <MdLocationOn className="align-text-bottom"/> {this.props.event.location}{", "}
                 {this.props.event.city}
               </li>
               <li className="cart-text list-unstyled">
-                <MdEvent />{" "}
-                {moment(this.props.event.startDate).format("dddd D.M.YYYY")} at{" "}
-                {moment(this.props.event.startDate).format("H")}h
+                <MdEvent className="align-text-bottom" />{" "}
+                {moment(this.props.event.startDate).format("D/M/YYYY")} at{" "}
+                {moment(this.props.event.startDate).format("H:mm")}
               </li>
               <li className="cart-text list-unstyled">
-                <MdCreditCard /> {this.props.event.price} EUR
+                <MdCreditCard className="align-text-bottom" /> {this.props.event.price} EUR
               </li>
-              {this.state.interestedIn ? (
-                <Button
-                  className="text-center mt-auto"
-                  variant="success"
-                  onClick={() => this.handleUnSave()}
-                >
-                  <MdFavorite /> Saved
-                </Button>
-              ) : (
-                <Button
-                  className="text-center mt-auto"
-                  variant="secondary"
-                  onClick={() => this.handleSave()}
-                >
-                  <MdFavorite /> Save in <i>My Events</i>
-                </Button>
-              )}
+
               {this.state.userIsOwner ? (
                 <Card.Link
                   href="#"
                   onClick={() => this.setState({ showDialog: true })}
-                  style={{ color: "#dc2029" }}
-                  className="text-center mt-auto"
+                  className="mt-auto text-center align-text-bottom text-danger"
                 >
-                  Delete
+                  <MdDelete className="align-text-bottom" /> Delete
                 </Card.Link>
               ) : (
                 <></>
               )}
+
+            </div>
+            <div class="card-footer bg-transparent">
+            <div className="row">
+            {this.state.interestedIn ? (
+              <Link onClick={() => this.handleUnSave()} className="ml-2 black-link align-text-bottom"><MdFavorite className="align-text-bottom" /> Saved</Link>
+            ) : (
+              <Link onClick={() => this.handleSave()} className="ml-2 black-link align-text-bottom"><MdFavoriteBorder className="align-text-bottom" /> Save</Link>
+            )}
+            <Link to={`/events/single/${this.props.event._id}`} className="ml-auto mr-2 black-link align-text-bottom">More Details<MdKeyboardArrowRight className="align-text-bottom" /></Link>
+
+            </div>
             </div>
           </div>
         </div>
