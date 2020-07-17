@@ -13,6 +13,9 @@ import Select from "react-select";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { CriticalAlert } from "../helpers/Alert";
+import {MdEvent, MdFace, MdFavorite, MdPerson, MdStarHalf} from "react-icons/md";
+import {GiBodyHeight} from "react-icons/gi";
+import {SelectStyle} from '../../assets/styles.js';
 
 class CreateRequestForm extends React.Component {
   constructor(props) {
@@ -361,27 +364,36 @@ class CreateRequestForm extends React.Component {
           >
             <Modal.Header closeButton>
               {" "}
-              <Modal.Title>{this.state.user.name}</Modal.Title>
+              <Modal.Title>
+          <Row>
+          <Col>
+          <Image
+          src={
+              user.picture
+                  ? user.picture
+                  : "img/placeholderDancerProfile.png"
+          }
+          alt={user.name}
+          style={{ width: "100px", height: "95px" }}
+          roundedCircle
+          />
+          </Col>
+          <Col>
+          {user.name}
+          </Col>
+          </Row>
+
+              </Modal.Title>
             </Modal.Header>
 
             <Modal.Body>
               <Container fluid>
                 <div className="form-group">
                   <form onSubmit={this.handleSubmit}>
-                    <Image
-                      src={
-                        this.state.user.picture
-                          ? this.state.user.picture
-                          : "img/placeholderDancerProfile.png"
-                      }
-                      alt={this.state.user.name}
-                      style={{ width: "100px", height: "95px" }}
-                      roundedCircle
-                    />
                     {/* User-Age Information*/}
                     <Row>
                       <Col>
-                        <label>My age...</label>
+                      <MdFace className="align-text-bottom" />{" "}<label>My age...</label>
                       </Col>
                       <Col>
                         <label>{this.calculate_age(user.yearOfBirth)}</label>
@@ -391,7 +403,7 @@ class CreateRequestForm extends React.Component {
                     {/* User-Height Information*/}
                     <Row>
                       <Col>
-                        <label>My height...</label>
+          <GiBodyHeight className="align-text-bottom"/>  {" "}<label>My height...</label>
                       </Col>
                       <Col>
                         <label>{user.height}cm</label>
@@ -401,7 +413,7 @@ class CreateRequestForm extends React.Component {
                     {/* User-Skill Information*/}
                     <Row>
                       <Col>
-                        <label>My dancing experience...</label>
+          <MdStarHalf className="align-text-bottom" />{" "} <label>My dancing experience...</label>
                       </Col>
                       <Col>
                         <label>{user.proficiencyLevel}</label>
@@ -412,7 +424,7 @@ class CreateRequestForm extends React.Component {
                     <Row>
                       <Col>
                         {" "}
-                        <label>I usually enjoy to dance...</label>{" "}
+          <MdFavorite className="align-text-bottom"/>{" "}<label>I usually enjoy to dance...</label>{" "}
                       </Col>
                       <Col>{userDanceStyles}</Col>
                     </Row>
@@ -421,14 +433,14 @@ class CreateRequestForm extends React.Component {
                     {/* Request  search "headline"*/}
                     <Row>
                       {" "}
-                      <label>I am looking for...</label>{" "}
+                      <label><b>I am looking for...</b></label>{" "}
                     </Row>
                     {/* Preferred - Gender */}
                     {/*Gender Type // TODO (optional): clear unspecified/ other how to name it*/}
                     <Row>
                       <Col>
                         {" "}
-                        <label> Gender... </label>{" "}
+          <MdPerson className="align-text-bottom" />{" "}<label> Gender... </label>{" "}
                       </Col>
                       <Col>
                         <div className="form-group">
@@ -453,7 +465,7 @@ class CreateRequestForm extends React.Component {
         {/* Preferred - Age Range*/}
                     <Row>
                       <Col>
-                        <label>Age range...</label>
+          <MdFace className="align-text-bottom" />{" "} <label>Age range...</label>
                       </Col>
                       <Col>
             <Row>
@@ -513,7 +525,7 @@ class CreateRequestForm extends React.Component {
                     {/* Preferred - Skill Level*/}
                     <Row>
                       <Col>
-                        <label>Dancing experience level...</label>{" "}
+          <MdStarHalf className="align-text-bottom" />{" "}<label>Dancing experience level...</label>{" "}
                       </Col>
                       <Col>
                         <div className="form-group">
@@ -536,7 +548,7 @@ class CreateRequestForm extends React.Component {
                     {/* Preferred - Dance Style //TODO: Prefill fix: Event style! */}
                     <Row>
                       <Col>
-                        <label>To dance...</label>
+          <MdFavorite className="align-text-bottom"/>{" "}<label>To dance...</label>
                       </Col>
                       <Col>
                         {/* The following are two selections, where the secound is depending on the first.
@@ -611,7 +623,7 @@ class CreateRequestForm extends React.Component {
                     <Row>
                       <Col>
                         {" "}
-                        <label>For the following event: </label>
+          <MdEvent className="align-text-bottom"/> {" "}<label>For the following event: </label>
                       </Col>
                       <Col>
                         {this.props.event.organizer ? (

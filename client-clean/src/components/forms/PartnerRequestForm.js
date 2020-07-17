@@ -265,7 +265,7 @@ class PartnerRequestForm extends React.Component {
               {/* Request Information_______________________*/}
               {/* Request  search "headline"*/}
               <Row>
-                <label>I am looking for...</label>
+                <label><b>I am looking for...</b></label>
               </Row>
               {/* Preferred - Gender */}
               <Row>
@@ -316,61 +316,25 @@ class PartnerRequestForm extends React.Component {
                 </Col>
               </Row>
 
-    <Row>
-    <Col>
-    {" "}
-    <GiPartyFlags className="align-text-bottom"/>  {" "}<label>At: </label>{" "}
-    </Col>
-    <Col> {request.event.title}</Col>
-    </Row>
-
-              {/* City - Event*/}
-              <Row>
-                <Col>
-                  {" "}
-    <MdLocationOn className="align-text-bottom"/><label> In: </label>{" "}
-                </Col>
-                <Col> {request.event.city} </Col>
-              </Row>
-
-              {/* Preferred - Events
-                    //TODO: If rquest only belong to one event: change text
-                    //TODO: add event link and display them*/}
-              <Row>
-                <Col>
-                  {" "}
-    <MdEvent className="align-text-bottom"/> {" "}<label>On: </label>{" "}
-                </Col>
-                <Col><label>
-    {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
-    {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
-    {request.event.type === "course" ? (
-        <>
-        {" "}
-        &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
-      {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
-        {request.event.interval})
-    </>
-    ) : (
-        ""
-    )}
-    </label></Col>
-              </Row>
-              <Row>
-              <Col>
-              {" "}
-    <MdEvent className="align-text-bottom"/> {" "} <label>Time: </label>{" "}
-              </Col>
-              <Col> {this.convertTime24to12(
-                        new Date(request.event.startDate).getHours(),
-          new Date(request.event.startDate).getMinutes()
+      <Row>
+      <Col>
+      <MdEvent className="align-text-bottom"/> {" "}<label>For the following event: </label>
+      </Col>
+      <Col>
+      {request.event.organizer ? (
+              <label>
+              <b>{request.event.title}</b> by{" "}
+              {/*TODO: Implement {request.organizer.name}*/" "} on{" "}
+      {moment(request.startDate).format(
+          "dddd D.M.YYYY"
       )}{" "}
-        <>&mdash;</>{" "}
-          {this.convertTime24to12(
-              new Date(request.event.endDate).getHours(),
-              new Date(request.event.endDate).getMinutes()
-          )}</Col>
-              </Row>
+  in {request.event.city}
+  </label>
+  ) : (
+      <></>
+  )}
+  </Col>
+      </Row>
 
 
               {/*Request - Description */}
@@ -406,7 +370,7 @@ class PartnerRequestForm extends React.Component {
                 placement="right"
                 overlay={popover}
               >
-                <Button variant="primary"> Contact </Button>
+                <Button className="btn button-pink"> Contact </Button>
               </OverlayTrigger>
             )}
             {/*this.props.profile && (

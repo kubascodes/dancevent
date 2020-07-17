@@ -3,6 +3,7 @@ import Select from 'react-select';
 import cities from './cities';
 import DatePicker from "react-datepicker";
 import {Row, Col} from "react-bootstrap";
+import {SelectStyle} from "../../assets/styles";
 
 
 class FilterRequest extends React.Component {
@@ -319,6 +320,7 @@ class FilterRequest extends React.Component {
             placeholder={"All genders..."}
             isClearable={true}
             isSearchable={true}
+      styles={SelectStyle}
             onChange={this.handleChange}
             name="gender"
             options={gender}
@@ -382,6 +384,7 @@ class FilterRequest extends React.Component {
               placeholder={"All proficiency levels..."}
               isClearable={true}
               isSearchable={true}
+      styles={SelectStyle}
               onChange={this.handleChange}
               name="proficiencyLevel"
               options={proficiencyLevels}
@@ -396,6 +399,7 @@ class FilterRequest extends React.Component {
               classNamePrefix="select"
               placeholder={"Choose a city..."}
               onChange={this.onChangeCity}
+      styles={SelectStyle}
               name="city"
               options={cities}
 
@@ -413,6 +417,7 @@ class FilterRequest extends React.Component {
               placeholder={"E.g. Tomorrow"}
               isClearable={true}
               isSearchable={true}
+      styles={SelectStyle}
               onChange={this.handleTextDate}
               name="dateSelection"
               options={dateSelection}
@@ -461,6 +466,7 @@ class FilterRequest extends React.Component {
               placeholder={"Dance style category..."}
               isClearable={true}
               isSearchable={true}
+      styles={SelectStyle}
               onChange={this.handleChange}
               name="danceCategory"
               options={danceStyleCategory}
@@ -477,6 +483,7 @@ class FilterRequest extends React.Component {
                   isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
+                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={latin}
@@ -491,6 +498,7 @@ class FilterRequest extends React.Component {
                   isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
+                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={standard}
@@ -505,6 +513,7 @@ class FilterRequest extends React.Component {
                   isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
+                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={various}
