@@ -20,9 +20,6 @@ class FilterRequest extends React.Component {
       eventType: "",
       danceCategory: "",
       danceStyle: "",
-      //ageOffset:20,
-      //ageOffsetMin:1,
-      //ageOffsetMax: 100,
         startDate: new Date(),
         endDate: null,
 
