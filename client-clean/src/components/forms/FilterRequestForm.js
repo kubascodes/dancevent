@@ -3,6 +3,7 @@ import Select from 'react-select';
 import cities from './cities';
 import DatePicker from "react-datepicker";
 import {Row, Col} from "react-bootstrap";
+import {SelectStyle} from "../../assets/styles";
 
 
 class FilterRequest extends React.Component {
@@ -193,6 +194,28 @@ class FilterRequest extends React.Component {
             }
         }}
     }
+    // belong to event
+      if (this.state.city) {
+          if (previous) {
+              url += "&";
+          }
+          url += "city=" + this.state.city;
+          previous = true;
+      }
+      if (this.state.startDate) {
+          if (previous) {
+              url += "&";
+          }
+          url += "startDate=" + this.state.startDate;
+          previous = true;
+      }
+      if (this.state.endDate) {
+          if (previous) {
+              url += "&";
+          }
+          url += "endDate=" + this.state.endDate;
+          previous = true;
+      }
 
     /*if (this.state.city != "") {
       if (previous) {
@@ -297,6 +320,7 @@ class FilterRequest extends React.Component {
             placeholder={"All genders..."}
             isClearable={true}
             isSearchable={true}
+      styles={SelectStyle}
             onChange={this.handleChange}
             name="gender"
             options={gender}
@@ -309,27 +333,27 @@ class FilterRequest extends React.Component {
           </div>
           <div>
 <Row>
-          <Col>
+          <Col xs={5}>
               <input type="number"
               placeholder={this.state.prefAgeMin}
               className="form-control col"
               name="prefAgeMin"
               step="5"
+                min="0"
               onChange={this.onChange}
-            style={{ width: "70px" }}
               value={this.state.prefAgeMin}
               />
                   </Col>
                   <Col>
               <label> -  </label>
               </Col>
-              <Col>
+              <Col xs={5}>
               <input type="number"
               placeholder={this.state.prefAgeMax}
               className="form-control col"
               name="prefAgeMax"
+                min="0"
               step="5"
-            style={{ width: "70px" }}
               onChange={this.onChange}
               value={this.state.prefAgeMax}
               />
@@ -360,6 +384,7 @@ class FilterRequest extends React.Component {
               placeholder={"All proficiency levels..."}
               isClearable={true}
               isSearchable={true}
+      styles={SelectStyle}
               onChange={this.handleChange}
               name="proficiencyLevel"
               options={proficiencyLevels}
@@ -374,6 +399,7 @@ class FilterRequest extends React.Component {
               classNamePrefix="select"
               placeholder={"Choose a city..."}
               onChange={this.onChangeCity}
+      styles={SelectStyle}
               name="city"
               options={cities}
 
@@ -381,7 +407,6 @@ class FilterRequest extends React.Component {
           </div>
 
         {/* Date Type 1 - selection*/}
-        {/* TODO: Multi Selection?*/}
   <label className="label-bold"> In the time...</label>
         <div className="form-group">
           <label> On... </label>
@@ -389,9 +414,10 @@ class FilterRequest extends React.Component {
               className="basic-single"
               classNamePrefix="select"
               defaultValue={this.state.prefDateSelection}
-              placeholder={"Date selection..."}
+              placeholder={"E.g. Tomorrow"}
               isClearable={true}
               isSearchable={true}
+      styles={SelectStyle}
               onChange={this.handleTextDate}
               name="dateSelection"
               options={dateSelection}
@@ -422,7 +448,7 @@ class FilterRequest extends React.Component {
                           selectsEnd
                           dateFormat="MMMM d, yyyy"
                           minDate={this.state.startDate}
-                        placeholderText="Select a end date"
+                        placeholderText="Open End"
                         startDate={this.state.startDate}
                          endDate={this.state.endDate}
                         />
@@ -440,6 +466,7 @@ class FilterRequest extends React.Component {
               placeholder={"Dance style category..."}
               isClearable={true}
               isSearchable={true}
+      styles={SelectStyle}
               onChange={this.handleChange}
               name="danceCategory"
               options={danceStyleCategory}
@@ -456,6 +483,7 @@ class FilterRequest extends React.Component {
                   isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
+                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={latin}
@@ -470,6 +498,7 @@ class FilterRequest extends React.Component {
                   isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
+                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={standard}
@@ -484,6 +513,7 @@ class FilterRequest extends React.Component {
                   isMulti = {true}
                   placeholder={"Dance style..."}
                   isClearable={true}
+                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={various}
@@ -515,7 +545,7 @@ class FilterRequest extends React.Component {
         <div class="form-group">
           <input
               type="submit"
-              class="btn btn-outline-dark"
+                className="btn button-pink"
               value="Submit"
           />
         </div>

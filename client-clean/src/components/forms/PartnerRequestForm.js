@@ -8,10 +8,24 @@ import {
   Popover,
   OverlayTrigger,
   Image,
+    Modal,
 } from "react-bootstrap";
-import Modal from "react-bootstrap/Modal";
+import {
+  MdMailOutline,
+  MdPerson,
+  MdLocationOn,
+  MdPhone,
+  MdLockOutline,
+  MdFavorite,
+  MdFace,
+  MdStarHalf,
+  MdEvent,
+  MdCreditCard, MdKeyboardArrowRight,
+} from "react-icons/md";
+import {GiPartyFlags, GiBodyHeight} from "react-icons/gi";
 import Select from "react-select";
 import { Link } from "react-router-dom";
+import moment from "moment";
 
 class PartnerRequestForm extends React.Component {
   constructor(props) {
@@ -95,7 +109,7 @@ class PartnerRequestForm extends React.Component {
         <Popover.Content>
           {" "}
           This functionality will be automated soon. For now just contact the{" "}
-          {user.name} here: {/*request.counterfeitEmail*/}{" "}
+          {user.name} here: {user.email}{" "}
         </Popover.Content>
       </Popover>
     );
@@ -120,33 +134,43 @@ class PartnerRequestForm extends React.Component {
             <Card.Title> </Card.Title>
             <Card.Title> {user.name} </Card.Title>
             <Card.Text>
-              <label>{this.calculate_age(user.yearOfBirth)}</label>
-    {' '}
-                <label>{user.proficiencyLevel}</label>
-        <label>{request.event.title}</label>
-              <label>
-              {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
-    {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
-    {request.event.type === "course" ? (
-        <>
-        {" "}
-        &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
-      {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
-        {request.event.interval})
-    </>
-    ) : (
-        ""
-    )}
-  </label>
-    <label>{request.event.city}</label>
-
+              <li className="cart-text list-unstyled">
+        <MdFace className="align-text-bottom" />{this.calculate_age(user.yearOfBirth)}
+               </li>
+              <li className="cart-text list-unstyled">
+        <MdStarHalf className="align-text-bottom" />{request.listOfProficiencyLevels}
+               </li>
+                <li className="cart-text list-unstyled">
+                <GiPartyFlags className="align-text-bottom"/> {request.event.title}
+                </li>
+        <li className="cart-text list-unstyled">
+        <MdLocationOn className="align-text-bottom"/> {request.event.city}
+        </li>
+              <li className="cart-text list-unstyled">
+                <MdEvent className="align-text-bottom" />
+                {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
+                  {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
+                  {request.event.type === "course" ? (
+                      <>
+                      {" "}
+                      &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
+                    {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
+                      {request.event.interval})
+                  </>
+                  ) : (
+                      ""
+                  )}
+              </li>
             </Card.Text>
             {/*TODO: Add event location*/}
             {/*TODO: Add event date*/}
           </Card.Body>
+    <div class="card-footer bg-transparent">
+        <Link onClick={this.handleShow} className="ml-auto mr-2 black-link align-text-bottom">More Details<MdKeyboardArrowRight className="align-text-bottom" /></Link>
           {/*<Card.Footer>
                                  <Button id="deleteRequest" onClick={()=>{this.props.deleteRequest(request._id)}}>Delete Request</Button>
                              </Card.Footer>*/}
+                             </div>
         </Card>
 
         <Modal
@@ -159,28 +183,36 @@ class PartnerRequestForm extends React.Component {
           centered
         >
           <Modal.Header closeButton>
-            <Modal.Title>{user.name}</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            <Container fluid>
-              <Image
+            <Modal.Title>
+        <Row>
+        <Col>
+                <Image
                 src={
                   user.picture
-                    ? user.picture
-                    : "img/placeholderDancerProfile.png"
+                      ? user.picture
+                      : "img/placeholderDancerProfile.png"
                 }
                 alt={user.name}
                 style={{ width: "100px", height: "95px" }}
                 roundedCircle
-              />
+                />
+                    </Col>
+                    <Col>
+                {user.name}
+        </Col>
+        </Row>
+                </Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+            <Container fluid>
               {/* Requesting User Information_______________________*/}
 
               {/* Requesting User - Age Information*/}
               <Row>
                 <Col>
                   {" "}
-                  <label>My age...</label>{" "}
+    <MdFace className="align-text-bottom" />{" "}<label>My age...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -192,7 +224,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>My height...</label>{" "}
+    <GiBodyHeight className="align-text-bottom"/>  {" "}<label>My height...</label>{" "}
                 </Col>
 
                 <Col>
@@ -205,7 +237,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>My proficiency experience...</label>{" "}
+    <MdStarHalf className="align-text-bottom" />{" "}<label>My proficiency experience...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -217,7 +249,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>I usually enjoy to dance...</label>{" "}
+    <MdFavorite className="align-text-bottom"/>{" "}<label>I usually enjoy to dance...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -233,13 +265,13 @@ class PartnerRequestForm extends React.Component {
               {/* Request Information_______________________*/}
               {/* Request  search "headline"*/}
               <Row>
-                <label>I am looking for...</label>
+                <label><b>I am looking for...</b></label>
               </Row>
               {/* Preferred - Gender */}
               <Row>
                 <Col>
                   {" "}
-                  <label> Gender... </label>{" "}
+    <MdPerson className="align-text-bottom" />{" "}<label> Gender... </label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -251,7 +283,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>Age range...</label>{" "}
+    <MdFace className="align-text-bottom" />{" "}<label>Age range...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -266,7 +298,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>Dancing proficiency level...</label>{" "}
+    <MdStarHalf className="align-text-bottom" />{" "}<label>Dancing proficiency level...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -277,68 +309,32 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-                  <label>To dance...</label>{" "}
+    <MdFavorite className="align-text-bottom"/>{" "}<label>To dance...</label>{" "}
                 </Col>
                 <Col>
                   <ul>{requestDanceStyles} </ul>
                 </Col>
               </Row>
 
-    <Row>
-    <Col>
-    {" "}
-    <label>At: </label>{" "}
-    </Col>
-    <Col> {request.event.title}</Col>
-    </Row>
-
-              {/* City - Event*/}
-              <Row>
-                <Col>
-                  {" "}
-                  <label> In: </label>{" "}
-                </Col>
-                <Col> {request.event.city} </Col>
-              </Row>
-
-              {/* Preferred - Events
-                    //TODO: If rquest only belong to one event: change text
-                    //TODO: add event link and display them*/}
-              <Row>
-                <Col>
-                  {" "}
-                  <label>On: </label>{" "}
-                </Col>
-                <Col><label>
-    {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
-    {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
-    {request.event.type === "course" ? (
-        <>
-        {" "}
-        &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
-      {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
-        {request.event.interval})
-    </>
-    ) : (
-        ""
-    )}
-    </label></Col>
-              </Row>
-              <Row>
-              <Col>
-              {" "}
-                <label>From: </label>{" "}
-              </Col>
-              <Col> {this.convertTime24to12(
-                        new Date(request.event.startDate).getHours(),
-          new Date(request.event.startDate).getMinutes()
+      <Row>
+      <Col>
+      <MdEvent className="align-text-bottom"/> {" "}<label>For the following event: </label>
+      </Col>
+      <Col>
+      {request.event.organizer ? (
+              <label>
+              <b>{request.event.title}</b> by{" "}
+              {/*TODO: Implement {request.organizer.name}*/" "} on{" "}
+      {moment(request.startDate).format(
+          "dddd D.M.YYYY"
       )}{" "}
-        <>&mdash;</>{" "}
-          {this.convertTime24to12(
-              new Date(request.event.endDate).getHours(),
-              new Date(request.event.endDate).getMinutes()
-          )}</Col>
-              </Row>
+  in {request.event.city}
+  </label>
+  ) : (
+      <></>
+  )}
+  </Col>
+      </Row>
 
 
               {/*Request - Description */}
@@ -352,9 +348,18 @@ class PartnerRequestForm extends React.Component {
                   <label> {request.description} </label>{" "}
                 </Col>
               </Row>
+
+              <Row>
+                <Col>
+
+                </Col>
+
+              </Row>
             </Container>
           </Modal.Body>
           <Modal.Footer>
+    <MdEvent className="align-text-left" /> Created on:{" "}
+    {moment(request.timestamp).format("dddd D.M.YYYY")}
             <Button variant="secondary" onClick={this.handleCancel}>
               {" "}
               Cancel{" "}
@@ -365,7 +370,7 @@ class PartnerRequestForm extends React.Component {
                 placement="right"
                 overlay={popover}
               >
-                <Button variant="primary"> Contact </Button>
+                <Button className="btn button-pink"> Contact </Button>
               </OverlayTrigger>
             )}
             {/*this.props.profile && (
