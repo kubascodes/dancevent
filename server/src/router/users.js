@@ -175,18 +175,18 @@ router.get(
             var myAge = null;
 
             // match request and user information
-            let user = await User.findOne({ _id: userId });
-            if(user){
-                req.query.listofGenders = user.gender;
-                req.query.listOfProficiencyLevels = user.proficiencyLevel;
-                myAge = new Date().getFullYear() - user.yearOfBirth
-            }
+            //TODO: Somhow there is a bug. it should normaly be the orther way around
+            if(req.query.allRequests == "viewAllRequests"){
+                let user = await User.findOne({ _id: userId });
+                if(user){
+                    req.query.listofGenders = user.gender;
+                    req.query.listOfProficiencyLevels = user.proficiencyLevel;
+                    myAge = new Date().getFullYear() - user.yearOfBirth
+                }
+            };
+            delete req.query.allRequests;
 
-            // filter dance styles
-            let danceStyles = req.query.listOfDanceStyles;
-            if (danceStyles) {
-                req.query.listOfDanceStyles = { $in: danceStyles };
-            }
+
 
             // Dancer Data Filter
             var dancerValues = [];
@@ -216,6 +216,12 @@ router.get(
                 delete req.query.listOfProficiencyLevelsDancer;
             }
             console.log(dancerValues);
+
+            // filter dance styles request
+            let danceStyles = req.query.listOfDanceStyles;
+            if (danceStyles) {
+                req.query.listOfDanceStyles = { $in: danceStyles };
+            }
 
             //Event
 

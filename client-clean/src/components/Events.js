@@ -118,13 +118,15 @@ class Events extends React.Component {
     console.log(this.state);
   };
 
-  sortingChanged = (event) => {
-    /*
-        If Events should be sorted based on parameter 'sorting' this function is called
-    */
+    sortingChanged = (selectedOption, action) => {
+        /*
+            If Events should be sorted based on parameter 'sorting' this function is called
+        */
 
-    //set the new state
-    this.setState({ sorting: event.target.value });
+        //set the new state
+        this.setState({
+            sorting: selectedOption ? selectedOption.value : ""
+        });
 
     //sort after prefered sortingmethods
 
@@ -555,13 +557,25 @@ class Events extends React.Component {
           <Col xs={7} md={8} lg={9} xl={10} id="page-content-wrapper">
             {/*    Sorting Navbar   */}
             <Row>
-              <div style={{ marginLeft: "auto" }}>
-                Sorting by:
-                <select name="sorting" onChange={this.sortingChanged}>
-                  <option value="date">Date</option>
-                  <option value="dateDesc">Date desc</option>
-                </select>
-              </div>
+          <div style={{ marginLeft: "auto" , width: "15rem"}}>
+      Sorting by:
+          <Select
+      className="basic-single"
+      classNamePrefix="select"
+      defaultValue={this.state.sorting.value}
+      value={this.state.sorting.value}
+      placeholder={""}
+      isClearable={true}
+      isSearchable={true}
+      styles={SelectStyle}
+      onChange={this.sortingChanged}
+      name="gender"
+      options={[
+              { value: 'date', label: 'Date' },
+      { value: 'dateDesc', label: 'Date Desc'},
+  ]}
+      />
+      </div>
             </Row>
 
             {/*    Event Cards   */}

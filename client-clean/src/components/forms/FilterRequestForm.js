@@ -141,7 +141,7 @@ class FilterRequest extends React.Component {
         then adds it to the URL
         */
 
-    //otherwise it would reload the Page
+    //otherwivse it would reload the Page
     e.preventDefault();
 
     //To know if you need a '&' to concat the parameters

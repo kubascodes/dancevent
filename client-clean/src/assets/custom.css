@@ -90,7 +90,9 @@ h1, h2, h3, h4, h5, h6 {
 .react-datepicker-wrapper {
   width: 100%;
 }
- .age-slider{
+
+
+.age-slider{
    position: relative;
    margin: 0 auto 20px;
    height: 35px;
@@ -108,6 +110,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
 
 }
+
 .age-slider input::-webkit-slider-thumb {
   pointer-events: all;
   position: relative;

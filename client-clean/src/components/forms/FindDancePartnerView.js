@@ -13,8 +13,44 @@ class FindDancePartnerView extends React.Component {
     this.state = {
       requests: [],
         sorting: "",
+        viewAllRequests: "",
     };
   }
+
+
+    onChangeCheckbox = (event) => {
+        var checkboxName = event.target.name;
+        var elements = document.getElementsByName(checkboxName);
+        var checked = [];
+
+        //console.log(elements);
+        for (var x = 0; x < elements.length; x++) {
+
+
+            if (elements[x].checked) {
+                checked.push(elements[x].value);
+            } else {
+            }
+            if (checked.length < 1) {
+                //store empty if nothing
+                this.setState({[checkboxName]: ""});
+                //console.log(this.state);
+            } else if (checked.length == 1) {
+                //store as a string if only 1 preference
+                this.setState({[checkboxName]: checked[0]});
+                //console.log(this.state);
+            } else if (checked.length > 1) {
+                //store as an array if multiple preferences
+
+            }
+            console.log(this.state.viewAllRequests);
+            this.getRequests(window.location.pathname);
+        };
+
+
+
+
+    };
 
 
     sortingChanged = (selectedOption, action) => {
@@ -65,6 +101,17 @@ class FindDancePartnerView extends React.Component {
   getRequests = (url) => {
     /* fetches all requests from the backend*/
    console.log(url);
+      console.log(this.state.viewAllRequests);
+
+   if(url == window.location.pathname  && this.state.viewAllRequests != "" ){
+        url += "/?allRequests=" + this.state.viewAllRequests;
+    } ;
+   if(url == "/dancepartner/?" && this.state.viewAllRequests != ""){
+       url += "allRequests=" + this.state.viewAllRequests;
+    };
+   if(url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != ""){
+       url += "&allRequests=" + this.state.viewAllRequests;
+   };
 
     fetch(url, {
       method: "GET",
@@ -115,8 +162,14 @@ class FindDancePartnerView extends React.Component {
             {/*RequestPart*/}
             <Col>
               {/*SortingNavbar*/}
-            <Row xs={6}>
-                <div style={{ marginLeft: "auto" }}>
+            <Row >
+                <div className="form-group" style={{ marginRight: "auto" }}>
+                    <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
+                    <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
+                </div>
+
+
+                <div style={{ marginLeft: "auto" , width: "15rem"}}>
                     Sorting by:
                         <Select
                             className="basic-single"
@@ -137,6 +190,7 @@ class FindDancePartnerView extends React.Component {
                             ]}
                         />
                 </div>
+
             </Row>
 
               <Row> { this.state.requests.length ? (
