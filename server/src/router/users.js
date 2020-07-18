@@ -36,13 +36,13 @@ router.get(
           .sort({ startDate: 1 })
           .limit(5);
           let requests =  await Request.find({ dancer: new ObjectId(user._id) })
-            .populate("dancer", "-_id ")
-            .populate("event", null, {'startDate': { $gte: new Date() }})
+            .populate("dancer event ", "-_id ")
           .sort({ timestamp: 1 });
           console.log("REQUEST END ::::::::::");
           console.log(requests);
-          let requestsEvent = requests.filter(request =>  request.event != null);
-        response.requests = requestsEvent;
+     // .populate("event", null, {'startDate': { $gte: new Date() }})
+       //   let requestsEvent = requests.filter(request =>  request.event != null);
+        response.requests = requests;
         response.events = events;
       }
       //if organizer, add events to the response
