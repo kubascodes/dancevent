@@ -168,8 +168,7 @@ router.get(
             // do not send back my own created requests
             let userId = req.user._id;
             req.query.dancer = {$ne: userId};
-            if(all)
-            let myAge = null;
+            var myAge = null;
 
             // match request and user information
             let user = await User.findOne({ _id: userId });
