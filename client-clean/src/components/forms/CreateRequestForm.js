@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import { CriticalAlert } from "../helpers/Alert";
 import {MdEvent, MdFace, MdFavorite, MdPerson, MdStarHalf} from "react-icons/md";
 import {GiBodyHeight} from "react-icons/gi";
-import {SelectStyle} from '../../assets/styles.js';
+import {SelectStyle} from "../../assets/styles";
 
 class CreateRequestForm extends React.Component {
   constructor(props) {
@@ -316,7 +316,7 @@ class CreateRequestForm extends React.Component {
     // ERROR handling if required value is missing
     // sets the colors red if nothing is selected in the submit
     //color of the selects, when not entered
-    const customStyle = this.state.validSelect
+    /*const customStyle = this.state.validSelect
       ? {
           placeholder: (defaultStyles) => {
             return {
@@ -333,14 +333,12 @@ class CreateRequestForm extends React.Component {
           },
         };
     //color the textarea if not entered a text
-    //TODO: check border color of select if changed: need to be changed here as well
     const customColor = this.state.validDescription
       ? { borderColor: "#ccc" }
-      : { borderColor: "#dc2029" };
+      : { borderColor: "#dc2029" };*/
 
     //when logged in display requests
     if (window.sessionStorage.secret_token != null) {
-      //TODO(Bug?) getting the user takes time and the get ('POST') takes long and throws first []
       if (user) {
         // TODO: check if really used or needed
         const userDanceStyles = user.listOfDanceStyles ? (
@@ -450,7 +448,7 @@ class CreateRequestForm extends React.Component {
                       <Col>
                         <div className="form-group">
                           <Select
-                            className="basic-single"
+                            className="border-red"
                             classNamePrefix="select"
                             defaultValue={gender.filter(
                               (value) => value.value === this.state.prefGender
@@ -459,7 +457,7 @@ class CreateRequestForm extends React.Component {
                             isClearable={true}
                             isSearchable={true}
                             onChange={this.handleSelect}
-                            styles={customStyle}
+          styles={SelectStyle}
                             name="prefGender"
                             options={gender}
                           />
@@ -536,13 +534,13 @@ class CreateRequestForm extends React.Component {
                       <Col>
                         <div className="form-group">
                           <Select
-                            className="basic-single"
+                            className="border-red"
                             classNamePrefix="select"
                             defaultValue={this.state.prefProficiencyLevel}
                             placeholder={"Proficiency levels..."}
                             isClearable={true}
                             isSearchable={true}
-                            styles={customStyle}
+                            styles={SelectStyle}
                             onChange={this.handleSelect}
                             name="prefProficiencyLevel"
                             options={prefProficiencyLevels}
@@ -569,6 +567,7 @@ class CreateRequestForm extends React.Component {
                               placeholder={"Dance style category..."}
                               isClearable={true}
                               isSearchable={true}
+                                styles={SelectStyle}
                               onChange={this.handleSelect}
                               name="danceCategory"
                               options={danceStyleCategory}
@@ -585,6 +584,7 @@ class CreateRequestForm extends React.Component {
                                     isMulti={true}
                                     placeholder={"Dance style..."}
                                     isClearable={true}
+                                  styles={SelectStyle}
                                     isSearchable={true}
                                     name="danceStyle"
                                     options={latin}
@@ -600,6 +600,7 @@ class CreateRequestForm extends React.Component {
                                     isMulti={true}
                                     placeholder={"Dance style..."}
                                     isClearable={true}
+                                  styles={SelectStyle}
                                     isSearchable={true}
                                     name="danceStyle"
                                     options={standard}
@@ -615,6 +616,7 @@ class CreateRequestForm extends React.Component {
                                     isMulti={true}
                                     placeholder={"Dance style..."}
                                     isClearable={true}
+                                  styles={SelectStyle}
                                     isSearchable={true}
                                     name="danceStyle"
                                     options={various}
@@ -654,9 +656,8 @@ class CreateRequestForm extends React.Component {
                           <label htmlFor="description">Description</label>
                           <textarea
                             name="description"
-                            className="form-control"
+                            className="form-control border-red"
                             id="description"
-                            style={customColor}
                             onChange={this.onChange}
                             placeholder="Personal text to add to the request"
                             value={this.description}
@@ -689,7 +690,7 @@ class CreateRequestForm extends React.Component {
                 <Overlay
                   show={this.state.showPopover}
                   target={this.state.targetPopover}
-                  placement="bottom"
+                  placement="top"
                   containerPadding={20}
                 >
                   <Popover id="popover-contained">
