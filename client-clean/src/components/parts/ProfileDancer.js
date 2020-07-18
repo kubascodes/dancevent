@@ -112,15 +112,8 @@ const ProfileDancer = (props, userData) => {
             Your Partner Requests
           </b>
         </h5>
-            {props.state.requests.length
-                ? (
-
             <MyRequests state={props.state}/>
-                )
-            : (
-                <p className="text-center">At the moment you have no open requests.</p>
-            )
-            }
+
             {/*<RequestCardDeck state={props.state} />*/}
       </div>
     </div>
