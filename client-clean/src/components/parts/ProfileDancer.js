@@ -21,7 +21,7 @@ import {
 import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
 const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
 
-const ProfileDancer = (props) => {
+const ProfileDancer = (props, userData) => {
   const capitalize = (input) => {
     const capitalStr = input.replace(/\b\w/g, function (string) {
       return string.toUpperCase();
@@ -108,16 +108,20 @@ const ProfileDancer = (props) => {
         <EventCardDeckOld state={props.state} />
 */}
         <h5 className="text-center mt-2">
-          <Link
-            className="font-weight-bolder text-body text-decoration-none"
-            to="/myrequests"
-          >
+          <b>
             Your Partner Requests
-          </Link>
+          </b>
         </h5>
+            {props.state.requests.length
+                ? (
 
-        <MyRequests state={props.state}/>
-        <RequestCardDeck state={props.state} />
+            <MyRequests state={props.state}/>
+                )
+            : (
+                <p className="text-center">At the moment you have no open requests.</p>
+            )
+            }
+            {/*<RequestCardDeck state={props.state} />*/}
       </div>
     </div>
   );
