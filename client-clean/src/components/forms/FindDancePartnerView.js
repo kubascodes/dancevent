@@ -22,6 +22,7 @@ class FindDancePartnerView extends React.Component {
 
   getRequests = (url) => {
     /* fetches all requests from the backend*/
+   console.log(url);
 
     fetch(url, {
       method: "GET",
@@ -32,8 +33,9 @@ class FindDancePartnerView extends React.Component {
     })
       .then((res) => res.json(res))
       .then((requests) => {
+        console.log(requests);
         this.setState({ requests });
-        //console.log(this.state.requests);
+        console.log(this.state.requests);
       })
       .catch((err) => alert(err));
   };

@@ -156,145 +156,160 @@ router.get(
   }
 );
 
-
- //List all dance request on Dance Partner Page
+//List all dance request on Dance Partner Page
 //TODO: sort is missing, events
 router.get(
-  "/dancepartner",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res, next) => {
-    try {
+    "/dancepartner",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res, next) => {
+        try {
 
-        // do not send back my own created requests
-        let userId = req.user._id;
-        req.query.dancer = {$ne: userId};
-        let myAge = null;
+            // do not send back my own created requests
+            let userId = req.user._id;
+            req.query.dancer = {$ne: userId};
+            if(all)
+            let myAge = null;
 
-        // match request and user information
-        let user = await User.findOne({ _id: userId });
-        if(user){
-          req.query.listofGenders = user.gender;
-          req.query.listOfProficiencyLevels = user.proficiencyLevel;
-          myAge = new Date().getFullYear() - user.yearOfBirth
-        }
+            // match request and user information
+            let user = await User.findOne({ _id: userId });
+            if(user){
+                req.query.listofGenders = user.gender;
+                req.query.listOfProficiencyLevels = user.proficiencyLevel;
+                myAge = new Date().getFullYear() - user.yearOfBirth
+            }
 
-          // filter dance styles
-          let danceStyles = req.query.listOfDanceStyles;
-          if (danceStyles) {
-            req.query.listOfDanceStyles = { $in: danceStyles };
-          }
+            // filter dance styles
+            let danceStyles = req.query.listOfDanceStyles;
+            if (danceStyles) {
+                req.query.listOfDanceStyles = { $in: danceStyles };
+            }
 
-         // Dancer Data Filter
-        var dancerValues = [];
+            // Dancer Data Filter
+            var dancerValues = [];
 
-        if(req.query.prefAgeMinDancer) {
-          let minAge = req.query.prefAgeMinDancer;
-          let minYearOfBirth = new Date().getFullYear() - minAge;
-          dancerValues.push({'yearOfBirth': {$lte: minYearOfBirth}});
-          delete req.query.prefAgeMinDancer;
-        }
+            if(req.query.prefAgeMinDancer) {
+                let minAge = req.query.prefAgeMinDancer;
+                let minYearOfBirth = new Date().getFullYear() - minAge;
+                dancerValues.push({'yearOfBirth': {$lte: minYearOfBirth}});
+                delete req.query.prefAgeMinDancer;
+            }
 
-        if(req.query.prefAgeMaxDancer){
-          let maxAge = req.query.prefAgeMaxDancer;
-          let maxYearOfBirth = new Date().getFullYear() - maxAge;
-          dancerValues.push({'yearOfBirth': {$gte: maxYearOfBirth}});
-          delete req.query.prefAgeMaxDancer;
-        }
+            if(req.query.prefAgeMaxDancer){
+                let maxAge = req.query.prefAgeMaxDancer;
+                let maxYearOfBirth = new Date().getFullYear() - maxAge;
+                dancerValues.push({'yearOfBirth': {$gte: maxYearOfBirth}});
+                delete req.query.prefAgeMaxDancer;
+            }
 
-        if(req.query.listofGendersDancer){
-          let gender = req.query.listofGendersDancer;
-          dancerValues.push({'gender': gender});
-          delete req.query.listofGendersDancer;
-        }
-        if(req.query.listOfProficiencyLevelsDancer){
-          let proficiencyLevel = req.query.listOfProficiencyLevelsDancer;
-          dancerValues.push({'proficiencyLevel': proficiencyLevel});
-          delete req.query.listOfProficiencyLevelsDancer;
-        }
+            if(req.query.listofGendersDancer){
+                let gender = req.query.listofGendersDancer;
+                dancerValues.push({'gender': gender});
+                delete req.query.listofGendersDancer;
+            }
+            if(req.query.listOfProficiencyLevelsDancer){
+                let proficiencyLevel = req.query.listOfProficiencyLevelsDancer;
+                dancerValues.push({'proficiencyLevel': proficiencyLevel});
+                delete req.query.listOfProficiencyLevelsDancer;
+            }
+            console.log(dancerValues);
 
-        // Event Data Filter
-        var eventValues = [];
-
-       /* var start = new Date();
-        if (req.query.startDate) {
-            start = new Date(req.query.startDate);
-        }
-        if (req.query.endDate) {
-            let endDate = new Date(req.query.endDate);
-            eventValues.push({"startDate": { $gte: start, $lte: endDate }});
-            delete req.query["endDate"];
-            delete req.query["startDate"];
-        } else {
-            eventValues.push({"startDate": { $gte: start }});
-            delete req.query["startDate"];
-        }
-        if(req.query.city){
-            eventValues.push({"city": req.query.city});
-            delete req.query["city"];
-        }
-        console.log(eventValues);*/
+            //Event
 
 
-        // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
-        if(dancerValues.length == 0 && eventValues.length == 0){
-             await Request.find(req.query).populate("dancer", "-_id").populate("event", "-_id").exec(function(err, docs){
-             if(myAge){
-               docs = docs.filter(function(doc){
-                return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
-              })
-             }
-             //console.log(docs);
-             return res.status(200).json(docs);
-           });
-          };
-        /*if(dancerValues.length && eventValues.length){
-           let dancerCheck = { $and: dancerValues};
-            let eventCheck = { $and: eventValues};
-            await Request.find(req.query).populate(
-                "dancer",
-                null,
-                dancerCheck
-                ).populate("event", null, eventCheck).exec(function(err, docs){
-                docs = docs.filter(function(doc){
-                  if(myAge){
-                    return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null;
-                  }
-                  else {
-                    return doc.dancer != null && doc.event != null;
-                  }
-                })
-                //console.log(docs);
-              return res.status(200).json(docs);
-            });
-          };*/
-        if(dancerValues.length){
-            let dancerCheck = { $and: dancerValues};
-            await Request.find(req.query).populate(
-                "dancer",
-                null,
-                dancerCheck
-            ).populate("event", "-_id").exec(function(err, docs){
-                docs = docs.filter(function(doc){
+            console.log(req.query);
+            var eventValue = [];
+            var start = new Date();
+            if (req.query.startDate) {
+                start = new Date(req.query.startDate);
+                console.log("START"+start);
+            }
+            if (req.query.endDate) {
+                eventValue.push({'startDate': { $gte: start, $lte: req.query.endDate }});
+                delete req.query["startDate"];
+                delete req.query["endDate"];
+            } else {
+                eventValue.push({'startDate': { $gte: start }});
+                delete req.query["startDate"];
+            };
+            if(req.query.city){
+                let city = req.query.city;
+                //eventValue.push({'city': {city}});
+                delete req.query.city;
+            }
+
+            console.log(eventValue);
+
+            //TODO: delete id's // TODO: city filter
+
+            // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
+            if(dancerValues.length == 0 && eventValue.length == 0){
+                await Request.find(req.query).populate("dancer event", "-_id").exec(function(err, docs){
                     if(myAge){
-                        return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null;
+                        docs = docs.filter(function(doc){
+                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
+                        })
                     }
-                    else {
-                        return doc.dancer != null && doc.event != null;
-                    }
-                })
-                //console.log(docs);
-                return res.status(200).json(docs);
+                    return res.status(200).json(docs);
+                });
+            };
+            if(dancerValues.length && eventValue.length){
+                let dancerCheck = { $and: dancerValues};
+                let eventCheck = {$and: eventValue};
+                await Request.find(req.query
+                ).populate( "dancer", null , dancerCheck
+                ).populate("event", null, eventCheck).exec(function(err, docs){
+                    docs = docs.filter(function(doc){
+                        if(myAge){
+                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null;
+                        }
+                        else {
+                            return doc.dancer != null && doc.event != null;
+                        }
+                    })
+                    return res.status(200).json(docs);
+                });
+            };
+            if(dancerValues.length==0 && eventValue.length){
+                let eventCheck = {$and: eventValue};
+                await Request.find(req.query
+                ).populate( "event", null, eventCheck
+                ).populate("dancer", "-_id").exec(function(err, docs){
+                    docs = docs.filter(function(doc){
+                        if(myAge){
+                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.event != null;
+                        }
+                        else {
+                            return doc.event != null;
+                        }
+                    })
+                    return res.status(200).json(docs);
+                });
+            };
+            if(dancerValues.length && eventValue.length==0){
+                let dancerCheck = { $and: dancerValues};
+                await Request.find(req.query
+                ).populate( "dancer", null , dancerCheck
+                ).populate("event", "-_id").exec(function(err, docs){
+                    docs = docs.filter(function(doc){
+                        if(myAge){
+                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null ;
+                        }
+                        else {
+                            return doc.dancer != null ;
+                        }
+                    })
+                    return res.status(200).json(docs);
+                });
+            };
+
+        } catch (err) {
+            return res.status(500).json({
+                error: "Internal server error",
+                message: err.message,
             });
-        };
+        }
 
-} catch (err) {
-  return res.status(500).json({
-    error: "Internal server error",
-    message: err.message,
-  });
-}
-
-});
+    });
 
 
 //User Login Route

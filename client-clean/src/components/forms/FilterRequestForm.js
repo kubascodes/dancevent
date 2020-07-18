@@ -226,6 +226,7 @@ class FilterRequest extends React.Component {
 
     //fetch requests from backend
     this.props.getRequests(url);
+    //console.log(url);
   };
     //Changes the state for calendar inputs
     //type should specify if it is a start- or endDate
