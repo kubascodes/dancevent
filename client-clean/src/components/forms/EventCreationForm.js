@@ -9,7 +9,7 @@ import {SelectStyle} from '../../assets/styles';
 
 import ProcessImage from '../../services/imageProcessing';
 
-import { Image, Button, Container, Row, Col, Table } from "react-bootstrap";
+import { Image, Button, Container, Row, Col, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 import { CriticalAlert } from "../helpers/Alert";
 
@@ -436,10 +436,18 @@ class EventCreationForm extends React.Component {
             <Container className="mt-3">
               <Row className="justify-content-md-center">
                 <div className="form-group">
-                  <div className="custom-file">
-                    <input type="file" className="custom-file-input form-control" name="picture" onChange={this.onChangeFile} id="customFile" />
-                    <label className="custom-file-label form-control" htmlFor="customFile">Upload your event picture</label>
-                  </div>
+                  <OverlayTrigger 
+                    placement='bottom'
+                    overlay={
+                      <Tooltip>
+                        The pictrue will be croped to a ration of 10 to 6. Make sure it also looks good in banner mode as seen above.
+                      </Tooltip>
+                  }>
+                    <div className="custom-file">
+                     <input type="file" className="custom-file-input form-control" name="picture" onChange={this.onChangeFile} id="customFile" />
+                     <label className="custom-file-label form-control" htmlFor="customFile">Upload your event picture</label>
+                    </div>
+                    </OverlayTrigger>
                 </div>
               </Row>
 
