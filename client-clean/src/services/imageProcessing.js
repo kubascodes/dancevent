@@ -23,7 +23,7 @@ export default async function ProcessImage (image, imageUrl, crop, context) {
                 break;
               case "eventPicture":
                 //for event pictures
-                cropSettings = [800, 600]
+                cropSettings = [1000, 600]
                 break;
               default:
                 //for other images
@@ -31,10 +31,17 @@ export default async function ProcessImage (image, imageUrl, crop, context) {
                 cropSettings = [Number(defaultImage.bitmap.width), Number(defaultImage.bitmap.height)];
                 break;
             }
+            /*
             let imageResize = await image.resize(Jimp.AUTO, cropSettings[1]).quality(70);
             if (imageResize) { progressBar.setUploadProgress(50); }
             let imageCrop = await imageResize.crop(Number((imageResize.bitmap.width-cropSettings[0])), Number((imageResize.bitmap.height-cropSettings[1])), Number(cropSettings[0]), Number(cropSettings[1]));
             if (imageCrop) { progressBar.setUploadProgress(75);}
+            */ 
+            let imageCrop = await image.cover(cropSettings[0], cropSettings[1], Jimp.HORIZONTAL_ALIGN_CENTER | Jimp.VERTICAL_ALIGN_MIDDLE).quality(70);
+            if (imageCrop) { progressBar.setUploadProgress(50); }
+
+
+
             let imageBase64 = await imageCrop.getBase64Async(Jimp.MIME_JPEG);
             if (imageBase64) { progressBar.setUploadProgress(100); } //complete on this tick
             return imageBase64;

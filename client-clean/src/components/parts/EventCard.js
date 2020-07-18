@@ -122,19 +122,21 @@ class EventCard extends React.Component {
                   src={
                     this.props.event.picture
                       ? this.props.event.picture
-                      : "img/placeholder2_1024x365.png"
+                      : "img/placeholder_1000x600.png"
                   }
-                  class="card-img-top"
+                  className="card-img-top"
                   alt="..."
+
+
                 />
               </Link>
             </div>
-            <div class="card-body d-flex flex-column">
+            <div className="card-body d-flex flex-column">
                 <Link
                   to={`/events/single/${this.props.event._id}`}
                   style={{ textDecoration: "none", color: "black" }}
                 >
-                <h5 class="card-title">{this.props.event.title}</h5>
+                <h5 className="card-title">{this.props.event.title}</h5>
                 </Link>
               <li className="cart-text list-unstyled">
                 <MdLocationOn className="align-text-bottom"/> {this.props.event.location}{", "}
@@ -162,7 +164,7 @@ class EventCard extends React.Component {
               )}
 
             </div>
-            <div class="card-footer bg-transparent">
+            <div className="card-footer bg-transparent">
             <div className="row">
             {this.state.interestedIn ? (
               <Link onClick={() => this.handleUnSave()} className="ml-2 black-link align-text-bottom"><MdFavorite className="align-text-bottom" /> Saved</Link>
