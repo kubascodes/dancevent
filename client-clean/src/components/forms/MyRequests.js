@@ -43,17 +43,19 @@ class MyRequests extends React.Component {
 
   };
 
-  componentDidMount = () => {
-      let requests = this.props.state.requests;
-      this.setState({requests: requests});
-      console.log(this.state.requests);
-  }
+    componentDidMount = () => {
+        let requests = this.props.state.requests;
+        this.setState({requests: requests});
+        console.log(this.state.requests);
+    }
 
 
   render() {
+      const requests = this.props.state.requests;
 
     return (
       <div>
+        {this.setState({requests: requests})}
 
         { this.state.requests.length ? (
                     <CardDeck>
