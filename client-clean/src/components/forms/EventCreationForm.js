@@ -340,6 +340,7 @@ class EventCreationForm extends React.Component {
         .then((res) => {
           //Save the new event in the App
           this.props.onCreate(res)
+
           //Redirect to Event
           this.setState({ redirect: "/events/single/" + res._id });
 
@@ -540,14 +541,14 @@ class EventCreationForm extends React.Component {
               </Row>
 
               <Row>
-                <Col>
+                <Col xs={12} md={6}>
                   <Table>
                     <tbody>
                       <tr>
-                        <td>
+                        <td width={'30%'}>
                           <b>Organizer:</b>
                         </td>
-                        <td>
+                        <td width={'70%'}>
                           You
                     </td>
                       </tr>
@@ -643,14 +644,14 @@ class EventCreationForm extends React.Component {
                   </Table>
                 </Col>
 
-                <Col>
+                <Col xs={12} md={6}>
                   <Table>
                     <tbody>
                       <tr>
-                        <td>
+                        <td width={'30%'}>
                           <b>City:</b>
                         </td>
-                        <td>
+                        <td width={'70%'}>
                           <Select
                             className="basic-single border-red"
                             classNamePrefix="select"

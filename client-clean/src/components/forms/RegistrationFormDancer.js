@@ -273,7 +273,7 @@ class RegistrationFormDancer extends React.Component {
 
       <div className="form-group">
         <label className="label-bold" htmlFor="height">Height</label>
-        <input type="number" className="form-control" id="height" placeholder="183 (cm)" name="height" onChange={this.onChangeInput} value={this.height}/>
+        <input type="number" className="form-control" id="height" placeholder="183 (cm)" min="100" max="250" step="1" name="height" onChange={this.onChangeInput} value={this.height}/>
       </div>
 
       <div className="form-group">
@@ -359,8 +359,8 @@ class RegistrationFormDancer extends React.Component {
         Preferred Age of Dancers
         </div>
         </div>
-        <input type="number" aria-label="Min Age" placeholder="Min age (years)" className="form-control col" name="prefAgeMin" onChange={this.onChangeInput} value={this.prefAgeMin} />
-        <input type="number" aria-label="Max Age" placeholder="Max age (years)" className="form-control col" name="prefAgeMax" onChange={this.onChangeInput} value={this.prefAgeMax} />
+        <input type="number" aria-label="Min Age" placeholder="Min age (years)" className="form-control col" min="10" max="100" step="5" name="prefAgeMin" onChange={this.onChangeInput} value={this.prefAgeMin} />
+        <input type="number" aria-label="Max Age" placeholder="Max age (years)" className="form-control col" min="10" max="120" step="5" name="prefAgeMax" onChange={this.onChangeInput} value={this.prefAgeMax} />
       </div>
       </div>
 
