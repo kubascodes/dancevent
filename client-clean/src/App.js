@@ -122,6 +122,11 @@ export default class App extends Component {
     this.state.organizedEvents.push(event)
   }
 
+  updateEvent = (event) => {
+    const index = this.state.organizedEvents.findIndex((element) => (element._id === event._id));
+    this.state.organizedEvents[index] = event
+  }
+
   // Propagated up from the EventCard
   deleteEvent = (event) => {
     var component_scope = this;
@@ -363,6 +368,7 @@ export default class App extends Component {
                 update
                 {...props}
                 auth_token={this.secret_token}
+                onCreate={this.updateEvent}
               />
             )}
           />
