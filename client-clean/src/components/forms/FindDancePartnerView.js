@@ -4,14 +4,56 @@ import PartnerRequestForm from "./PartnerRequestForm";
 
 import { Row, Col, Container, CardDeck } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Select from "react-select";
+import {SelectStyle} from "../../assets/styles";
 
 class FindDancePartnerView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       requests: [],
+        sorting: "",
     };
   }
+
+
+    sortingChanged = (selectedOption, action) => {
+        /*
+            If Events should be sorted based on parameter 'sorting' this function is called
+        */
+
+        //set the new state
+        this.setState({
+            sorting: selectedOption ? selectedOption.value : ""
+        });
+
+        //sort after prefered sortingmethods
+
+        //sort date old to new
+        if (this.state.sorting == "eventDate") {
+            this.state.requests.sort((a, b) =>
+                a.event.startDate > b.event.startDate ? 1 : a.event.startDate < b.event.startDate ? -1 : 0
+            );
+        }
+        //sort date new to old
+        else if (this.state.sorting == "eventDateDesc") {
+            this.state.requests.sort((a, b) =>
+                a.event.startDate < b.event.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
+            );
+        }
+        //sort date old to new
+        if (this.state.sorting == "reqDate") {
+            this.state.requests.sort((a, b) =>
+                a.timestamp > b.timestamp ? 1 : a.timestamp < b.timestamp ? -1 : 0
+            );
+        }
+        //sort date new to old
+        else if (this.state.sorting == "reqDateDesc") {
+            this.state.requests.sort((a, b) =>
+                a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0
+            );
+        }
+    };
 
   componentDidMount() {
     /* The function call is in the buildup and loads all the requests */
@@ -40,29 +82,6 @@ class FindDancePartnerView extends React.Component {
       .catch((err) => alert(err));
   };
 
-  deleteRequest = (requestId) => {
-    /*delete requests: takes the Id of the request that should be deleted and deletes it*/
-
-    var secret_token = window.sessionStorage.secret_token;
-
-    try {
-      fetch("/dancepartner/request/delete", {
-        //fetch("/dancepartner/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + secret_token,
-        },
-        body: JSON.stringify({ id: requestId }),
-      })
-        .then((res) => res.json(res))
-        .catch((err) => alert(err));
-    } catch (err) {
-      console.log(err);
-    }
-
-    this.getRequests(window.location.pathname);
-  };
 
   onChange = (e) => {
     e.preventDefault();
@@ -96,37 +115,31 @@ class FindDancePartnerView extends React.Component {
             {/*RequestPart*/}
             <Col>
               {/*SortingNavbar*/}
-              <Row>
+            <Row xs={6}>
                 <div style={{ marginLeft: "auto" }}>
-                  Sorted by:
-                  <select
-                    className="form-control"
-                    name="sort"
-                    onChange={this.onChange}
-                  >
-                    <optgroup label="Descanding">
-                      {sortSelect.map((sortSelect) => (
-                        <option value={"descanding" + sortSelect}>
-                          {"Desc " +
-                            sortSelect.charAt(0).toUpperCase() +
-                            sortSelect.slice(1)}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="Ascanding">
-                      {sortSelect.map((sortSelect) => (
-                        <option value={"ascanding" + sortSelect}>
-                          {"Asc " +
-                            sortSelect.charAt(0).toUpperCase() +
-                            sortSelect.slice(1)}
-                        </option>
-                      ))}
-                    </optgroup>
-                  </select>
+                    Sorting by:
+                        <Select
+                            className="basic-single"
+                            classNamePrefix="select"
+                            defaultValue={this.state.sorting.value}
+                            value={this.state.sorting.value}
+                            placeholder={""}
+                            isClearable={true}
+                            isSearchable={true}
+                            styles={SelectStyle}
+                            onChange={this.sortingChanged}
+                            name="gender"
+                            options={[
+                                { value: 'eventDate', label: 'Event Date' },
+                                { value: 'reqDate', label: 'Request Date' },
+                                { value: 'eventDateDesc', label: 'Event Date Desc'},
+                                { value: 'reqDateDesc', label: 'Request Date Desc'},
+                            ]}
+                        />
                 </div>
-              </Row>
+            </Row>
 
-              <Row>
+              <Row> { this.state.requests.length ? (
                 <CardDeck>
                   {this.state.requests.map((request) => (
                     <PartnerRequestForm
@@ -134,8 +147,13 @@ class FindDancePartnerView extends React.Component {
                       user={request.dancerId}
                       profile={false}
                     />
-                  ))}
-                </CardDeck>
+                  ))}</CardDeck>
+    )
+        :(
+            <p> At the moment there are no open requests that are matching your profile or filter. </p>
+        )
+        }
+
               </Row>
             </Col>
           </Row>
@@ -155,8 +173,6 @@ class FindDancePartnerView extends React.Component {
             Please {<Link to={{ pathname: "login" }}>login</Link>} to see all
             the open requests.
           </p>
-          {/* Alternative to link:
-            <Button onClick={()=>{{this.props.history.push('/login')}}}>Login</Button>*/}
         </div>
       );
     }

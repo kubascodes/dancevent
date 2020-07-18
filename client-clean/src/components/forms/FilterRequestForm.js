@@ -318,7 +318,7 @@ class FilterRequest extends React.Component {
             placeholder={"All genders..."}
             isClearable={true}
             isSearchable={true}
-      styles={SelectStyle}
+            styles={SelectStyle}
             onChange={this.handleChange}
             name="gender"
             options={gender}
