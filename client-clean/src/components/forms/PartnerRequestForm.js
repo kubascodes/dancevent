@@ -143,14 +143,25 @@ class PartnerRequestForm extends React.Component {
         >
           <Card.Body onClick={this.handleShow}>
             {/*using Image instead of Card.Image to round the picture*/}
-            <Image
-              src={
-                user.picture ? user.picture : "img/placeholderDancerProfile.png"
-              }
-              alt={user.name}
-              style={{ width: "180px", height: "171px" }}
-              roundedCircle
-            />
+      {this.props.profile ? (
+                <Image
+                    src={
+                        request.event.picture ? request.event.picture : "img/placeholder2_1024x365.png"
+                    }
+                    alt={request.event.name}
+                    style={{ width: "180px", height: "171px" }}
+                    roundedCircle
+                />
+      )
+            : (
+                <Image
+                  src={
+                    user.picture ? user.picture : "img/placeholderDancerProfile.png"
+                  }
+                  alt={user.name}
+                  style={{ width: "180px", height: "171px" }}
+                  roundedCircle
+                />)}
             <Card.Title> </Card.Title>
             <Card.Title> {user.name} </Card.Title>
             <Card.Text>
@@ -411,7 +422,7 @@ class PartnerRequestForm extends React.Component {
                 <Button className="btn button-pink"> Contact </Button>
               </OverlayTrigger>*/
             )}
-            {/*this.props.profile && (
+            {this.props.profile && (
               <div>
                 <Button
                   variant="danger"
@@ -427,7 +438,7 @@ class PartnerRequestForm extends React.Component {
                   Update{" "}
                 </Button>
               </div>
-                )*/}
+                )}
           </Modal.Footer>
         </Modal>
       </div>

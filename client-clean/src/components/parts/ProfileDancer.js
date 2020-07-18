@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import EventCardDeck from "./EventCardDeck";
 import RequestCardDeck from "./RequestCardDeck";
 import Button from "react-bootstrap/Button";
+import MyRequests from "../forms/MyRequests";
 import moment from "moment";
 import {
   MdMailOutline,
@@ -115,6 +116,7 @@ const ProfileDancer = (props) => {
           </Link>
         </h5>
 
+        <MyRequests state={props.state}/>
         <RequestCardDeck state={props.state} />
       </div>
     </div>

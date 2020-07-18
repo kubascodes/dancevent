@@ -35,8 +35,8 @@ router.get(
           .select("-organizer")
           .sort({ startDate: 1 })
           .limit(5);
-        let requests = await Request.find({ dancerId: new ObjectId(user._id) })
-          .select("-dancerId")
+        let requests = await Request.find({ dancer: new ObjectId(user._id) })
+            .populate("dancer event", "-_id ")
           .sort({ timestamp: 1 });
         response.requests = requests;
         response.events = events;

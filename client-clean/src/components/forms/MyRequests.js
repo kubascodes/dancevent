@@ -34,16 +34,15 @@ class MyRequests extends React.Component {
       <div>
         <h4>My Reqests Page</h4>
         <CardDeck>
-          {console.log(this.props.state.requests)}
-          {this.props.state.requests.map((request) => (
-            <PartnerRequestForm
-              request={request}
-              user={this.props.state.user}
-              state={this.props.state}
-              profile={true}
-              deleteRequest={this.deleteRequest}
-            />
-          ))}
+        {console.log(this.props.state.requests)}
+         {this.props.state.requests.map((request) => (
+          <PartnerRequestForm
+          request={request}
+          state={this.props.state}
+          profile={true}
+          deleteRequest={this.deleteRequest}
+          />
+      ))}
         </CardDeck>
       </div>
     );
