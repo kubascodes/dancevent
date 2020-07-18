@@ -35,10 +35,14 @@ router.get(
           .select("-organizer")
           .sort({ startDate: 1 })
           .limit(5);
-        let requests = await Request.find({ dancer: new ObjectId(user._id) })
-            .populate("dancer event", "-_id ")
+          let requests =  await Request.find({ dancer: new ObjectId(user._id) })
+            .populate("dancer", "-_id ")
+            .populate("event", null, {'startDate': { $gte: new Date() }})
           .sort({ timestamp: 1 });
-        response.requests = requests;
+          console.log("REQUEST END ::::::::::");
+          console.log(requests);
+          let requestsEvent = requests.filter(request =>  request.event != null);
+        response.requests = requestsEvent;
         response.events = events;
       }
       //if organizer, add events to the response
@@ -611,11 +615,8 @@ router.delete(
         error: "Bad Request",
         message: "The request body is empty ",
       });
-    console.log("REQUEST_____DELETE__________________");
     let reqId = req.body.id;
     let request = await Request.findById(reqId).exec();
-    console.log(reqId);
-    console.log(request);
 
     if (request && req.user._id == request.dancer._id) {
       if (!request)
