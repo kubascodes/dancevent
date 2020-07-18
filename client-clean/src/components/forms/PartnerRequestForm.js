@@ -26,21 +26,32 @@ import {GiPartyFlags, GiBodyHeight} from "react-icons/gi";
 import Select from "react-select";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import ContactModal from "../parts/ContactModal"
 
 class PartnerRequestForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showModal: false,
+      showContactModal : false,
     };
   }
 
   handleCancel = () => {
     this.setState({ showModal: false });
+    this.setState({ showContactModal: false });
+  };
+
+  handleContactCancel = () => {
+    this.setState({ showContactModal: false });
   };
 
   handleShow = () => {
     this.setState({ showModal: true });
+  };
+
+  handleContactShow = () => {
+    this.setState({ showContactModal: true });
   };
 
   handleDelete = (requestId) => {
@@ -109,8 +120,10 @@ class PartnerRequestForm extends React.Component {
       <li> You have not entered any dance styles.</li>
     );
 
-    // Contact Email popover as this is implemented later if there isstill time
+      /*
+    // Contact Email popover as this is implemented later if there isstill time - Legacy
     const popover = (
+      
       <Popover id="popover-basic">
         <Popover.Title as="h3">Contact data of {this.capitalize(user.name)} </Popover.Title>
         <Popover.Content>
@@ -119,7 +132,7 @@ class PartnerRequestForm extends React.Component {
           {user.name} here: {user.email}{" "}
         </Popover.Content>
       </Popover>
-    );
+    );*/
 
     return (
       <div className="form-group" key={request._id}>
@@ -179,7 +192,9 @@ class PartnerRequestForm extends React.Component {
                              </Card.Footer>*/}
                              </div>
         </Card>
-
+        
+        <ContactModal show={this.state.showContactModal} onHide={this.handleContactCancel} id={request._id} name={user.name}/>
+        
         <Modal
           show={this.state.showModal}
           onHide={this.handleCancel}
@@ -384,13 +399,17 @@ class PartnerRequestForm extends React.Component {
               Cancel{" "}
             </Button>
             {!this.props.profile && (
+               <Button className="btn button-pink" onClick={this.handleContactShow}>
+                  Contact
+               </Button>
+              /*
               <OverlayTrigger
                 trigger="click"
                 placement="right"
                 overlay={popover}
               >
                 <Button className="btn button-pink"> Contact </Button>
-              </OverlayTrigger>
+              </OverlayTrigger>*/
             )}
             {/*this.props.profile && (
               <div>

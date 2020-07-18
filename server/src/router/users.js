@@ -13,6 +13,7 @@ const Organizer = require("../models/organizer"); //to create new organizers
 const Request = require("../models/partnerrequest"); //returning requests to profile
 const Event = require("../models/event"); //returning events to profile
 const ObjectId = require("mongoose").Types.ObjectId;
+const mail = require("../services/mail")
 //Unsecured routes for anyone to access
 
 //access the /profile of the user
@@ -375,6 +376,10 @@ router.post("/register/organizer", async (req, res) => {
       userType: organizer.userType,
       token: token,
     };
+    //Send Welcome Mail
+    await mail.sendCreateMail(organizer.name, organizer.email, 
+      //Mail is not crucial for user does only log it interbaly
+      (err, data)=> {if(err){console.log("Mailclient error at organizercreation" + err)} });
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
@@ -412,6 +417,10 @@ router.post("/register/dancer", async (req, res) => {
       userType: dancer.userType,
       token: token,
     };
+    //Send Welcome Mail
+    await mail.sendCreateMail(dancer.name, dancer.email, 
+      //Mail is not crucial for user does only log it interbaly
+      (err, data)=> {if(err){console.log("Mailclient error at dancercreation" + err)} });
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
@@ -522,6 +531,45 @@ router.post(
       });
     }
   }
+);
+
+//send Mail to the partnerrquest owner
+router.post(
+  "/request/contact",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+
+    try{
+      let user = await User.findById(req.user._id).exec(); 
+      if (user && user.userType == "Dancer") {
+
+
+        const request = await Request.findById(req.body.id).populate("dancer", "email name").populate("event", "title")
+        return await mail.sendRequestMail(request, req.body.text, user, function(err, data){
+          if(err){
+            res.status(500).json({
+              error: "Internal server error",
+              message: "Problem with mailclient. Please try again later." + error.message,
+            });
+          } else {
+            res.status(200).json({name: 'Email sent'})
+          }
+        });
+      } else {
+        //403 -> Forbidden request  (user did not have the right to post events)
+        res.status(403).json({
+          error: "Current user is not an Dancer",
+        });
+      }
+    }catch (error) {
+      //if an error be caught here it is most likely due to an DB error
+      return res.status(500).json({
+        error: "Internal server error",
+        message: "Error with database. Please try again later." + error.message,
+      });
+    }
+  }  
+  
 );
 
 // Update user via POST request -> TODO: should be PUT

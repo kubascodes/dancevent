@@ -5,7 +5,7 @@ import Select from 'react-select';
 import cities from './cities'
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import "react-datepicker/dist/react-datepicker.css";
-import {SelectStyle} from '../../assets/styles.js';
+import {SelectStyle} from '../../assets/styles';
 
 import ProcessImage from '../../services/imageProcessing';
 

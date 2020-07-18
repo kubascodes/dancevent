@@ -107,7 +107,8 @@ router.get(
       req.query.dancer = {$ne: userId}; // do not send back my own created requests*/
       let requests = await Request.find({ event: new ObjectId(req.params.id) })
         .populate("dancer", "-_id -__v -password -interestedInEvents").populate("event", "-_id")
-        .select("-_id -__v")
+        //.select("-_id -__v")
+        .select("-__v")
         .sort({ timestamp: 1 })
         .limit(5);
 
