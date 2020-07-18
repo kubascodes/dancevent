@@ -11,7 +11,7 @@ class MyRequests extends React.Component {
   deleteRequest = (requestId) => {
     /*delete requests: takes the Id of the request that should be deleted and deletes it*/
     console.log(requestId);
-    /* try{
+    try{
             fetch("/profile/request/delete", {
                 method: "DELETE",
                 headers: {
@@ -24,27 +24,30 @@ class MyRequests extends React.Component {
                 .catch((err) => alert(err));
         }catch(err){
             console.log(err);
-        }*/
-
+        }
     //TODO: reload requests?
   };
 
   render() {
     return (
       <div>
-        <h4>My Reqests Page</h4>
-        <CardDeck>
-          {console.log(this.props.state.requests)}
-          {this.props.state.requests.map((request) => (
-            <PartnerRequestForm
-              request={request}
-              user={this.props.state.user}
-              state={this.props.state}
-              profile={true}
-              deleteRequest={this.deleteRequest}
-            />
-          ))}
-        </CardDeck>
+
+
+
+                <CardDeck>
+                    {console.log(this.props.state.requests)}
+                    {this.props.state.requests.map((request) => (
+                            <PartnerRequestForm
+                        request={request}
+                        state={this.props.state}
+                        profile={true}
+                        deleteRequest={this.deleteRequest}
+                      />
+                    ))}
+                </CardDeck>
+
+
+
       </div>
     );
   }

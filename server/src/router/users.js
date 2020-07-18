@@ -35,8 +35,8 @@ router.get(
           .select("-organizer")
           .sort({ startDate: 1 })
           .limit(5);
-        let requests = await Request.find({ dancerId: new ObjectId(user._id) })
-          .select("-dancerId")
+        let requests = await Request.find({ dancer: new ObjectId(user._id) })
+            .populate("dancer event", "-_id ")
           .sort({ timestamp: 1 });
         response.requests = requests;
         response.events = events;
@@ -233,7 +233,7 @@ router.get(
             };
             if(req.query.city){
                 let city = req.query.city;
-                //eventValue.push({'city': {city}});
+                eventValue.push({'city': city});
                 delete req.query.city;
             }
 
@@ -605,6 +605,7 @@ router.delete(
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
     console.log(req.body);
+
     if (Object.keys(req.body).length === 0)
       return res.status(400).json({
         error: "Bad Request",
@@ -613,12 +614,10 @@ router.delete(
     console.log("REQUEST_____DELETE__________________");
     let reqId = req.body.id;
     let request = await Request.findById(reqId).exec();
-    console.log("REQUESTID________________________");
     console.log(reqId);
-    console.log("REQUEST_______________________");
     console.log(request);
 
-    if (request && req.user._id == request.dancerId) {
+    if (request && req.user._id == request.dancer._id) {
       if (!request)
         return res.status(404).json({
           error: "Request not found",
