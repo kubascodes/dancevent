@@ -10,7 +10,7 @@ class FilterRequest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      city: "Munich",
+      city: "",
         prefAgeMin: 0,
         prefAgeMax: 100,
       gender: "",
@@ -20,7 +20,7 @@ class FilterRequest extends React.Component {
       eventType: "",
       danceCategory: "",
       danceStyle: "",
-        startDate: new Date(),
+        startDate: new Date(new Date().setHours(0,0,0,0)),
         endDate: null,
 
     };
@@ -65,38 +65,41 @@ class FilterRequest extends React.Component {
     //Changes the state for REACT-SELECT inputs
     onChangeCity = (event) => {
         console.log(event)
-        this.setState({city : event.value})
+        this.setState({
+          city: event ? event.value : "",
+        })
     }
 
     handleTextDate = (selectedOption, action) => {
         /*this function gets a text like "tomorrow" and evaluates than the start and end date*/
+        var today = new Date(new Date().setHours(0,0,0,0));
         if(selectedOption){
 
             var startDate ;
             var endDate;
             switch(selectedOption.value){
-                case "today":
-                    startDate = new Date();
-                    endDate = startDate;
-                    break;
-                case "tomorrow":
-                    startDate = new Date(new Date().setTime( new Date().getTime() + 1 * 86400000 ));
-                    endDate = startDate;
-                    break;
-                case "week":
-                    var curr = new Date; // get current date
-                    var monday = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
-                    var sunday = monday + 6; // last day is the first day + 6
-                    startDate = new Date(new Date().setDate(monday));
-                    endDate = new Date(new Date().setDate(sunday));
-                    break;
-                case "weekend":
-                    var curr = new Date; // get current date
-                    var friday = curr.getDate() - curr.getDay() + 5; // First day is the day of the month - the day of the week
-                    var sunday = friday + 2; // last day is the first day + 6
-                    startDate = new Date(new Date().setDate(friday));
-                    endDate = new Date(new Date().setDate(sunday));
-                    break;
+              case "today":
+                startDate = today;
+                endDate = today;
+                break;
+              case "tomorrow":
+                startDate = new Date(today.setTime(today.getTime() + 1 * 86400000 ));
+                endDate = startDate;
+                break;
+              case "week":
+                var curr = today; // get current date
+                var monday = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
+                var sunday = monday + 6; // last day is the first day + 6
+                startDate = new Date(today.setDate(monday));
+                endDate = new Date(today.setDate(sunday));
+                break;
+              case "weekend":
+                var curr = new Date; // get current date
+                var friday = curr.getDate() - curr.getDay() + 5; // First day is the day of the month - the day of the week
+                var sunday = friday + 2; // last day is the first day + 6
+                startDate = new Date(today.setDate(friday));
+                endDate = new Date(today.setDate(sunday));
+                break;
 
             }
             this.setState({
@@ -106,7 +109,7 @@ class FilterRequest extends React.Component {
         }
         else{
             this.setState({
-                startDate: new Date(),
+                startDate: today,
                 endDate: null,
             });
         }
@@ -391,15 +394,16 @@ class FilterRequest extends React.Component {
 
         {/*City Type*/}
           <div className="form-group">
-                  <label className="label-bold" htmlFor="city">City</label>
-                  <Select
+            <label className="label-bold" htmlFor="city">City</label>
+            <Select
               className="basic-single"
               classNamePrefix="select"
               placeholder={"Choose a city..."}
               onChange={this.onChangeCity}
-      styles={SelectStyle}
+              styles={SelectStyle}
               name="city"
               options={cities}
+              isClearable
 
               />
           </div>
