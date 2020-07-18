@@ -246,6 +246,11 @@ router.get(
                 eventValue.push({'city': city});
                 delete req.query.city;
             }
+            if(req.query.type){
+                let type = req.query.type;
+                eventValue.push({'type': type});
+                delete req.query.type;
+            }
 
             console.log(eventValue);
 
