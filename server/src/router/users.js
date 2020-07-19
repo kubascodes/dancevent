@@ -39,9 +39,10 @@ router.get(
             .populate("dancer", "-_id ")
             .populate("event", null, {'startDate': { $gte: new Date() }})
           .sort({ timestamp: 1 });
-          console.log("REQUEST END ::::::::::");
+          console.log("__________RRREEEEEEQUESTTTTTT__________");
           console.log(requests);
           let requestsEvent = requests.filter(request =>  request.event != null);
+          console.log(requestsEvent);
         response.requests = requestsEvent;
         response.events = events;
       }
