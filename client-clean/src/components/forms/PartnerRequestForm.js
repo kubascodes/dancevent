@@ -125,7 +125,6 @@ class PartnerRequestForm extends React.Component {
       "Dec",
     ];
 
-    // TODO: test if really needed
     const requestDanceStyles = request.listOfDanceStyles ? (
       request.listOfDanceStyles.map((style) => (
         <li>{this.capitalize(style)}</li>
@@ -135,7 +134,7 @@ class PartnerRequestForm extends React.Component {
     );
 
     /*
-    // Contact Email popover as this is implemented later if there isstill time - Legacy
+    // Contact Email popover
     const popover = (
       
       <Popover id="popover-basic">

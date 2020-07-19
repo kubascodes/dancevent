@@ -1,10 +1,6 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
-import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
 import Popover from "react-bootstrap/Popover";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -14,19 +10,9 @@ import PartnerRequestForm from "./forms/PartnerRequestForm";
 import { CardDeck } from "react-bootstrap";
 import moment from "moment";
 import {
-  MdMailOutline,
-  MdLocationOn,
-  MdPerson,
-  MdPhone,
-  MdLockOutline,
   MdFavorite,
-  MdFace,
-  MdStarHalf,
   MdEvent,
-  MdCreditCard,
   MdFavoriteBorder,
-  MdTrendingFlat,
-  MdKeyboardArrowRight,
   MdDelete,
   MdCreate,
   MdAccessTime,
@@ -48,8 +34,6 @@ class Event extends React.Component {
     };
   }
 
-  popover = null;
-
   days = [
     "Sunday",
     "Monday",
@@ -58,20 +42,6 @@ class Event extends React.Component {
     "Thursday",
     "Friday",
     "Saturday",
-  ];
-  months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
   ];
 
   componentDidMount = () => {

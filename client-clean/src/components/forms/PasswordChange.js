@@ -1,18 +1,9 @@
-import React, {useEffect} from 'react';
-import { Redirect } from 'react-router-dom';
-import LoginForm from './LoginForm';
-import RegistrationForm from './RegistrationForm';
-import ProcessImage from '../../services/imageProcessing';
-import RouteAuthentication from '../../services/RouteAuthentication';
-import ProgressBar from 'react-bootstrap/ProgressBar';
-import { Link } from "react-router-dom";
-import Button from "react-bootstrap/Button";
+import React from "react";
 import { CriticalAlert } from "../helpers/Alert";
 import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
 const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
 
 class PasswordChange extends React.Component {
-
   // this constructor needs care. Session state should be inherited from parent.
   constructor(props) {
     super(props);
@@ -22,18 +13,18 @@ class PasswordChange extends React.Component {
       oldPassword: null,
       newPassword1: null,
       newPassword2: null,
-      showAltert : false,
+      showAltert: false,
       errorMessage: "",
     };
   }
 
-
-  hideAlert = () => { this.setState({ showAltert: !this.state.showAltert }) }
-
-  onChangeInput = (event) => {
-        this.setState({ [event.target.name]: event.target.value });
+  hideAlert = () => {
+    this.setState({ showAltert: !this.state.showAltert });
   };
 
+  onChangeInput = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
   formCleaning = async () => {
     //form inputs we want to upload
@@ -56,7 +47,7 @@ class PasswordChange extends React.Component {
     return output;
   };
 
-  changePassword =  async (event) => {
+  changePassword = async (event) => {
     //prevent default behavior
     event.preventDefault();
     let context = this;
@@ -65,88 +56,109 @@ class PasswordChange extends React.Component {
       alert("The passwords do not match!");
       return;
     }
-    const token = window.sessionStorage.secret_token
+    const token = window.sessionStorage.secret_token;
 
     let form = await this.formCleaning();
     console.log(form);
 
-    fetch('/changePassword', {
-      method: 'POST',
+    fetch("/changePassword", {
+      method: "POST",
       headers: {
-        'Authorization': "Bearer " + token,
-        'Content-Type': 'application/json; charset=utf-8'
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json; charset=utf-8",
       },
       body: JSON.stringify(form),
     })
-    .then(res => {
-      console.log(res);
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return res.json()
-    }
-    )
-    .then(function(res){
-      document.getElementById("PasswordForm").reset();
-      context.setState({
-        oldPassword: null,
-        newPassword1: null,
-        newPassword2: null,
+      .then((res) => {
+        console.log(res);
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return res.json();
+      })
+      .then(function (res) {
+        document.getElementById("PasswordForm").reset();
+        context.setState({
+          oldPassword: null,
+          newPassword1: null,
+          newPassword2: null,
+        });
+      })
+      .catch((err) => {
+        this.setState({
+          showAltert: true,
+          errorMessage: "Passwordchange failed!",
+        });
+        console.log(err);
       });
-    }).catch(
-      err => {
-              this.setState({
-                showAltert: true,
-                errorMessage: "Passwordchange failed!"
-              })
-              console.log(err)
-          }
-      
-      )
-
   };
 
-
   render() {
-
-
     return (
       <div>
-      <h4 className="text-center">Change Password</h4>
-      <form className="form-group" id="PasswordForm" onSubmit={this.changePassword}>
+        <h4 className="text-center">Change Password</h4>
+        <form
+          className="form-group"
+          id="PasswordForm"
+          onSubmit={this.changePassword}
+        >
+          <CriticalAlert
+            show={this.state.showAltert}
+            change={this.hideAlert}
+            text={this.state.errorMessage}
+          />
 
-      <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
+          <div className="form-group">
+            <label htmlFor="password">Old Password</label>
+            <input
+              type="password"
+              className="form-control border-red"
+              id="oldPassword"
+              name="oldPassword"
+              onChange={this.onChangeInput}
+              placeholder="Pwd (required)"
+              value={this.state.oldPassword}
+              required
+            />
+          </div>
 
+          <div className="form-group">
+            <label htmlFor="password">New Password</label>
+            <input
+              type="password"
+              className="form-control border-red"
+              id="newPassword1"
+              minlength="6"
+              name="newPassword1"
+              onChange={this.onChangeInput}
+              placeholder="Pwd (required)"
+              value={this.state.newPassword1}
+              required
+            />
+          </div>
 
+          <div className="form-group">
+            <label htmlFor="password">Repeat New Password</label>
+            <input
+              type="password"
+              className="form-control border-red"
+              id="newPassword2"
+              minlength="6"
+              name="newPassword2"
+              onChange={this.onChangeInput}
+              placeholder="Pwd (required)"
+              value={this.state.newPassword2}
+              required
+            />
+          </div>
 
-      <div className="form-group">
-        <label htmlFor="password">Old Password</label>
-        <input type="password" className="form-control border-red" id="oldPassword" name="oldPassword" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.state.oldPassword} required/>
+          <div className="form-group">
+            <input type="submit" className="btn button-pink" value="Submit" />
+          </div>
+        </form>
       </div>
-
-      <div className="form-group">
-        <label htmlFor="password">New Password</label>
-        <input type="password" className="form-control border-red" id="newPassword1" minlength="6" name="newPassword1" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.state.newPassword1} required/>
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="password">Repeat New Password</label>
-        <input type="password" className="form-control border-red" id="newPassword2" minlength="6" name="newPassword2" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.state.newPassword2} required/>
-      </div>
-
-
-      <div className="form-group">
-        <input type="submit" className="btn button-pink" value="Submit"/>
-      </div>
-
-
-    </form>
-    </div>
-
-      )
-
+    );
   }
-
 }
 
 export default PasswordChange;

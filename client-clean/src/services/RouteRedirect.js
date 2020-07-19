@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { Redirect } from "react-router-dom";
 
 const RouteRedirect = (Component, props) => {
@@ -8,11 +8,11 @@ const RouteRedirect = (Component, props) => {
     const isAuth = window.sessionStorage.secret_token;
     //if he has no secret token, display the requested component (i.e. register user)
     if (!isAuth) {
-      return (<Component {...props} />);
+      return <Component {...props} />;
     }
     //if not, redirect to the homepage
     else {
-      return(<Redirect to="/" {...props} />);
+      return <Redirect to="/" {...props} />;
     }
   };
   return AuthRoute;

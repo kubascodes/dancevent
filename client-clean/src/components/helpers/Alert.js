@@ -1,5 +1,5 @@
-import React from 'react';
-import {Toast, Alert, Modal, Button} from 'react-bootstrap'
+import React from "react";
+import { Toast, Alert, Modal, Button } from "react-bootstrap";
 
 /* Display Alert Popup
 props:
@@ -9,20 +9,16 @@ props:
 
 */
 const CriticalAlert = (props) => {
-    return (
-
-
-        <Modal show={props.show} onHide={props.change}>
-            <Modal.Header closeButton>
-          <Modal.Title>Error</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <Alert  variant='danger'>
-                {props.text}
-            </Alert>
-            </Modal.Body>
-        </Modal>
-        /*<Modal.Header closeButton>
+  return (
+    <Modal show={props.show} onHide={props.change}>
+      <Modal.Header closeButton>
+        <Modal.Title>Error</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Alert variant="danger">{props.text}</Alert>
+      </Modal.Body>
+    </Modal>
+    /*<Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -35,30 +31,21 @@ const CriticalAlert = (props) => {
             Close
           </Button>
         </Modal.Footer> */
-      
-    )
-}
+  );
+};
 
 const SuccessPopup = (props) => {
-    return (
+  return (
+    <Toast autohide show={props.show} onClose={props.change}>
+      <Toast.Header>
+        <strong className="mr-auto"></strong>
+        <small>Now</small>
+      </Toast.Header>
+      <Toast.Body>
+        <Alert variant="success">{props.text}</Alert>
+      </Toast.Body>
+    </Toast>
+  );
+};
 
-        <Toast autohide show={props.show} onClose={props.change}>
-          <Toast.Header>
-            <strong className="mr-auto"></strong>
-            <small>Now</small>
-          </Toast.Header>
-          <Toast.Body>
-            <Alert  variant='success'>
-                {props.text}
-            </Alert>
-            </Toast.Body>
-        </Toast>
-    )
-}
-
-
-export {CriticalAlert, SuccessPopup}
-
-    
-    
-
+export { CriticalAlert, SuccessPopup };

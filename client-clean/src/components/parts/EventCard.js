@@ -5,17 +5,11 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import moment from "moment";
 import {
-  MdMailOutline,
   MdLocationOn,
-  MdPhone,
-  MdLockOutline,
   MdFavorite,
-  MdFace,
-  MdStarHalf,
   MdEvent,
   MdCreditCard,
   MdFavoriteBorder,
-  MdTrendingFlat,
   MdKeyboardArrowRight,
   MdDelete,
   MdCreate,

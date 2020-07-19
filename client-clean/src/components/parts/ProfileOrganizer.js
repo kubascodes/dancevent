@@ -1,20 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import EventCardDeck from "./EventCardDeck";
-import RequestCardDeck from "./RequestCardDeck";
 import Button from "react-bootstrap/Button";
 import moment from "moment";
-import {
-  MdMailOutline,
-  MdLocationOn,
-  MdPhone,
-  MdLockOutline,
-  MdFavorite,
-  MdFace,
-  MdStarHalf,
-  MdEvent,
-  MdCreditCard,
-} from "react-icons/md";
+import { MdMailOutline, MdLocationOn, MdPhone } from "react-icons/md";
 //profile avatar
 import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
 const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
@@ -88,9 +77,6 @@ const ProfileOrganizer = (props) => {
           }}
           onUnsaveEvent={(event) => props.onUnsaveEvent(event)}
         />
-        {/**
-        <EventCardDeckOld state={state} />
-*/}
       </div>
     </div>
   );

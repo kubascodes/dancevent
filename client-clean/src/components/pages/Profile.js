@@ -5,20 +5,6 @@ import RouteAuthentication from "../../services/RouteAuthentication";
 import ProfileDancer from "../parts/ProfileDancer";
 //organizer profile
 import ProfileOrganizer from "../parts/ProfileOrganizer";
-// request component
-import MyRequests from "../forms/MyRequests";
-//moment
-import moment from "moment";
-//icons
-import {
-  MdMailOutline,
-  MdLocationOn,
-  MdPhone,
-  MdLockOutline,
-  MdFavorite,
-  MdFace,
-  MdStarHalf,
-} from "react-icons/md";
 //profile avatar
 import { createAvatarComponent, SrcSource } from "react-avatar";
 const Avatar = createAvatarComponent({ sources: [SrcSource] });

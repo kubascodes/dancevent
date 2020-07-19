@@ -1,18 +1,5 @@
 import React from "react";
-import { Link, Redirect } from "react-router-dom";
-import EventCard from "./EventCard";
-import Button from "react-bootstrap/Button";
-import {
-  MdMailOutline,
-  MdLocationOn,
-  MdPhone,
-  MdLockOutline,
-  MdFavorite,
-  MdFace,
-  MdStarHalf,
-  MdEvent,
-  MdCreditCard,
-} from "react-icons/md";
+import { Redirect } from "react-router-dom";
 import EventCardDeck from "./EventCardDeck";
 
 class MyEvents extends React.Component {

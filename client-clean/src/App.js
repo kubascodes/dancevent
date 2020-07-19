@@ -13,7 +13,6 @@ import LoginForm from "./components/forms/LoginForm";
 import FindDancePartnerView from "./components/forms/FindDancePartnerView";
 import EventCreationForm from "./components/forms/EventCreationForm";
 import MyEvents from "./components/parts/MyEvents";
-import CreateRequestForm from "./components/forms/CreateRequestForm";
 import MyRequests from "./components/forms/MyRequests";
 import PasswordChange from "./components/forms/PasswordChange";
 
@@ -418,15 +417,6 @@ export default class App extends Component {
               />
             )}
           />
-          {/** // Request can only be created from an event page
-          <Route
-            exact
-            path="/createrequest"
-            render={(props) => (
-              <CreateRequestForm {...props} auth_token={this.secret_token} />
-            )}
-          />
-          */}
         </div>
       </BrowserRouter>
     );

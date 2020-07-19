@@ -1,22 +1,6 @@
 import React from "react";
 import { Link, Redirect } from "react-router-dom";
-//import HomepageBanner from "./HomepageBanner";
 import EventCard from "./EventCard";
-import Container from "react-bootstrap/Container";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import {
-  MdMailOutline,
-  MdLocationOn,
-  MdPhone,
-  MdLockOutline,
-  MdFavorite,
-  MdFace,
-  MdStarHalf,
-  MdEvent,
-  MdCreditCard,
-} from "react-icons/md";
 
 class EventCardDeck extends React.Component {
   constructor(props) {

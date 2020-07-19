@@ -36,12 +36,12 @@ router.get(
           .select("-organizer")
           .sort({ startDate: 1 })
           .limit(5);
-          let requests =  await Request.find({ dancer: new ObjectId(user._id) })
-            .populate("dancer", "-_id ")
-            .populate("event", null, {'startDate': { $gte: new Date() }})
+        let requests = await Request.find({ dancer: new ObjectId(user._id) })
+          .populate("dancer", "-_id ")
+          .populate("event", null, { startDate: { $gte: new Date() } })
           .sort({ timestamp: 1 });
-          //console.log(requests);
-          let requestsEvent = requests.filter(request =>  request.event != null);
+        //console.log(requests);
+        let requestsEvent = requests.filter((request) => request.event != null);
         response.requests = requestsEvent;
         response.events = events;
       }
@@ -73,31 +73,35 @@ router.get(
 router.post(
   "/changePassword",
   passport.authenticate("jwt", { session: false }),
-    async (req, res, next) => {
+  async (req, res, next) => {
     try {
       if (req.body.newPassword1 != req.body.newPassword1) {
-        throw new Error('Passwords do not match');
+        throw new Error("Passwords do not match");
       }
 
       //setting the response object
       let hash = await bcrypt.hash(req.body.newPassword1, 10);
 
       let person = await User.findById(req.user._id);
-      if(await person.isValidPassword(req.body.oldPassword)){
-
-        let pwdChange = await User.findOneAndUpdate({ _id: req.user._id },{ password: hash});
+      if (await person.isValidPassword(req.body.oldPassword)) {
+        let pwdChange = await User.findOneAndUpdate(
+          { _id: req.user._id },
+          { password: hash }
+        );
         //generate a new token and send back
-        const token = await jwt.sign({ user: {_id: pwdChange._id , email: pwdChange.email} }, config.JwtSecret, { expiresIn: '12h' });
+        const token = await jwt.sign(
+          { user: { _id: pwdChange._id, email: pwdChange.email } },
+          config.JwtSecret,
+          { expiresIn: "12h" }
+        );
         let response = {};
         //if token then return to the user
         if (token) {
           response.token = token;
         }
         return res.status(200).json(response);
-
-
-      }else {
-        throw new Error('Old Password not correct');
+      } else {
+        throw new Error("Old Password not correct");
       }
     } catch (error) {
       return res.status(500).json({
@@ -107,8 +111,6 @@ router.post(
     }
   }
 );
-
-
 
 //access just the user information with /user
 router.get(
@@ -123,7 +125,7 @@ router.get(
       user.password = null;
       user._id = null;
       user.__v = null;
-     // console.log(user);
+      // console.log(user);
       return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json({
@@ -183,206 +185,212 @@ router.get(
 //List all dance request on Dance Partner Page
 //TODO: Sort missing
 router.get(
-    "/dancepartner",
-    passport.authenticate("jwt", { session: false }),
-    async (req, res, next) => {
-        try {
+  "/dancepartner",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    try {
+      // do not send back my own created requests
+      let userId = req.user._id;
+      req.query.dancer = { $ne: userId };
+      var myAge = null;
 
-            // do not send back my own created requests
-            let userId = req.user._id;
-            req.query.dancer = {$ne: userId};
-            var myAge = null;
-
-            // match request and user information
-            //TODO: Checkbox - Check if still right or needs if needs to check of the opposite
-            // BUG at the moment: Somhow there is a bug. it should normaly be the orther way around
-            if(req.query.allRequests != "viewAllRequests"){
-                let user = await User.findOne({ _id: userId });
-                if(user){
-                    req.query.listofGenders = user.gender;
-                    req.query.listOfProficiencyLevels = user.proficiencyLevel;
-                    myAge = new Date().getFullYear() - user.yearOfBirth
-                }
-            };
-            delete req.query.allRequests;
-
-
-
-            // Dancer Data Filter
-            var dancerValues = [];
-
-            if(req.query.prefAgeMinDancer) {
-                let minAge = req.query.prefAgeMinDancer;
-                let minYearOfBirth = new Date().getFullYear() - minAge;
-                dancerValues.push({'yearOfBirth': {$lte: minYearOfBirth}});
-                delete req.query.prefAgeMinDancer;
-            }
-
-            if(req.query.prefAgeMaxDancer){
-                let maxAge = req.query.prefAgeMaxDancer;
-                let maxYearOfBirth = new Date().getFullYear() - maxAge;
-                dancerValues.push({'yearOfBirth': {$gte: maxYearOfBirth}});
-                delete req.query.prefAgeMaxDancer;
-            }
-
-            if(req.query.listofGendersDancer){
-                let gender = req.query.listofGendersDancer;
-                dancerValues.push({'gender': gender});
-                delete req.query.listofGendersDancer;
-            }
-            if(req.query.listOfProficiencyLevelsDancer){
-                let proficiencyLevel = req.query.listOfProficiencyLevelsDancer;
-                dancerValues.push({'proficiencyLevel': proficiencyLevel});
-                delete req.query.listOfProficiencyLevelsDancer;
-            }
-
-            // filter dance styles request
-            let danceStyles = req.query.listOfDanceStyles;
-            if (danceStyles) {
-                req.query.listOfDanceStyles = { $in: danceStyles };
-            }
-            console.log(req.query.listOfDanceStyles);
-
-            //Event
-
-
-            var eventValue = [];
-            var start = new Date();
-            if (req.query.startDate) {
-                start = new Date(req.query.startDate);
-            }
-            if (req.query.endDate) {
-                eventValue.push({'startDate': { $gte: start, $lte: req.query.endDate }});
-                delete req.query["startDate"];
-                delete req.query["endDate"];
-            } else {
-                eventValue.push({'startDate': { $gte: start }});
-                delete req.query["startDate"];
-            };
-            if(req.query.city){
-                let city = req.query.city;
-                eventValue.push({'city': city});
-                delete req.query.city;
-            }
-            if(req.query.type){
-                let type = req.query.type;
-                eventValue.push({'type': type});
-                delete req.query.type;
-            }
-
-
-            // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
-            if(dancerValues.length == 0 && eventValue.length == 0){
-                await Request.find(req.query).populate("dancer event", "-_id").sort({ timestamp: 1 }).exec(function(err, docs){
-                    if(myAge){
-                        docs = docs.filter(function(doc){
-                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
-                        })
-                    }
-                    return res.status(200).json(docs);
-                });
-            };
-            if(dancerValues.length && eventValue.length){
-                let dancerCheck = { $and: dancerValues};
-                let eventCheck = {$and: eventValue};
-                await Request.find(req.query)
-                    .populate( "dancer", null , dancerCheck)
-                    .populate("event", null, eventCheck)
-                    .sort({ timestamp: 1 })
-                    .exec(function(err, docs){
-                    docs = docs.filter(function(doc){
-                        if(myAge){
-                            if( myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null){
-                                doc.dancer._id = null;
-                                return doc;
-                            };
-                        }
-                        else {
-                            if( doc.dancer != null && doc.event != null){
-                                doc.dancer._id = null;
-                                return doc;
-                            };
-                        }
-                    })
-                    return res.status(200).json(docs);
-                });
-            };
-            if(dancerValues.length==0 && eventValue.length){
-                let eventCheck = {$and: eventValue};
-                await Request.find(req.query)
-                    .populate( "event", null, eventCheck)
-                    .populate("dancer", "-_id")
-                    .sort({ timestamp: 1 })
-                    .exec(function(err, docs){
-                    docs = docs.filter(function(doc){
-                        if(myAge){
-                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.event != null;
-                        }
-                        else {
-                            return doc.event != null;
-                        }
-                    })
-                    return res.status(200).json(docs);
-                });
-            };
-            if(dancerValues.length && eventValue.length==0){
-                let dancerCheck = { $and: dancerValues};
-                await Request.find(req.query)
-                    .populate( "dancer", null , dancerCheck)
-                    .populate("event", "-_id")
-                    .sort({ timestamp: 1 })
-                    .exec(function(err, docs){
-                    docs = docs.filter(function(doc){
-                        if(myAge){
-                            if( myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null ){
-                                doc.dancer._id = null;
-                                return doc;
-                            }
-                        }
-                        else {
-                            if (doc.dancer != null){
-                                doc.dancer._id = null;
-                                return doc;
-                            };
-                        }
-                    })
-                    return res.status(200).json(docs);
-                });
-            };
-
-        } catch (err) {
-            return res.status(500).json({
-                error: "Internal server error",
-                message: err.message,
-            });
+      // match request and user information
+      //TODO: Checkbox - Check if still right or needs if needs to check of the opposite
+      // BUG at the moment: Somhow there is a bug. it should normaly be the orther way around
+      if (req.query.allRequests != "viewAllRequests") {
+        let user = await User.findOne({ _id: userId });
+        if (user) {
+          req.query.listofGenders = user.gender;
+          req.query.listOfProficiencyLevels = user.proficiencyLevel;
+          myAge = new Date().getFullYear() - user.yearOfBirth;
         }
+      }
+      delete req.query.allRequests;
 
-    });
+      // Dancer Data Filter
+      var dancerValues = [];
 
+      if (req.query.prefAgeMinDancer) {
+        let minAge = req.query.prefAgeMinDancer;
+        let minYearOfBirth = new Date().getFullYear() - minAge;
+        dancerValues.push({ yearOfBirth: { $lte: minYearOfBirth } });
+        delete req.query.prefAgeMinDancer;
+      }
+
+      if (req.query.prefAgeMaxDancer) {
+        let maxAge = req.query.prefAgeMaxDancer;
+        let maxYearOfBirth = new Date().getFullYear() - maxAge;
+        dancerValues.push({ yearOfBirth: { $gte: maxYearOfBirth } });
+        delete req.query.prefAgeMaxDancer;
+      }
+
+      if (req.query.listofGendersDancer) {
+        let gender = req.query.listofGendersDancer;
+        dancerValues.push({ gender: gender });
+        delete req.query.listofGendersDancer;
+      }
+      if (req.query.listOfProficiencyLevelsDancer) {
+        let proficiencyLevel = req.query.listOfProficiencyLevelsDancer;
+        dancerValues.push({ proficiencyLevel: proficiencyLevel });
+        delete req.query.listOfProficiencyLevelsDancer;
+      }
+
+      // filter dance styles request
+      let danceStyles = req.query.listOfDanceStyles;
+      if (danceStyles) {
+        req.query.listOfDanceStyles = { $in: danceStyles };
+      }
+      console.log(req.query.listOfDanceStyles);
+
+      //Event
+
+      var eventValue = [];
+      var start = new Date();
+      if (req.query.startDate) {
+        start = new Date(req.query.startDate);
+      }
+      if (req.query.endDate) {
+        eventValue.push({
+          startDate: { $gte: start, $lte: req.query.endDate },
+        });
+        delete req.query["startDate"];
+        delete req.query["endDate"];
+      } else {
+        eventValue.push({ startDate: { $gte: start } });
+        delete req.query["startDate"];
+      }
+      if (req.query.city) {
+        let city = req.query.city;
+        eventValue.push({ city: city });
+        delete req.query.city;
+      }
+      if (req.query.type) {
+        let type = req.query.type;
+        eventValue.push({ type: type });
+        delete req.query.type;
+      }
+
+      // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
+      if (dancerValues.length == 0 && eventValue.length == 0) {
+        await Request.find(req.query)
+          .populate("dancer event", "-_id")
+          .sort({ timestamp: 1 })
+          .exec(function (err, docs) {
+            if (myAge) {
+              docs = docs.filter(function (doc) {
+                return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
+              });
+            }
+            return res.status(200).json(docs);
+          });
+      }
+      if (dancerValues.length && eventValue.length) {
+        let dancerCheck = { $and: dancerValues };
+        let eventCheck = { $and: eventValue };
+        await Request.find(req.query)
+          .populate("dancer", null, dancerCheck)
+          .populate("event", null, eventCheck)
+          .sort({ timestamp: 1 })
+          .exec(function (err, docs) {
+            docs = docs.filter(function (doc) {
+              if (myAge) {
+                if (
+                  myAge >= doc.prefAgeMin &&
+                  myAge <= doc.prefAgeMax &&
+                  doc.dancer != null &&
+                  doc.event != null
+                ) {
+                  doc.dancer._id = null;
+                  return doc;
+                }
+              } else {
+                if (doc.dancer != null && doc.event != null) {
+                  doc.dancer._id = null;
+                  return doc;
+                }
+              }
+            });
+            return res.status(200).json(docs);
+          });
+      }
+      if (dancerValues.length == 0 && eventValue.length) {
+        let eventCheck = { $and: eventValue };
+        await Request.find(req.query)
+          .populate("event", null, eventCheck)
+          .populate("dancer", "-_id")
+          .sort({ timestamp: 1 })
+          .exec(function (err, docs) {
+            docs = docs.filter(function (doc) {
+              if (myAge) {
+                return (
+                  myAge >= doc.prefAgeMin &&
+                  myAge <= doc.prefAgeMax &&
+                  doc.event != null
+                );
+              } else {
+                return doc.event != null;
+              }
+            });
+            return res.status(200).json(docs);
+          });
+      }
+      if (dancerValues.length && eventValue.length == 0) {
+        let dancerCheck = { $and: dancerValues };
+        await Request.find(req.query)
+          .populate("dancer", null, dancerCheck)
+          .populate("event", "-_id")
+          .sort({ timestamp: 1 })
+          .exec(function (err, docs) {
+            docs = docs.filter(function (doc) {
+              if (myAge) {
+                if (
+                  myAge >= doc.prefAgeMin &&
+                  myAge <= doc.prefAgeMax &&
+                  doc.dancer != null
+                ) {
+                  doc.dancer._id = null;
+                  return doc;
+                }
+              } else {
+                if (doc.dancer != null) {
+                  doc.dancer._id = null;
+                  return doc;
+                }
+              }
+            });
+            return res.status(200).json(docs);
+          });
+      }
+    } catch (err) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: err.message,
+      });
+    }
+  }
+);
 
 //List all dance request on Dance Partner Page
-router.get( "/loggedout/requests", async (req, res, next)  => {
-        try {
-
-            await Request.find(req.query).populate("event", null, {'startDate': { $gte: new Date() }}).exec(function(err, docs){
-                docs = docs.filter(function(doc){
-                    if(doc.event != null){
-                        doc.event._id = null;
-                        return doc;
-                    }
-                })
-                return res.status(200).json(docs);
-            });
-
-        } catch (err) {
-            return res.status(500).json({
-                error: "Internal server error",
-                message: err.message,
-            });
-        }
-
+router.get("/loggedout/requests", async (req, res, next) => {
+  try {
+    await Request.find(req.query)
+      .populate("event", null, { startDate: { $gte: new Date() } })
+      .exec(function (err, docs) {
+        docs = docs.filter(function (doc) {
+          if (doc.event != null) {
+            doc.event._id = null;
+            return doc;
+          }
+        });
+        return res.status(200).json(docs);
+      });
+  } catch (err) {
+    return res.status(500).json({
+      error: "Internal server error",
+      message: err.message,
     });
-
+  }
+});
 
 //User Login Route
 router.post("/login", (req, res, next) => {
@@ -407,7 +415,9 @@ router.post("/login", (req, res, next) => {
           picture: user.picture,
           userType: user.userType,
         };
-        const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+        const token = await jwt.sign({ user: body }, config.JwtSecret, {
+          expiresIn: "12h",
+        });
         //if token then return to the user
         if (token) {
           response.token = token;
@@ -419,8 +429,6 @@ router.post("/login", (req, res, next) => {
     }
   })(req, res, next);
 });
-
-
 
 //Register as an Organizer
 router.post("/register/organizer", async (req, res) => {
@@ -446,15 +454,24 @@ router.post("/register/organizer", async (req, res) => {
       picture: organizer.picture,
       userType: organizer.userType,
     };
-    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+    const token = await jwt.sign({ user: body }, config.JwtSecret, {
+      expiresIn: "12h",
+    });
     //if token then return to the user
     if (token) {
       response.token = token;
     }
     //Send Welcome Mail
-    await mail.sendCreateMail(organizer.name, organizer.email,
+    await mail.sendCreateMail(
+      organizer.name,
+      organizer.email,
       //Mail is not crucial for user does only log it interbaly
-      (err, data)=> {if(err){console.log("Mailclient error at organizercreation" + err)} });
+      (err, data) => {
+        if (err) {
+          console.log("Mailclient error at organizercreation" + err);
+        }
+      }
+    );
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
@@ -489,15 +506,24 @@ router.post("/register/dancer", async (req, res) => {
       picture: dancer.picture,
       userType: dancer.userType,
     };
-    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+    const token = await jwt.sign({ user: body }, config.JwtSecret, {
+      expiresIn: "12h",
+    });
     //if token then return to the user
     if (token) {
       response.token = token;
     }
     //Send Welcome Mail
-    await mail.sendCreateMail(dancer.name, dancer.email,
+    await mail.sendCreateMail(
+      dancer.name,
+      dancer.email,
       //Mail is not crucial for user does only log it interbaly
-      (err, data)=> {if(err){console.log("Mailclient error at dancercreation" + err)} });
+      (err, data) => {
+        if (err) {
+          console.log("Mailclient error at dancercreation" + err);
+        }
+      }
+    );
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
@@ -509,83 +535,101 @@ router.post("/register/dancer", async (req, res) => {
 
 //updating users
 //Register as an Organizer
-router.post("/update/organizer", passport.authenticate("jwt", { session: false }), async (req, res) => {
-  //Validate the request body
-  if (Object.keys(req.body).length === 0)
-    return res.status(400).json({
-      error: "Bad Request",
-      message: "The request body is empty",
-    });
+router.post(
+  "/update/organizer",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    //Validate the request body
+    if (Object.keys(req.body).length === 0)
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "The request body is empty",
+      });
 
-  try {
-    //update the new organizer
-    let organizer = await Organizer.findOneAndUpdate({ _id: req.user._id }, req.body);
-    //populate the body request for the JWT token issuing with the newly created organizer
-    const body = {
-      _id: organizer._id,
-      email: organizer.email,
-    };
-    //return the token to the user (redirect to homepage will happen on the client);
-    const response = {
-      name: organizer.name,
-      email: organizer.email,
-      picture: organizer.picture,
-      userType: organizer.userType,
-    };
-    //sign the JWT token and populate the payload with the user email and id
-    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
-    //if token then return to the user
-    if (token) {
-      response.token = token;
+    try {
+      //update the new organizer
+      let organizer = await Organizer.findOneAndUpdate(
+        { _id: req.user._id },
+        req.body
+      );
+      //populate the body request for the JWT token issuing with the newly created organizer
+      const body = {
+        _id: organizer._id,
+        email: organizer.email,
+      };
+      //return the token to the user (redirect to homepage will happen on the client);
+      const response = {
+        name: organizer.name,
+        email: organizer.email,
+        picture: organizer.picture,
+        userType: organizer.userType,
+      };
+      //sign the JWT token and populate the payload with the user email and id
+      const token = await jwt.sign({ user: body }, config.JwtSecret, {
+        expiresIn: "12h",
+      });
+      //if token then return to the user
+      if (token) {
+        response.token = token;
+      }
+      return res.status(201).json(response);
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: error.message,
+      });
     }
-    return res.status(201).json(response);
-  } catch (error) {
-    return res.status(500).json({
-      error: "Internal server error",
-      message: error.message,
-    });
   }
-});
+);
 
 //Update the dancer
-router.post("/update/dancer", passport.authenticate("jwt", { session: false }), async (req, res) => {
-  //Validate the request body
-  //console.log(req.body);
-  if (Object.keys(req.body).length === 0)
-    return res.status(400).json({
-      error: "Bad Request",
-      message: "The request body is empty",
-    });
+router.post(
+  "/update/dancer",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    //Validate the request body
+    //console.log(req.body);
+    if (Object.keys(req.body).length === 0)
+      return res.status(400).json({
+        error: "Bad Request",
+        message: "The request body is empty",
+      });
 
-  try {
-    //create a new dancer
-    let dancer = await Dancer.findOneAndUpdate({_id: req.body.user._id},req.body);
-    //populate the body request for the JWT token issuing with the newly created dancer
-    const body = {
-      _id: dancer._id,
-      email: dancer.email,
-    };
-    //return the token to the user (redirect to homepage will happen on the client);
-    const response = {
-      name: dancer.name,
-      email: dancer.email,
-      picture: dancer.picture,
-      userType: dancer.userType,
-    };
-    //sign the JWT token and populate the payload with the user email and id
-    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
-    //if token then return to the user
-    if (token) {
-      response.token = token;
+    try {
+      //create a new dancer
+      let dancer = await Dancer.findOneAndUpdate(
+        { _id: req.body.user._id },
+        req.body
+      );
+      //populate the body request for the JWT token issuing with the newly created dancer
+      const body = {
+        _id: dancer._id,
+        email: dancer.email,
+      };
+      //return the token to the user (redirect to homepage will happen on the client);
+      const response = {
+        name: dancer.name,
+        email: dancer.email,
+        picture: dancer.picture,
+        userType: dancer.userType,
+      };
+      //sign the JWT token and populate the payload with the user email and id
+      const token = await jwt.sign({ user: body }, config.JwtSecret, {
+        expiresIn: "12h",
+      });
+      //if token then return to the user
+      if (token) {
+        response.token = token;
+      }
+      return res.status(201).json(response);
+    } catch (error) {
+      return res.status(500).json({
+        error: "Internal server error",
+        message: error.message,
+      });
     }
-    return res.status(201).json(response);
-  } catch (error) {
-    return res.status(500).json({
-      error: "Internal server error",
-      message: error.message,
-    });
   }
-});
+);
 
 //Register as a Request
 router.post(
@@ -600,14 +644,14 @@ router.post(
       });
 
     req.body.dancer = req.user._id;
-   // console.log(req.body.dancer);
-   // console.log(req.body);
+    // console.log(req.body.dancer);
+    // console.log(req.body);
 
     try {
       let request = await Request.create(req.body);
       return res.status(201).json(request);
     } catch (error) {
-     // console.log(error.message);
+      // console.log(error.message);
       return res.status(500).json({
         error: "Internal server error",
         message: error.message,
@@ -621,30 +665,36 @@ router.post(
   "/request/contact",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-
-    try{
+    try {
       let user = await User.findById(req.user._id).exec();
       if (user && user.userType == "Dancer") {
-
-
-        const request = await Request.findById(req.body.id).populate("dancer", "email name").populate("event", "title")
-        return await mail.sendRequestMail(request, req.body.text, user, function(err, data){
-          if(err){
-            res.status(500).json({
-              error: "Internal server error",
-              message: "Problem with mailclient. Please try again later." + error.message,
-            });
-          } else {
-            res.status(200).json({name: 'Email sent'})
+        const request = await Request.findById(req.body.id)
+          .populate("dancer", "email name")
+          .populate("event", "title");
+        return await mail.sendRequestMail(
+          request,
+          req.body.text,
+          user,
+          function (err, data) {
+            if (err) {
+              res.status(500).json({
+                error: "Internal server error",
+                message:
+                  "Problem with mailclient. Please try again later." +
+                  error.message,
+              });
+            } else {
+              res.status(200).json({ name: "Email sent" });
+            }
           }
-        });
+        );
       } else {
         //403 -> Forbidden request  (user did not have the right to post events)
         res.status(403).json({
           error: "Current user is not an Dancer",
         });
       }
-    }catch (error) {
+    } catch (error) {
       //if an error be caught here it is most likely due to an DB error
       return res.status(500).json({
         error: "Internal server error",
@@ -652,7 +702,6 @@ router.post(
       });
     }
   }
-
 );
 
 // Update user via POST request -> TODO: should be PUT
@@ -688,7 +737,7 @@ router.delete(
   "/profile/request/delete",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-   // console.log(req.body);
+    // console.log(req.body);
 
     if (Object.keys(req.body).length === 0)
       return res.status(400).json({

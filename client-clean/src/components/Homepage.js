@@ -1,23 +1,7 @@
 import React from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import HomepageBanner from "./HomepageBanner";
-import EventCard from "./parts/EventCard";
 import EventCardDeck from "./parts/EventCardDeck";
-import Container from "react-bootstrap/Container";
-import Button from "react-bootstrap/Button";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import {
-  MdMailOutline,
-  MdLocationOn,
-  MdPhone,
-  MdLockOutline,
-  MdFavorite,
-  MdFace,
-  MdStarHalf,
-  MdEvent,
-  MdCreditCard,
-} from "react-icons/md";
 
 class Homepage extends React.Component {
   constructor(props) {
@@ -79,6 +63,14 @@ class Homepage extends React.Component {
                   Nothing to see yet. Click here to search for events!
                 </div>
               )}
+            </div>
+          </div>
+          <div className="row justify-content-center">
+            <div
+              className="btn btn-lg button-pink mt-4"
+              onClick={() => this.setState({ redirect: "/myevents" })}
+            >
+              Go to <i>My Events</i>
             </div>
           </div>
         </>

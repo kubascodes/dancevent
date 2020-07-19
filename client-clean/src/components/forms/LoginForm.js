@@ -3,8 +3,6 @@ import RouteRedirect from "../../services/RouteRedirect";
 import { Link } from "react-router-dom";
 import { CriticalAlert } from "../helpers/Alert";
 
-
-
 class LoginForm extends React.Component {
   constructor(props) {
     super(props);
@@ -13,18 +11,19 @@ class LoginForm extends React.Component {
       login: false,
       email: null,
       password: null,
-
-      showAltert : false,
+      showAltert: false,
       errorMessage: "",
     };
     //binding events to the component context
     this.userLogin = this.userLogin.bind(this);
     this.onChange = this.onChange.bind(this);
+  }
+
+  hideAlert = () => {
+    this.setState({ showAltert: !this.state.showAltert });
   };
 
-  hideAlert = () => { this.setState({ showAltert: !this.state.showAltert }) }
-
-  onChange (event) {
+  onChange(event) {
     /*
           Because we named the inputs to match their
           corresponding values in state, it's
@@ -32,9 +31,9 @@ class LoginForm extends React.Component {
         */
     this.setState({ [event.target.name]: event.target.value });
     console.log(this.state);
-  };
+  }
 
-  userLogin (event) {
+  userLogin(event) {
     event.preventDefault();
     if (!this.state.email || !this.state.password) return;
 
@@ -52,11 +51,11 @@ class LoginForm extends React.Component {
         password: this.state.password,
       }),
     }) //create a get request which is a Promise
-      .then(res => {
+      .then((res) => {
         if (!res.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
-        return res.json()
+        return res.json();
       })
       .then(function (res) {
         //store the token in the browser's session storage
@@ -66,12 +65,11 @@ class LoginForm extends React.Component {
             password: null,
             email: res.email,
             login: true,
-            secret_token: res.token
+            secret_token: res.token,
           });
         }
         //reset the login form -> TODO: Maybe a react unmount?
         document.getElementById("loginForm").reset();
-
 
         //populate login data
         let data = {
@@ -93,14 +91,14 @@ class LoginForm extends React.Component {
         //context.setState({isLoggedIn: true});
         //this.forceUpdate();
       })
-      .catch(err => {
+      .catch((err) => {
         this.setState({
           showAltert: true,
-          errorMessage: "Login failed."
-        })
-        console.log(err)
-    });
-  };
+          errorMessage: "Login failed.",
+        });
+        console.log(err);
+      });
+  }
 
   /*
   handleLoginClick = (event) => {
@@ -128,64 +126,72 @@ class LoginForm extends React.Component {
   }
 */
   render() {
-      return (
-        <div className="container loginForm" className="loginForm">
-          <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
-          <div id="img-homepage"></div>
-          <form className="form-group" id="loginForm" onSubmit={this.userLogin}>
-            <div className="form-group">
-              <label className="label-bold" htmlFor="rating">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                name="email"
-                onChange={this.onChange}
-                value={this.email}
-              />
-            </div>
+    return (
+      <div className="container loginForm" className="loginForm">
+        <CriticalAlert
+          show={this.state.showAltert}
+          change={this.hideAlert}
+          text={this.state.errorMessage}
+        />
+        <div id="img-homepage"></div>
+        <form className="form-group" id="loginForm" onSubmit={this.userLogin}>
+          <div className="form-group">
+            <label className="label-bold" htmlFor="rating">
+              Email
+            </label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              name="email"
+              onChange={this.onChange}
+              value={this.email}
+            />
+          </div>
 
-            <div className="form-group">
-              <label className="label-bold" htmlFor="rating">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                id="password"
-                name="password"
-                onChange={this.onChange}
-                value={this.password}
-              />
-            </div>
+          <div className="form-group">
+            <label className="label-bold" htmlFor="rating">
+              Password
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
+              onChange={this.onChange}
+              value={this.password}
+            />
+          </div>
 
-            <div className="form-group">
-              <input
-                type="submit"
-                className="btn button-pink"
-                value="Submit"
-              />
-            </div>
-          </form>
-          <div className="text-center">
+          <div className="form-group">
+            <input type="submit" className="btn button-pink" value="Submit" />
+          </div>
+        </form>
+        <div className="text-center">
           <li className="list-unstyled mb-1">Don't have an account with us?</li>
-            <li className="list-unstyled mb-1">
+          <li className="list-unstyled mb-1">
             <Link
               className="font-weight-bolder text-body text-decoration-none"
               to="/register/dancer"
-            >Register as a Dancer </Link>
-            to find dance partners and events.</li>
-            <li className="list-unstyled mb-1">
+            >
+              Register as a Dancer{" "}
+            </Link>
+            to find dance partners and events.
+          </li>
+          <li className="list-unstyled mb-1">
             <Link
               className="font-weight-bolder text-body text-decoration-none"
               to="/register/organizer"
-            >Register as an Organizer </Link>
-            to post events with us.</li>
-            </div>
+            >
+              Register as an Organizer{" "}
+            </Link>
+            to post events with us.
+          </li>
         </div>
-
-      );
-    }
+      </div>
+    );
   }
+}
 
-//TODO: Check the context binding on -> export default RouteRedirect(LoginForm);
 //export default LoginForm;
 export default RouteRedirect(LoginForm);

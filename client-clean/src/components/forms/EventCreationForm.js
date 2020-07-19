@@ -1,28 +1,35 @@
-import React from 'react';
+import React from "react";
 import { Redirect } from "react-router-dom";
 import DatePicker from "react-datepicker";
-import Select from 'react-select';
-import cities from './cities'
-import ProgressBar from 'react-bootstrap/ProgressBar'
+import Select from "react-select";
+import cities from "./cities";
+import ProgressBar from "react-bootstrap/ProgressBar";
 import "react-datepicker/dist/react-datepicker.css";
-import {SelectStyle} from '../../assets/styles';
+import { SelectStyle } from "../../assets/styles";
 
 import RouteAuthentication from "../../services/RouteAuthentication";
-import ProcessImage from '../../services/imageProcessing';
+import ProcessImage from "../../services/imageProcessing";
 
-import { Image, Button, Container, Row, Col, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
+import {
+  Image,
+  Button,
+  Container,
+  Row,
+  Col,
+  Table,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
 
 import { CriticalAlert } from "../helpers/Alert";
 
-
 /*
-*   This Component is for Creating and Updating Events
-*   if props.update is set Component will prefill Fields
-*/
+ *   This Component is for Creating and Updating Events
+ *   if props.update is set Component will prefill Fields
+ */
 class EventCreationForm extends React.Component {
-  
   constructor(props) {
-    console.log(props)
+    console.log(props);
     super(props);
     this.state = {
       //Event attributes
@@ -31,7 +38,7 @@ class EventCreationForm extends React.Component {
       description: "",
       startDate: new Date(),
       //Current date + 20 days
-      endDate: new Date().setDate((new Date()).getDate() + 10),
+      endDate: new Date().setDate(new Date().getDate() + 10),
       city: "Munich",
       location: null,
       listOfDanceStyles: [],
@@ -43,7 +50,7 @@ class EventCreationForm extends React.Component {
 
       //attributes used for Class
       pictureChange: false,
-      danceCategory: 'latin',
+      danceCategory: "latin",
       danceStyle: [],
 
       showAltert: false,
@@ -92,7 +99,6 @@ class EventCreationForm extends React.Component {
       fetch(`/events/${params.id}`)
         .then((res) => res.json())
         .then((data) => {
-
           //remove the supercategories
           var dancstyles = [];
           var danceCategory = null;
@@ -122,29 +128,24 @@ class EventCreationForm extends React.Component {
 
             danceCategory: danceCategory,
             danceStyle: dancstyles,
-
-
-          })
+          });
           if (this.state.course === "course") {
             component_scope.setState({
-              interval: data.interval
-            })
+              interval: data.interval,
+            });
           }
-
         })
-        .catch(err => {
+        .catch((err) => {
           component_scope.setState({
             showAltert: true,
-            errorMessage: "Existing data could not be loaded"
-          })
-          console.log(err)
+            errorMessage: "Existing data could not be loaded",
+          });
+          console.log(err);
         });
     }
   }
 
   userOwnsEvent = () => {
-
-
     //to get the param ID specified in the URL
     const {
       match: { params },
@@ -161,22 +162,23 @@ class EventCreationForm extends React.Component {
     } else {
       return false;
     }
-  }
+  };
 
   // <Select> needs value and label as input
-  selectObject = (prop) => (
-    { value: prop, label: prop.charAt(0).toUpperCase() + prop.slice(1) }
-  )
-  selectObjectList = (prop) => (
-    prop.map(i => this.selectObject(i))
-  )
-  
-  hideAlert = () => { this.setState({ showAltert: !this.state.showAltert }) }
+  selectObject = (prop) => ({
+    value: prop,
+    label: prop.charAt(0).toUpperCase() + prop.slice(1),
+  });
+  selectObjectList = (prop) => prop.map((i) => this.selectObject(i));
+
+  hideAlert = () => {
+    this.setState({ showAltert: !this.state.showAltert });
+  };
 
   //upload progress bar
   setUploadProgress = (progress) => {
     this.setState({ uploadProgress: progress });
-  }
+  };
 
   //Changes the state for text inputs and selects
   onChangeInput = (event) => {
@@ -188,44 +190,43 @@ class EventCreationForm extends React.Component {
   handleSelect = (selectedOption, action) => {
     /* this function handles the interaction of the selection component that is like a drop down */
     this.setState({
-      [action.name]: selectedOption ? selectedOption.value : ""
+      [action.name]: selectedOption ? selectedOption.value : "",
     });
-    console.log(this.state)
-  }
+    console.log(this.state);
+  };
 
   //Changes the state for multi select inputs (saves only the values)
   handleSelectList = (selectedOption, action) => {
     /* this function handles the interaction of the selection component that is like a drop down */
     this.setState({
-      [action.name]: selectedOption ? selectedOption.map(i => i.value) : []
+      [action.name]: selectedOption ? selectedOption.map((i) => i.value) : [],
     });
-  }
+  };
 
   //Changes the state for multi select inputs (saves all)
   handleMultiSelect = (danceStyle) => {
     /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
     this.setState({ danceStyle });
-  }
+  };
 
   //Changes the state for multiple selects inputs
   //the user can select more than one choice
   onChangeMultipleSelect = (event) => {
-
     var opts = [];
     //the selected options (its a list but not in js format)
     //elements in options have boolean selected and value (the name)
-    var options = event.target.options
+    var options = event.target.options;
     var length = options.length;
     //iterate through the selected options
     for (var i = 0; i < length; i++) {
-      let op = options[i]
+      let op = options[i];
       if (op.selected) {
-        opts.push(op.value)
+        opts.push(op.value);
       }
     }
     //store in state
     this.setState({ [event.target.name]: opts });
-  }
+  };
 
   //Changes the state for calendar inputs
   //type should specify if it is a start- or endDate
@@ -243,74 +244,85 @@ class EventCreationForm extends React.Component {
       //defining the function
       async function processImage(file, fileUrl, context) {
         try {
-          let image = await ProcessImage(file, fileUrl, "eventPicture", context);
+          let image = await ProcessImage(
+            file,
+            fileUrl,
+            "eventPicture",
+            context
+          );
           context.setState({
             picture: image,
-            pictureChange: true
+            pictureChange: true,
           });
-        }
-        catch (error) {
+        } catch (error) {
           alert(error);
         }
-      };
+      }
       //displaying progress bar
       this.setState({ hiddenProgress: false });
       //calling the function
       processImage(file, fileUrl, context);
     }
-
   };
 
   //This method posts/puts the state to the REST backend
   pushEvent = (event) => {
-
-
     //prevent default behavior
     event.preventDefault();
 
     //check again if user is locked in
     if (window.sessionStorage.secret_token != null) {
-
       //saving the component scope
       var component_scope = this;
 
       //saving the auth token
-      const token = window.sessionStorage.secret_token
+      const token = window.sessionStorage.secret_token;
 
       var danceStyles;
-      
+
       //if a dancestyle subCategory is selected add the supercategory
       if (this.state.danceStyle.length == 0) {
-        danceStyles = [this.state.danceCategory]
+        danceStyles = [this.state.danceCategory];
       } else {
+        danceStyles = this.state.danceStyle.map((style) => style.value);
 
-        
-        danceStyles = this.state.danceStyle.map(style => style.value)
-
-        var latinStyles = ['jive', 'rumba', 'cha-cha-cha', 'samba', 'paso doble', 'bolero', 'mambo', 'east coast swing'];
-        var standardStyles = ['waltz', 'viennese waltz', 'tango', 'foxtrot', 'qickstep'];
-        var variousStyles = ['salsa', 'bachata', 'west coast swing', 'hustle'];
+        var latinStyles = [
+          "jive",
+          "rumba",
+          "cha-cha-cha",
+          "samba",
+          "paso doble",
+          "bolero",
+          "mambo",
+          "east coast swing",
+        ];
+        var standardStyles = [
+          "waltz",
+          "viennese waltz",
+          "tango",
+          "foxtrot",
+          "qickstep",
+        ];
+        var variousStyles = ["salsa", "bachata", "west coast swing", "hustle"];
         // Check if intersection is not empty
         // => the user has a chosen a danceStyle of this parentclass
         //include it so it is easier to filter in later cases
-        if (danceStyles.some(r => latinStyles.includes(r))) {
-          danceStyles.push('latin')
+        if (danceStyles.some((r) => latinStyles.includes(r))) {
+          danceStyles.push("latin");
         }
-        if (danceStyles.some(r => standardStyles.includes(r))) {
-          danceStyles.push('standard')
+        if (danceStyles.some((r) => standardStyles.includes(r))) {
+          danceStyles.push("standard");
         }
-        if (danceStyles.some(r => variousStyles.includes(r))) {
-          danceStyles.push('various')
+        if (danceStyles.some((r) => variousStyles.includes(r))) {
+          danceStyles.push("various");
         }
       }
 
       //standard address
-      var address = "/events/"
-
+      var address = "/events/";
 
       //saving state to body of HTML
       var body = {
-
         title: this.state.title,
         type: this.state.type,
         description: this.state.description,
@@ -322,23 +334,25 @@ class EventCreationForm extends React.Component {
         listOfProficiencyLevels: this.state.listOfProficiencyLevels,
         price: this.state.price,
         promoCode: this.state.promoCode,
-      }
+      };
       if (this.state.pictureChange) {
-        body['picture'] = this.state.picture
+        body["picture"] = this.state.picture;
       }
       if (this.state.course === "course") {
-        body['interval'] = this.state.interval
+        body["interval"] = this.state.interval;
       }
 
       //specify HTML Method (put/post)
       if (this.props.update) {
         //Get URL Parameter (Event ID) to add to address
-        const { match: { params } } = this.props;
-        address = address + params.id
+        const {
+          match: { params },
+        } = this.props;
+        address = address + params.id;
 
-        var method = 'Put'
+        var method = "Put";
       } else {
-        var method = 'POST'
+        var method = "POST";
       }
 
       var component_scope = this;
@@ -347,114 +361,110 @@ class EventCreationForm extends React.Component {
       fetch(address, {
         method: method,
         headers: {
-          'Authorization': "Bearer " + token,
-          'Content-Type': 'application/json; charset=utf-8'
+          Authorization: "Bearer " + token,
+          "Content-Type": "application/json; charset=utf-8",
         },
         //body must be stringify to be readable by backend
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       }) //create a post request which is a Promise
-        .then(res => {
+        .then((res) => {
           if (!res.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error("Network response was not ok");
           }
-          return res.json()
+          return res.json();
         })
         .then((res) => {
           //Save the new event in the App
-          this.props.onCreate(res)
+          this.props.onCreate(res);
 
           //Redirect to Event
           this.setState({ redirect: "/events/single/" + res._id });
-
         })
-        .catch(err => {
-          console.log(err)
+        .catch((err) => {
+          console.log(err);
           if (component_scope.props.update) {
             component_scope.setState({
               showAltert: true,
-              errorMessage: "Error occured while sending to server. Event might not have been updated."
-            })
+              errorMessage:
+                "Error occured while sending to server. Event might not have been updated.",
+            });
           } else {
             component_scope.setState({
               showAltert: true,
-              errorMessage: "Error occured while sending to server. Event might not have been created."
-            })
+              errorMessage:
+                "Error occured while sending to server. Event might not have been created.",
+            });
           }
-        }
-        );
+        });
     } else {
       this.setState({
         showAltert: true,
-        errorMessage: "You are not authorized to do this operation."
-      })
+        errorMessage: "You are not authorized to do this operation.",
+      });
     }
   };
 
-
-
-
   render() {
-
-    const eventLevels = [
-      "beginner", "intermediate", "advanced"
-    ];
-
+    const eventLevels = ["beginner", "intermediate", "advanced"];
 
     // Dance Styles
     const danceStyleCategory = [
-      { value: 'latin', label: 'Latin/Rythm' },
-      { value: 'standard', label: 'Standard/Smooth' },
-      { value: 'various', label: 'Various' },
+      { value: "latin", label: "Latin/Rythm" },
+      { value: "standard", label: "Standard/Smooth" },
+      { value: "various", label: "Various" },
     ];
-
     const latin = [
-      { value: 'jive', label: 'Jive' },
-      { value: 'rumba', label: 'Rumba' },
-      { value: 'cha-cha-cha', label: 'Cha-Cha-Cha' },
-      { value: 'samba', label: 'Samba' },
-      { value: 'paso doble', label: 'Paso Doble' },
-      { value: 'bolero', label: 'Bolero' },
-      { value: 'mambo', label: 'Mambo' },
-      { value: 'east coast swing', label: 'East Cost Swing' },
+      { value: "jive", label: "Jive" },
+      { value: "rumba", label: "Rumba" },
+      { value: "cha-cha-cha", label: "Cha-Cha-Cha" },
+      { value: "samba", label: "Samba" },
+      { value: "paso doble", label: "Paso Doble" },
+      { value: "bolero", label: "Bolero" },
+      { value: "mambo", label: "Mambo" },
+      { value: "east coast swing", label: "East Cost Swing" },
     ];
     const standard = [
-      { value: 'waltz', label: 'Waltz' },
-      { value: 'viennese waltz', label: 'Viennese Waltz' },
-      { value: 'tango', label: 'Tango' },
-      { value: 'foxtrot', label: 'Foxtrot' },
-      { value: 'quickstep', label: 'Quickstep' },
+      { value: "waltz", label: "Waltz" },
+      { value: "viennese waltz", label: "Viennese Waltz" },
+      { value: "tango", label: "Tango" },
+      { value: "foxtrot", label: "Foxtrot" },
+      { value: "quickstep", label: "Quickstep" },
     ];
     const various = [
-      { value: 'salsa', label: 'Salsa' },
-      { value: 'bachata', label: 'Bachata' },
-      { value: 'west coast swing', label: 'West Cost Swing' },
-      { value: 'hustle', label: 'Hustle' },
+      { value: "salsa", label: "Salsa" },
+      { value: "bachata", label: "Bachata" },
+      { value: "west coast swing", label: "West Cost Swing" },
+      { value: "hustle", label: "Hustle" },
     ];
 
-    if(window.sessionStorage.secret_token === null){
-      return <Redirect to="/" />
+    if (window.sessionStorage.secret_token == null) {
+      return <Redirect to="/" />;
     }
-
 
     //checks if th user is an Organizer and owns the event
     //Befor checking the Data must habe benn fetched in App
-    if(this.props.dataFetched()){
-      if(this.props.userType !== "Organizer" ){
-        return <Redirect to="/" />
+    if (this.props.dataFetched()) {
+      if (this.props.userType !== "Organizer") {
+        return <Redirect to="/" />;
       }
-      if(this.props.update && !this.userOwnsEvent()){
-        return <Redirect to="/" />
+      if (this.props.update && !this.userOwnsEvent()) {
+        return <Redirect to="/" />;
       }
     }
 
     if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
+      return <Redirect to={this.state.redirect} />;
     }
     if (window.sessionStorage.secret_token != null) {
       return (
         <div>
-          <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage} />
-          {((this.props.update && typeof (this.state.picture) === "string") || this.state.pictureChange) ? (
+          <CriticalAlert
+            show={this.state.showAltert}
+            change={this.hideAlert}
+            text={this.state.errorMessage}
+          />
+          {(this.props.update && typeof this.state.picture === "string") ||
+          this.state.pictureChange ? (
             <Image
               src={this.state.picture}
               alt={this.state.title}
@@ -464,34 +474,57 @@ class EventCreationForm extends React.Component {
                 height: "300px",
               }}
             />
-
-
           ) : (
-              <></>
-            )}
-          <form className="form-group" id="EventCreationForm" onSubmit={this.pushEvent}>
+            <></>
+          )}
+          <form
+            className="form-group"
+            id="EventCreationForm"
+            onSubmit={this.pushEvent}
+          >
             <Container className="mt-3">
               <Row className="justify-content-md-center">
                 <div className="form-group">
-                  <OverlayTrigger 
-                    placement='bottom'
+                  <OverlayTrigger
+                    placement="bottom"
                     overlay={
                       <Tooltip>
-                        The pictrue will be croped to a ration of 10 to 6. Make sure it also looks good in banner mode as seen above.
+                        The pictrue will be croped to a ration of 10 to 6. Make
+                        sure it also looks good in banner mode as seen above.
                       </Tooltip>
-                  }>
+                    }
+                  >
                     <div className="custom-file">
-                     <input type="file" className="custom-file-input form-control" name="picture" onChange={this.onChangeFile} id="customFile" />
-                     <label className="custom-file-label form-control" htmlFor="customFile">Upload your event picture</label>
+                      <input
+                        type="file"
+                        className="custom-file-input form-control"
+                        name="picture"
+                        onChange={this.onChangeFile}
+                        id="customFile"
+                      />
+                      <label
+                        className="custom-file-label form-control"
+                        htmlFor="customFile"
+                      >
+                        Upload your event picture
+                      </label>
                     </div>
-                    </OverlayTrigger>
+                  </OverlayTrigger>
                 </div>
               </Row>
 
               <Row>
                 <Col>
                   <div className="form-group">
-                    <ProgressBar animated={true} min={0} max={100} striped={true} now={this.state.uploadProgress} label={"Uploading " + this.state.uploadProgress + " %"} hidden={this.state.hiddenProgress} />
+                    <ProgressBar
+                      animated={true}
+                      min={0}
+                      max={100}
+                      striped={true}
+                      now={this.state.uploadProgress}
+                      label={"Uploading " + this.state.uploadProgress + " %"}
+                      hidden={this.state.hiddenProgress}
+                    />
                   </div>
                 </Col>
               </Row>
@@ -499,12 +532,25 @@ class EventCreationForm extends React.Component {
               <Row>
                 <Col xs={9}>
                   <div className="form-group">
-                    <input type="text" className="form-control form-control-lg border-red" id="title" name="title" placeholder="Event Title" onChange={this.onChangeInput} value={this.state.title} required />
+                    <input
+                      type="text"
+                      className="form-control form-control-lg border-red"
+                      id="title"
+                      name="title"
+                      placeholder="Event Title"
+                      onChange={this.onChangeInput}
+                      value={this.state.title}
+                      required
+                    />
                   </div>
 
                   <div className="form-group row">
-                    <label className="label-bold col-form-label col-sm-2" htmlFor="type">Dance type</label>
-
+                    <label
+                      className="label-bold col-form-label col-sm-2"
+                      htmlFor="type"
+                    >
+                      Dance type
+                    </label>
 
                     <div className="col-sm-5">
                       <Select
@@ -514,22 +560,29 @@ class EventCreationForm extends React.Component {
                         onChange={this.handleSelect}
                         name="type"
                         styles={SelectStyle}
-                        options={this.selectObjectList(["course", "ball", "competition", "party"])}
+                        options={this.selectObjectList([
+                          "course",
+                          "ball",
+                          "competition",
+                          "party",
+                        ])}
                       />
                     </div>
                   </div>
 
-
-
-
                   <div className="form-group row">
-                    <label className="label-bold col-form-label col-sm-2"> Start date: </label>
+                    <label className="label-bold col-form-label col-sm-2">
+                      {" "}
+                      Start date:{" "}
+                    </label>
                     <div className="col-sm-5">
                       <DatePicker
                         className="form-control border-red datePicker"
                         name="startDate"
                         selected={this.state.startDate}
-                        onChange={date => this.onChangeCalendar(date, "startDate")}
+                        onChange={(date) =>
+                          this.onChangeCalendar(date, "startDate")
+                        }
                         showTimeSelect
                         timeFormat="HH:mm"
                         timeIntervals={15}
@@ -540,14 +593,18 @@ class EventCreationForm extends React.Component {
                     </div>
                   </div>
                   <div className="form-group row">
-
-                    <label className="label-bold col-form-label col-sm-2"> Enddate: </label>
+                    <label className="label-bold col-form-label col-sm-2">
+                      {" "}
+                      Enddate:{" "}
+                    </label>
                     <div className="col-sm-5">
                       <DatePicker
                         className="form-control border-red datePicker"
                         name="endDate"
                         selected={this.state.endDate}
-                        onChange={date => this.onChangeCalendar(date, "endDate")}
+                        onChange={(date) =>
+                          this.onChangeCalendar(date, "endDate")
+                        }
                         showTimeSelect
                         timeFormat="HH:mm"
                         timeIntervals={15}
@@ -558,9 +615,14 @@ class EventCreationForm extends React.Component {
                     </div>
                   </div>
 
-                  {this.state.type === "course" ?
+                  {this.state.type === "course" ? (
                     <div className="form-group row">
-                      <label className="label-bold col-form-label col-sm-2" htmlFor="type">Interval</label>
+                      <label
+                        className="label-bold col-form-label col-sm-2"
+                        htmlFor="type"
+                      >
+                        Interval
+                      </label>
                       <div className="col-sm-5">
                         <Select
                           className="basic-single border-red"
@@ -569,18 +631,27 @@ class EventCreationForm extends React.Component {
                           placeholder={"Choose a Interval..."}
                           onChange={this.handleSelect}
                           name="interval"
-                          options={this.selectObjectList(["once", "daily", "weekly", "every two weeks", "monthly"])}
+                          options={this.selectObjectList([
+                            "once",
+                            "daily",
+                            "weekly",
+                            "every two weeks",
+                            "monthly",
+                          ])}
                         />
                       </div>
                     </div>
-                    :
+                  ) : (
                     <></>
-                  }
-
+                  )}
                 </Col>
                 <Col className="text-center">
                   <div className="form-group">
-                    <input type="submit" className="btn button-pink float-right m-4" value="Submit" />
+                    <input
+                      type="submit"
+                      className="btn button-pink float-right m-4"
+                      value="Submit"
+                    />
                   </div>
                 </Col>
               </Row>
@@ -590,26 +661,26 @@ class EventCreationForm extends React.Component {
                   <Table>
                     <tbody>
                       <tr>
-                        <td width={'30%'}>
+                        <td width={"30%"}>
                           <b>Organizer:</b>
                         </td>
-                        <td width={'70%'}>
-                          You
-                    </td>
+                        <td width={"70%"}>You</td>
                       </tr>
                       <tr>
                         <td>
                           <b>Dance Styles:</b>
                         </td>
                         <td>
-
                           <Select
                             className="basic-single border-red"
                             classNamePrefix="select"
                             defaultValue={this.state.danceCategory}
                             placeholder={"Dance style category..."}
                             isSearchable={true}
-                            value={{ label: this.state.danceCategory, value: this.state.danceCategory }}
+                            value={{
+                              label: this.state.danceCategory,
+                              value: this.state.danceCategory,
+                            }}
                             onChange={this.handleSelect}
                             name="danceCategory"
                             options={danceStyleCategory}
@@ -617,12 +688,12 @@ class EventCreationForm extends React.Component {
                           />
                           {
                             {
-                              'latin':
+                              latin: (
                                 <Select
                                   className="basic-multi-select"
                                   classNamePrefix="select"
                                   onChange={this.handleMultiSelect}
-                                  defaultValue={''}
+                                  defaultValue={""}
                                   value={this.state.danceStyle}
                                   isMulti={true}
                                   placeholder={"Dance style..."}
@@ -631,13 +702,14 @@ class EventCreationForm extends React.Component {
                                   name="danceStyle"
                                   options={latin}
                                   styles={SelectStyle}
-                                />,
-                              'standard':
+                                />
+                              ),
+                              standard: (
                                 <Select
                                   className="basic-multi-select"
                                   classNamePrefix="select"
                                   onChange={this.handleMultiSelect}
-                                  defaultValue={''}
+                                  defaultValue={""}
                                   value={this.state.danceStyle}
                                   isMulti={true}
                                   placeholder={"Dance style..."}
@@ -646,13 +718,14 @@ class EventCreationForm extends React.Component {
                                   name="danceStyle"
                                   options={standard}
                                   styles={SelectStyle}
-                                />,
-                              'various':
+                                />
+                              ),
+                              various: (
                                 <Select
                                   className="basic-multi-select"
                                   classNamePrefix="select"
                                   onChange={this.handleMultiSelect}
-                                  defaultValue={''}
+                                  defaultValue={""}
                                   value={this.state.danceStyle}
                                   isMulti={true}
                                   placeholder={"Dance style..."}
@@ -662,7 +735,7 @@ class EventCreationForm extends React.Component {
                                   options={various}
                                   styles={SelectStyle}
                                 />
-
+                              ),
                             }[this.state.danceCategory]
                           }
                         </td>
@@ -676,7 +749,9 @@ class EventCreationForm extends React.Component {
                             className="basic-multi-select border-red"
                             isMulti
                             classNamePrefix="select"
-                            value={this.selectObjectList(this.state.listOfProficiencyLevels)}
+                            value={this.selectObjectList(
+                              this.state.listOfProficiencyLevels
+                            )}
                             placeholder={"Choose a level..."}
                             onChange={this.handleSelectList}
                             name="listOfProficiencyLevels"
@@ -693,10 +768,10 @@ class EventCreationForm extends React.Component {
                   <Table>
                     <tbody>
                       <tr>
-                        <td width={'30%'}>
+                        <td width={"30%"}>
                           <b>City:</b>
                         </td>
-                        <td width={'70%'}>
+                        <td width={"70%"}>
                           <Select
                             className="basic-single border-red"
                             classNamePrefix="select"
@@ -732,14 +807,22 @@ class EventCreationForm extends React.Component {
                           <b>Price:</b>
                         </td>
                         <td>
-
                           <div className="form-row">
-                            <input type="number" className="form-control col border-red" id="price" min="0" step="0.01" placeholder="10.00" name="price" onChange={this.onChangeInput} value={this.state.price} required />
+                            <input
+                              type="number"
+                              className="form-control col border-red"
+                              id="price"
+                              min="0"
+                              step="0.01"
+                              placeholder="10.00"
+                              name="price"
+                              onChange={this.onChangeInput}
+                              value={this.state.price}
+                              required
+                            />
 
                             <div className="input-group-append">
-                              <div className="input-group-text">
-                                €
-                        </div>
+                              <div className="input-group-text">€</div>
                             </div>
                           </div>
                         </td>
@@ -749,8 +832,15 @@ class EventCreationForm extends React.Component {
                           <b>Promocode:</b>
                         </td>
                         <td>
-
-                          <input type="text" className="form-control" id="promoCode" placeholder="e.g. Ball150" name="promoCode" onChange={this.onChangeInput} value={this.state.promoCode} />
+                          <input
+                            type="text"
+                            className="form-control"
+                            id="promoCode"
+                            placeholder="e.g. Ball150"
+                            name="promoCode"
+                            onChange={this.onChangeInput}
+                            value={this.state.promoCode}
+                          />
                         </td>
                       </tr>
                     </tbody>
@@ -761,41 +851,45 @@ class EventCreationForm extends React.Component {
                 <Col>
                   <div className="form-group">
                     <label className="label-bold">Description</label>
-                    <textarea className="form-control" name="description" id="description" onChange={this.onChangeInput} value={this.state.description} rows="4" />
+                    <textarea
+                      className="form-control"
+                      name="description"
+                      id="description"
+                      onChange={this.onChangeInput}
+                      value={this.state.description}
+                      rows="4"
+                    />
                   </div>
                 </Col>
               </Row>
               <Row>
-                <p className="text-muted"><b>Note:</b> All fields in pink are required.</p>
+                <p className="text-muted">
+                  <b>Note:</b> All fields in pink are required.
+                </p>
               </Row>
               <Row className="justify-content-md-center">
                 <Col md="auto">
                   <div className="form-group">
-                    <input type="submit" className="btn button-pink" value="Submit" />
+                    <input
+                      type="submit"
+                      className="btn button-pink"
+                      value="Submit"
+                    />
                   </div>
                 </Col>
               </Row>
-
             </Container>
-
-
           </form>
         </div>
-      )
+      );
+    } else {
+      return <div> You are not allowed to view this page. </div>;
     }
-
-    else {
-      return (
-        <div> You are not allowed to view this page. </div>
-      )
-    }
-
   }
-
 }
 
 EventCreationForm.defaultProps = {
   update: false,
-}
+};
 
-export default RouteAuthentication(EventCreationForm)
+export default RouteAuthentication(EventCreationForm);

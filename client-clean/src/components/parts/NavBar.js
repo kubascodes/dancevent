@@ -10,10 +10,6 @@ const NavBar = ({ state, logOut }) => {
     window.sessionStorage.removeItem("secret_token");
   };
   */
-  const componentDidMount = (state) => {
-    // Otherwise each time App.js is re-rendered the state is set to the default values
-    console.log(state);
-  };
 
   /*When you're logged in, display a different NavBar*/
   if (window.sessionStorage.secret_token) {

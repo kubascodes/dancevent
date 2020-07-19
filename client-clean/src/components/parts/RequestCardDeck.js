@@ -2,17 +2,7 @@ import React from "react";
 //router
 import { Link } from "react-router-dom";
 //icons
-import {
-  MdMailOutline,
-  MdLocationOn,
-  MdPhone,
-  MdLockOutline,
-  MdFavorite,
-  MdFace,
-  MdStarHalf,
-  MdEvent,
-  MdCreditCard,
-} from "react-icons/md";
+import { MdFavorite, MdFace, MdEvent } from "react-icons/md";
 //moment
 import moment from "moment";
 
@@ -39,7 +29,8 @@ const RequestCardDeck = ({ state }) => {
                 {moment(request.timestamp).format("dddd D.M.YYYY")}
               </li>
               <li className="cart-text list-unstyled">
-                <MdFace className="align-text-bottom" /> {request.listOfProficiencyLevels}
+                <MdFace className="align-text-bottom" />{" "}
+                {request.listOfProficiencyLevels}
               </li>
               <MdFavorite className="mr-1 align-text-bottom" />{" "}
               {request.listOfDanceStyles.map((danceStyle) => (

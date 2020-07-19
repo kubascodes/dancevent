@@ -1,9 +1,4 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Image from "react-bootstrap/Image";
-import Button from "react-bootstrap/Button";
 
 const containerStyle = (imgUrl) => {
   return {

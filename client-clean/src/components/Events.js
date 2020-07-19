@@ -12,7 +12,7 @@ import { SelectStyle } from "../assets/styles";
 import "react-datepicker/dist/react-datepicker.css";
 
 import cities from "./forms/cities";
-import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 class Events extends React.Component {
   constructor(props) {
@@ -385,24 +385,27 @@ class Events extends React.Component {
                     </label>
                     <>
                       <OverlayTrigger
-                          key={'right'}
-                          placement={'right'}
-                          overlay={
-                              <Tooltip id={`tooltip-right`}>The category is only for an easier selection below (Only below submitted).</Tooltip>
-                          }
+                        key={"right"}
+                        placement={"right"}
+                        overlay={
+                          <Tooltip id={`tooltip-right`}>
+                            The category is only for an easier selection below
+                            (Only below submitted).
+                          </Tooltip>
+                        }
                       >
-                          <Select
-                            className="basic-single"
-                            classNamePrefix="select"
-                            defaultValue={this.state.danceCategory}
-                            placeholder={"Dance style category..."}
-                            isClearable={true}
-                            isSearchable={true}
-                            styles={SelectStyle}
-                            onChange={this.handleChange}
-                            name="danceCategory"
-                            options={danceStyleCategory}
-                            />
+                        <Select
+                          className="basic-single"
+                          classNamePrefix="select"
+                          defaultValue={this.state.danceCategory}
+                          placeholder={"Dance style category..."}
+                          isClearable={true}
+                          isSearchable={true}
+                          styles={SelectStyle}
+                          onChange={this.handleChange}
+                          name="danceCategory"
+                          options={danceStyleCategory}
+                        />
                       </OverlayTrigger>
                     </>
                     {
