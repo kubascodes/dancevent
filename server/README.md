@@ -1,10 +1,9 @@
-# sebamaster-movie-backend application
+# Dancevent 
 
-sebamaster-movie-frontend application can be found [here](https://github.com/sebischair/sebamaster-movie-frontend)
 
-## Prerequisites
+# Prerequisites
 
-Both for the back end and front end application check
+## Install
 
 * nodejs [official website](https://nodejs.org/en/) - nodejs includes [npm](https://www.npmjs.com/) (node package manager)
 
@@ -14,17 +13,14 @@ Just for the backend application:
 
 ## Setup (before first run)
 
-Go to your project root folder via command line
-```
-cd path/to/workspace/sebamaster-movie-backend
-```
-
 **Install node dependencies**
+
+Go to both Homedirectories relative/client-clean and relative/server and run 
 
 ```
 npm install
 ```
-
+ 
 **Set up your database**
 
 * Create a new directory where your database will be stored (it's a good idea to separate data and business logic - the data directory should be on a different place than your app)
@@ -32,25 +28,46 @@ npm install
 ```
 mongod --dbpath relative/path/to/database
 ```
-* Create all database schemes and import data to begin with
-```
-mongorestore dump/
-```
+
 
 **Set the environment variables**
 
-This variables are based in your local configuration
+You can start the app now. If you wish to have special environment variables you can either change them in relative/server/congig.js or by using the bash e.g.:
+
 ```bash
 export PORT=3000
-export MONGODB_URI="mongodb://localhost:27017/moviedb"
-export JWT_SECRET="very secret secret"
 ```
 
-## Start the project
+**Set Emailclient**
+
+You will also wind in the relative/server/congig.js the settings for the mailclient. To test it you can set up an account at ethereal.email (one click) and put the settings into the config file. Ethereal.email will catch all send emails, but you can look through them.
+
+It should also work with a real mailserver (tested!).
+
+
+# Start
+
+## Backend 
+
+Go to relative/server.
 
 **Development environment**
 ```bash
 npm run devstart
+```
+
+**Production environment**
+```bash
+npm start
+```
+
+## Frontend 
+
+Go to relative/client-clean.
+
+**Development environment**
+```bash
+npm start
 ```
 
 **Production environment**
