@@ -217,13 +217,13 @@ class FilterRequest extends React.Component {
           previous = true;
       }
 
-    /*if (this.state.city != "") {
+    if (this.state.eventType != "") {
       if (previous) {
         url += "&";
       }
-      url += "city=" + this.state.city;
+      url += "type=" + this.state.eventType;
       previous = true;
-    }*/
+    }
 
     //TODO: date, event, age
 
@@ -527,7 +527,7 @@ class FilterRequest extends React.Component {
 
         {/* Event Type */}
         {/*TODO: change*/}
-        {/*<div className="form-group">
+        <div className="form-group">
           <label>At a...</label>
 
           <Select
@@ -540,8 +540,9 @@ class FilterRequest extends React.Component {
               onChange={this.handleChange}
               name="eventType"
               options={eventType}
+            styles={SelectStyle}
           />
-        </div>*/}
+        </div>
 
         {/*    Submit button (if pressed events will be fetched from backend based on set parameters)   */}
         <div class="form-group">
