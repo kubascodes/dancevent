@@ -30,7 +30,6 @@ export default class App extends Component {
       profilePicture: null, //TODO
       savedEvents: [],
       organizedEvents: [],
-      exampleEvent: {},
       eventFetched: false,
       userFetched: false,
     };
@@ -45,22 +44,6 @@ export default class App extends Component {
   };
   deleteUser = (User) => {
     console.log(User);
-  };
-
-  createExampleEvent = () => {
-    const title = `${this.state.name}'s new event`;
-    const startDate = new Date();
-    // Set the date to tomorrow 8 PM
-    startDate.setDate(startDate.getDate() + 1);
-    startDate.setHours(20, 0, 0, 0);
-    const location = this.state.city;
-    this.setState({
-      exampleEvent: {
-        title: title,
-        startDate: startDate,
-        location: location,
-      },
-    });
   };
 
   fetchUserEvents = () => {
@@ -101,24 +84,16 @@ export default class App extends Component {
     })
       .then((res) => res.json(res))
       .then(function (res) {
-        context.setState(
-          {
-            secret_token: window.sessionStorage.secret_token,
-            login: true,
-            email: res.email,
-            name: res.name,
-            city: res.city,
-            userType: res.userType,
-            profilePicture: res.picture,
-            userFetched: true,
-          },
-          () => {
-            if (context.state.userType === "Organizer") {
-              // Template that the organizer sees as the "Create Event" button
-              context.createExampleEvent();
-            }
-          }
-        );
+        context.setState({
+          secret_token: window.sessionStorage.secret_token,
+          login: true,
+          email: res.email,
+          name: res.name,
+          city: res.city,
+          userType: res.userType,
+          profilePicture: res.picture,
+          userFetched: true,
+        });
       })
       .catch((err) => alert(err));
 
@@ -148,6 +123,8 @@ export default class App extends Component {
       secret_token: null,
       email: null,
       login: false,
+      savedEvents: [],
+      organizedEvents: [],
     });
     window.sessionStorage.removeItem("secret_token");
     console.log(this.state);

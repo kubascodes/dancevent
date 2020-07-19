@@ -35,28 +35,7 @@ class EventCard extends React.Component {
   }
 
   componentDidMount() {
-    if (this.props.state.savedEvents.length > 0) {
-      const savedEventIds = this.props.state.savedEvents.map(
-        (savedEvent) => savedEvent._id
-      );
-      if (savedEventIds.includes(this.props.event._id)) {
-        this.setState({ interestedIn: true });
-      }
-    }
-    if (this.props.state.organizedEvents.length > 0) {
-      const organizedEventIds = this.props.state.organizedEvents.map(
-        (organizedEvent) => organizedEvent._id
-      );
-      if (organizedEventIds.includes(this.props.event._id)) {
-        this.setState({ userIsOwner: true });
-      }
-    }
-  }
-
-  // On the homepage if an event is unsaved, there is no new component rendered in its place but the old card just receives new props
-  // Need to make sure that the interestedIn and userIsOwner properties are set correctly
-  componentDidUpdate(prevProps) {
-    if (prevProps.event != this.props.event) {
+    if (this.props.event) {
       if (this.props.state.savedEvents.length > 0) {
         const savedEventIds = this.props.state.savedEvents.map(
           (savedEvent) => savedEvent._id
@@ -71,6 +50,31 @@ class EventCard extends React.Component {
         );
         if (organizedEventIds.includes(this.props.event._id)) {
           this.setState({ userIsOwner: true });
+        }
+      }
+    }
+  }
+
+  // On the homepage if an event is unsaved, there is no new component rendered in its place but the old card just receives new props
+  // Need to make sure that the interestedIn and userIsOwner properties are set correctly
+  componentDidUpdate(prevProps) {
+    if (prevProps.event != this.props.event) {
+      if (this.props.event) {
+        if (this.props.state.savedEvents.length > 0) {
+          const savedEventIds = this.props.state.savedEvents.map(
+            (savedEvent) => savedEvent._id
+          );
+          if (savedEventIds.includes(this.props.event._id)) {
+            this.setState({ interestedIn: true });
+          }
+        }
+        if (this.props.state.organizedEvents.length > 0) {
+          const organizedEventIds = this.props.state.organizedEvents.map(
+            (organizedEvent) => organizedEvent._id
+          );
+          if (organizedEventIds.includes(this.props.event._id)) {
+            this.setState({ userIsOwner: true });
+          }
         }
       }
     }
@@ -100,18 +104,11 @@ class EventCard extends React.Component {
     // This is propagated up to App.js where the actual deletion is happening. This way the EventCard can easily be removed from the Component containing it.
     this.props.onDeleteEvent();
   };
-  /*
-  handleClose = () => {
-    this.setState({ showDialog: false });
-  };
-  */
-  /*
-  handleShow = () => {
-    this.setState({ showDialog: true });
-  };
-  */
 
   render() {
+    let tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(20, 0, 0, 0);
     if (this.state.redirect) {
       return <Redirect push to={this.state.redirect} />;
     }
@@ -130,20 +127,18 @@ class EventCard extends React.Component {
             />
 
             <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{this.props.state.exampleEvent.title}</h5>
+              <h5 class="card-title">{this.props.state.name}'s new event</h5>
               <li className="list-unstyled">
                 <MdLocationOn className="align-text-bottom" />{" "}
-                {this.props.state.exampleEvent.location}
+                {this.props.state.city ? this.props.state.city : "Munich"}
               </li>
               <li className="list-unstyled">
                 <MdEvent className="align-text-bottom" />{" "}
-                {moment(this.props.state.exampleEvent.startDate).format(
-                  "D/M/YYYY"
-                )}
+                {moment(tomorrow).format("D/M/YYYY")}
               </li>
               <li className="list-unstyled">
                 <MdAccessTime className="align-text-bottom" />{" "}
-                {moment(this.props.state.exampleEvent.startDate).format("H:mm")}
+                {moment(tomorrow).format("H:mm")}
               </li>
               {this.state.isHovered && (
                 <a
@@ -259,7 +254,6 @@ class EventCard extends React.Component {
           </div>
           <Modal
             show={this.state.showDialog}
-            onHide={this.handleClose}
             backdrop="static"
             keyboard={false}
           >

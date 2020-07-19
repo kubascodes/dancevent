@@ -70,12 +70,7 @@ class EventCardDeck extends React.Component {
             eventsToDisplay.sort((a, b) =>
               a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
             );
-            if (
-              scope.includes("organized") &&
-              scope.includes("upcoming") &&
-              context.props.state.exampleEvent
-            ) {
-              console.log(context.props.state.exampleEvent);
+            if (scope.includes("organized") && scope.includes("upcoming")) {
               context.setState({ showExampleCard: true });
             }
           }
@@ -172,9 +167,9 @@ class EventCardDeck extends React.Component {
                 />
               );
             })}
-            {this.state.showExampleCard && this.props.state.exampleEvent ? (
+            {this.state.showExampleCard ? (
               <EventCard
-                event={this.props.state.exampleEvent}
+                event={false}
                 state={this.props.state}
                 onDeleteEvent={() => console.log("Cannot be deleted")}
                 onSaveEvent={() => console.log("Cannot be saved")}
