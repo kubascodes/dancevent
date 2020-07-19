@@ -20,10 +20,7 @@ class FindDancePartnerView extends React.Component {
 
 
 
-    //TODO: Checkbox - BUG: works only wright by clicking multiple times
     onChangeCheckbox = (event) => {
-      /* This function should update the value "viewAllRequests" if it is checked afterwards it should call the getRequests function to fetch from the backend all requests */
-
         var checkboxName = event.target.name;
         var elements = document.getElementsByName(checkboxName);
         var checked = [];
@@ -39,19 +36,19 @@ class FindDancePartnerView extends React.Component {
           }
             if (checked.length < 1) {
                 //store empty if nothing
-                this.setState({[checkboxName]: ""});
+                this.setState({[checkboxName]: ""}, () => {this.getRequests(window.location.pathname)});
                 //console.log(this.state);
             } else if (checked.length == 1) {
                 //store as a string if only 1 preference
-                this.setState({[checkboxName]: checked[0]});
+                this.setState({[checkboxName]: checked[0]}, () => {this.getRequests(window.location.pathname)});
                 //console.log(this.state);
             } else if (checked.length > 1) {
                 //store as an array if multiple preferences
 
-            }
+            };
             console.log(this.state.viewAllRequests);
-            this.getRequests(window.location.pathname);
-
+            //this.getRequests(window.location.pathname);
+        
 
 
 
@@ -80,7 +77,7 @@ class FindDancePartnerView extends React.Component {
         //sort date new to old
         else if (this.state.sorting == "eventDateDesc") {
             this.state.requests.sort((a, b) =>
-                a.event.startDate < b.event.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
+                a.event.startDate < b.even5r4t.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
             );
         }
         //sort date old to new
@@ -131,6 +128,7 @@ class FindDancePartnerView extends React.Component {
       console.log(url);
 
 
+   console.log(url)
     fetch(url, {
       method: "GET",
       headers: {
@@ -180,11 +178,11 @@ class FindDancePartnerView extends React.Component {
             <Col>
               {/*SortingNavbar*/}
             <Row >
-        {/*TODO: Checkbox*/}
                 <div className="form-group" style={{ marginRight: "auto" }}>
                     <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
                     <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
                 </div>
+
 
                 <div style={{ marginLeft: "auto" , width: "15rem"}}>
                     Sorting by:
