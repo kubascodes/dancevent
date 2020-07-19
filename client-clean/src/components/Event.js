@@ -221,7 +221,7 @@ class Event extends React.Component {
         )}
         <div className="container mt-3">
           <div className="flex-row d-flex flex-wrap justify-content-end align-items-center">
-            <div className="col d-flex justify-content-start flex-column">
+            <div className="col-8 d-flex justify-content-start flex-column">
               <h1>{this.state.event.title}</h1>
               <h2>
                 <MdEvent /> {this.days[startDate.getDay()]},{" "}
@@ -241,7 +241,7 @@ class Event extends React.Component {
                 {moment(this.state.event.startDate).format("H:mm")}
               </h2>
             </div>
-            <div className="col d-flex flex-column align-items-end">
+            <div className="col-4 d-flex flex-column align-items-end">
               {this.state.userIsOwner ? (
                 <></>
               ) : this.state.interestedIn ? (
