@@ -37,26 +37,26 @@ class FilterRequest extends React.Component {
     this.props.filterRequests(this.state);
   };
 
-  onChange = (e) => {
-    /*This function is called if the user changes a variable of the filter options*/
-    e.preventDefault();
+    onChange = (e) => {
+        /*This function is called if the user changes a variable of the filter options*/
+        e.preventDefault();
 
-      var allow = true;
-      // check that the min in not bigger than the max and the other way around
-      if (e.target.name == "prefAgeMin") {
-          if (e.target.value >= this.state.prefAgeMax) {
-              allow = false;
-          }
-      }
-      if (e.target.name == "prefAgeMax") {
-          if (e.target.value <= this.state.prefAgeMin) {
-              allow = false;
-          }
-      };
-      if (allow) {
-          this.setState({[e.target.name]: e.target.value});
-      };
-  };
+        var allow = true;
+        // check that the min in not bigger than the max and the other way around
+        if (e.target.name == "prefAgeMin") {
+            if (Number(e.target.value )>= Number(this.state.prefAgeMax)) {
+                allow = false;
+            }
+        }
+        if (e.target.name == "prefAgeMax") {
+            if (Number(e.target.value) <= Number(this.state.prefAgeMin)) {
+                allow = false;
+            }
+        }
+        if (allow) {
+            this.setState({[e.target.name]: e.target.value});
+        }
+    }
 
     //Changes the state for REACT-SELECT inputs
     onChangeCity = (event) => {
@@ -358,12 +358,12 @@ class FilterRequest extends React.Component {
 
           <div class="age-slider">
               <input type="range" className="custom-range" id="prefAgeMin" name="prefAgeMin"
-                  min="0" max="100" step="5"
+                  min="0" step="5"
                   value={this.state.prefAgeMin}
                   onChange={this.onChange}/>
 
               <input type="range" className="custom-range" id="prefAgeMax" name="prefAgeMax"
-                min="0" max="100" step="5"
+                min="0" step="5"
                 value={this.state.prefAgeMax}
                 onChange={this.onChange}/>
           </div>

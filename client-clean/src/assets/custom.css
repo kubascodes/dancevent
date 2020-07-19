@@ -131,6 +131,10 @@ h6 {
   background-color: #ffbbbb;
 }
 
+.rounded-circle {
+  border-radius: 50%;
+}
+
 /*BUTTONS*/
 .button-pink {
   border: 1px solid #ffbbbb;

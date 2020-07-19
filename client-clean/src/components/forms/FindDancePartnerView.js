@@ -180,7 +180,8 @@ class FindDancePartnerView extends React.Component {
             <Row >
                 <div className="form-group" style={{ marginRight: "auto" }}>
                     <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
-                    <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
+                    <label class="checkbox-inline mr-2">View all Requests </label>
+                    <label class="checkbox-inline mr-2"style={{color:"#ce9aa3"}}>(including mismatches to my profile) </label>
                 </div>
 
 
@@ -219,7 +220,7 @@ class FindDancePartnerView extends React.Component {
                   ))}</CardDeck>
     )
         :(
-            <p> At the moment there are no open requests that are matching your profile or filter. </p>
+            <p> At the moment there are <b>no open requests</b> that are <b>matching</b> your profile or filter. </p>
         )
         }
 
