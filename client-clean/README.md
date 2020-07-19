@@ -1,68 +1,76 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Dancevent 
 
-## Available Scripts
 
-In the project directory, you can run:
+# Prerequisites
 
-### `yarn start`
+## Install
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+* nodejs [official website](https://nodejs.org/en/) - nodejs includes [npm](https://www.npmjs.com/) (node package manager)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+Just for the backend application:
 
-### `yarn test`
+* mongodb [official installation guide](https://docs.mongodb.org/manual/administration/install-community/)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Setup (before first run)
 
-### `yarn build`
+**Install node dependencies**
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Go to both Homedirectories relative/client-clean and relative/server and run 
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```
+npm install
+```
+ 
+**Set up your database**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+* Create a new directory where your database will be stored (it's a good idea to separate data and business logic - the data directory should be on a different place than your app)
+* Start the database server
+```
+mongod --dbpath relative/path/to/database
+```
 
-### `yarn eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+**Set the environment variables**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+You can start the app now. If you wish to have special environment variables you can either change them in relative/server/congig.js or by using the bash e.g.:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+export PORT=3000
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+**Set Emailclient**
 
-## Learn More
+You will also wind in the relative/server/congig.js the settings for the mailclient. To test it you can set up an account at ethereal.email (one click) and put the settings into the config file. Ethereal.email will catch all send emails, but you can look through them.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+It should also work with a real mailserver (tested!).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+# Start
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## Backend 
 
-### Analyzing the Bundle Size
+Go to relative/server.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+**Development environment**
+```bash
+npm run devstart
+```
 
-### Making a Progressive Web App
+**Production environment**
+```bash
+npm start
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+## Frontend 
 
-### Advanced Configuration
+Go to relative/client-clean.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+**Development environment**
+```bash
+npm start
+```
 
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+**Production environment**
+```bash
+npm start
+```
