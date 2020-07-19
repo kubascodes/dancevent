@@ -126,7 +126,6 @@ h6 {
 }
 
 .age-slider input::-webkit-slider-thumb {
-
   pointer-events: all;
   position: relative;
   z-index: 1;
@@ -135,15 +134,13 @@ h6 {
 
 .age-slider input::-moz-range-thumb {
   -webkit-appearance: none !important;
-  -moz-appearance:    none !important;
+  -moz-appearance: none !important;
   appearance: none !important;
   pointer-events: all;
   position: relative;
   z-index: 1;
   background-color: #ffbbbb;
 }
-
-
 
 /*BUTTONS*/
 .button-pink {
@@ -178,6 +175,25 @@ h6 {
   margin-bottom: 0.5rem;
 }
 
+/*IMAGE*/
+.banner {
+  left: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: -1.7vw;
+  max-width: 100vw;
+  position: relative;
+  right: 50%;
+  width: 100vw;
+  height: 400px;
+}
+
+.banner img {
+  display: block; /*remove inline-block spaces*/
+  width: 100%; /*make image streatch*/
+  object-fit: cover;
+}
+
 /*CARDS*/
 
 .card {
@@ -186,6 +202,7 @@ h6 {
 .event-card {
   margin: 0rem;
   min-width: 220px;
+  max-width: 300px;
 }
 .example-card {
   position: relative;
