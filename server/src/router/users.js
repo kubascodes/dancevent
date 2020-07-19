@@ -39,10 +39,7 @@ router.get(
             .populate("dancer", "-_id ")
             .populate("event", null, {'startDate': { $gte: new Date() }})
           .sort({ timestamp: 1 });
-          console.log("__________RRREEEEEEQUESTTTTTT__________");
-          console.log(requests);
           let requestsEvent = requests.filter(request =>  request.event != null);
-          console.log(requestsEvent);
         response.requests = requestsEvent;
         response.events = events;
       }
@@ -163,7 +160,7 @@ router.get(
 );
 
 //List all dance request on Dance Partner Page
-//TODO: sort is missing, events
+//TODO: Sort missing
 router.get(
     "/dancepartner",
     passport.authenticate("jwt", { session: false }),
@@ -176,7 +173,8 @@ router.get(
             var myAge = null;
 
             // match request and user information
-            //TODO: Somhow there is a bug. it should normaly be the orther way around
+            //TODO: Checkbox - Check if still right or needs if needs to check of the opposite
+            // BUG at the moment: Somhow there is a bug. it should normaly be the orther way around
             if(req.query.allRequests == "viewAllRequests"){
                 let user = await User.findOne({ _id: userId });
                 if(user){
@@ -255,8 +253,6 @@ router.get(
 
             console.log(eventValue);
 
-            //TODO: delete id's // TODO: city filter
-
             // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
             if(dancerValues.length == 0 && eventValue.length == 0){
                 await Request.find(req.query).populate("dancer event", "-_id").exec(function(err, docs){
@@ -276,10 +272,16 @@ router.get(
                 ).populate("event", null, eventCheck).exec(function(err, docs){
                     docs = docs.filter(function(doc){
                         if(myAge){
-                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null;
+                            if( myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null){
+                                doc.dancer._id = null;
+                                return doc;
+                            };
                         }
                         else {
-                            return doc.dancer != null && doc.event != null;
+                            if( doc.dancer != null && doc.event != null){
+                                doc.dancer._id = null;
+                                return doc;
+                            };
                         }
                     })
                     return res.status(200).json(docs);
@@ -308,15 +310,45 @@ router.get(
                 ).populate("event", "-_id").exec(function(err, docs){
                     docs = docs.filter(function(doc){
                         if(myAge){
-                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null ;
+                            if( myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null ){
+                                doc.dancer._id = null;
+                                return doc;
+                            }
                         }
                         else {
-                            return doc.dancer != null ;
+                            if (doc.dancer != null){
+                                doc.dancer._id = null;
+                                return doc;
+                            };
                         }
                     })
                     return res.status(200).json(docs);
                 });
             };
+
+        } catch (err) {
+            return res.status(500).json({
+                error: "Internal server error",
+                message: err.message,
+            });
+        }
+
+    });
+
+
+//List all dance request on Dance Partner Page
+router.get( "/loggedout/requests", async (req, res, next)  => {
+        try {
+
+            await Request.find(req.query).populate("event", null, {'startDate': { $gte: new Date() }}).exec(function(err, docs){
+                docs = docs.filter(function(doc){
+                    if(doc.event != null){
+                        doc.event._id = null;
+                        return doc;
+                    }
+                })
+                return res.status(200).json(docs);
+            });
 
         } catch (err) {
             return res.status(500).json({

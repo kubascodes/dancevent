@@ -27,10 +27,6 @@ class FilterRequest extends React.Component {
   }
 
 
-  //TODO: write Submit
-  //TODO: handle city
-  //TODO: check filter => return filtered array
-  //TODO: handle reset all
   //submitFilter = (e) => {
   submitFilterOld = (e) => {
     /*This function is called if the user enters a city and presses enter*/
@@ -38,7 +34,7 @@ class FilterRequest extends React.Component {
     const filterRequests = this.props.requests.filter((request) => {
       return request;
     });
-    this.props.filterRequests(this.state); //TODO: change
+    this.props.filterRequests(this.state);
   };
 
   onChange = (e) => {
@@ -225,8 +221,6 @@ class FilterRequest extends React.Component {
       previous = true;
     }
 
-    //TODO: date, event, age
-
     //fetch requests from backend
     this.props.getRequests(url);
     //console.log(url);
@@ -311,7 +305,7 @@ class FilterRequest extends React.Component {
       <form onSubmit={this.submitFilter}>
         <h4>Filter Requests</h4>
 
-        {/*Gender Type // TODO (optional): clear unspecified*/}
+        {/*Gender Type }
         <div className="form-group">
         <label> I am looking for a... </label>
         <Select
@@ -458,7 +452,6 @@ class FilterRequest extends React.Component {
 
         {/* Dance Style Type */}
         {/*TODO: change*/}
-        {/*TODO: add secound*/}
         <div className="form-group">
           <label> To dance... </label>
           <Select
@@ -526,7 +519,6 @@ class FilterRequest extends React.Component {
         </div>
 
         {/* Event Type */}
-        {/*TODO: change*/}
         <div className="form-group">
           <label>At a...</label>
 

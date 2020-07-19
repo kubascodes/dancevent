@@ -17,8 +17,10 @@ class FindDancePartnerView extends React.Component {
     };
   }
 
-
+    //TODO: Checkbox - BUG: works only wright by clicking multiple times
     onChangeCheckbox = (event) => {
+      /* This function should update the value "viewAllRequests" if it is checked afterwards it should call the getRequests function to fetch from the backend all requests */
+
         var checkboxName = event.target.name;
         var elements = document.getElementsByName(checkboxName);
         var checked = [];
@@ -99,19 +101,31 @@ class FindDancePartnerView extends React.Component {
 
 
   getRequests = (url) => {
-    /* fetches all requests from the backend*/
-   console.log(url);
-      console.log(this.state.viewAllRequests);
 
-   if(url == window.location.pathname  && this.state.viewAllRequests != "" ){
-        url += "/?allRequests=" + this.state.viewAllRequests;
-    } ;
-   if(url == "/dancepartner/?" && this.state.viewAllRequests != ""){
-       url += "allRequests=" + this.state.viewAllRequests;
-    };
-   if(url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != ""){
-       url += "&allRequests=" + this.state.viewAllRequests;
-   };
+      if(window.sessionStorage.secret_token != null) {
+          //TODO: Checkbox - check if right value is send and if the right data comes back (state of requests is updated right)
+          /* fetches all requests from the backend*/
+          console.log(url);
+          console.log(this.state.viewAllRequests);
+
+          if (url == window.location.pathname && this.state.viewAllRequests != "") {
+              url += "/?allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+          if (url == "/dancepartner/?" && this.state.viewAllRequests != "") {
+              url += "allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+          if (url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != "") {
+              url += "&allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+      }
+      else {
+            url = "/loggedout/requests";
+      };
+      console.log(url);
+
 
     fetch(url, {
       method: "GET",
@@ -140,9 +154,8 @@ class FindDancePartnerView extends React.Component {
     });
   };
 
+
   // display requests, filtered
-  //TODO: make dependent on filter option
-  //TODO: sort requests
   render() {
     const sortSelect = ["date"];
 
@@ -163,11 +176,11 @@ class FindDancePartnerView extends React.Component {
             <Col>
               {/*SortingNavbar*/}
             <Row >
+        {/*TODO: Checkbox*/}
                 <div className="form-group" style={{ marginRight: "auto" }}>
-                    <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
-                    <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
+    <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
+        <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
                 </div>
-
 
                 <div style={{ marginLeft: "auto" , width: "15rem"}}>
                     Sorting by:
