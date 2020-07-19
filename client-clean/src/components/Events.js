@@ -4,9 +4,10 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Select from "react-select";
 import EventCard from "./parts/EventCard";
+import EventCardDeck from "./parts/EventCardDeck";
 import DatePicker from "react-datepicker";
-import {CriticalAlert} from "./helpers/Alert";
-import {SelectStyle} from '../assets/styles'
+import { CriticalAlert } from "./helpers/Alert";
+import { SelectStyle } from "../assets/styles";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -25,7 +26,7 @@ class Events extends React.Component {
       danceLevel: "all",
       city: "",
       //startDate: formatDate(Date.now()),
-      startDate: new Date(new Date().setHours(0,0,0,0)),
+      startDate: new Date(new Date().setHours(0, 0, 0, 0)),
       endDate: null,
 
       sorting: "date",
@@ -33,42 +34,44 @@ class Events extends React.Component {
       danceCategory: "latin",
       danceStyle: [],
 
-      showAltert : false,
+      showAltert: false,
       errorMessage: "",
     };
   }
-
-
 
   componentDidMount() {
     /*
     this function is called by react in the build up.
     Thus the events (without optional parameters) are requested
     */
-   var component_scope = this;
+    var component_scope = this;
     fetch("/events")
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
         component_scope.setState({ events: data });
       })
-      .catch(err => {
-        component_scope.setState({showAltert: true,
-                      errorMessage: "Internal Problem. Data could not be fetched from the backend" })
-        console.log(err)});
-      console.log(this.state);
-
+      .catch((err) => {
+        component_scope.setState({
+          showAltert: true,
+          errorMessage:
+            "Internal Problem. Data could not be fetched from the backend",
+        });
+        console.log(err);
+      });
+    console.log(this.state);
   }
 
   // <Select> needs value and label as input
-  selectObject = (prop) => (
-    { value: prop, label: prop.charAt(0).toUpperCase() + prop.slice(1) }
-  )
-  selectObjectList = (prop) => (
-    prop.map(i => this.selectObject(i))
-  )
+  selectObject = (prop) => ({
+    value: prop,
+    label: prop.charAt(0).toUpperCase() + prop.slice(1),
+  });
+  selectObjectList = (prop) => prop.map((i) => this.selectObject(i));
 
-  hideAlert = () => {this.setState({showAltert : !this.state.showAltert})}
+  hideAlert = () => {
+    this.setState({ showAltert: !this.state.showAltert });
+  };
 
   onChange = (event) => {
     /*
@@ -78,25 +81,23 @@ class Events extends React.Component {
     */
     this.setState({ [event.target.name]: event.target.value });
     console.log(this.state);
-
-    
   };
   //Changes the state for calendar inputs
   //type should specify if it is a start- or endDate
   onChangeCalendar = (date, type) => {
     console.log(date);
     this.setState({ [type]: date });
-    console.log(this.state)
+    console.log(this.state);
   };
 
   //Changes the state for REACT-SELECT inputs
   onChangeCity = (event) => {
     console.log(event);
-    this.setState({ 
+    this.setState({
       city: event ? event.value : "",
-    })
-      //city: event.value });
-    console.log(this.state)
+    });
+    //city: event.value });
+    console.log(this.state);
   };
 
   handleSelect = (selectedOption, action) => {
@@ -107,9 +108,8 @@ class Events extends React.Component {
     /*if (action.name == 'danceCategory') {
         this.setState({danceStyle: ''});
     };*/
-    console.log(this.state)
-    
-  }
+    console.log(this.state);
+  };
 
   handleMultiSelect = (danceStyle) => {
     /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
@@ -119,15 +119,15 @@ class Events extends React.Component {
     console.log(this.state);
   };
 
-    sortingChanged = (selectedOption, action) => {
-        /*
+  sortingChanged = (selectedOption, action) => {
+    /*
             If Events should be sorted based on parameter 'sorting' this function is called
         */
 
-        //set the new state
-        this.setState({
-            sorting: selectedOption ? selectedOption.value : ""
-        });
+    //set the new state
+    this.setState({
+      sorting: selectedOption ? selectedOption.value : "",
+    });
 
     //sort after prefered sortingmethods
 
@@ -147,51 +147,46 @@ class Events extends React.Component {
 
   handleTextDate = (selectedOption, action) => {
     /*this function gets a text like "tomorrow" and evaluates than the start and end date*/
-    console.log(selectedOption)
-    var today = new Date(new Date().setHours(0,0,0,0));
-    if(selectedOption){
-
-        var startDate ;
-        var endDate;
-        switch(selectedOption.value){
-            case "today":
-                startDate = today;
-                endDate = today;
-                break;
-            case "tomorrow":
-                startDate = new Date(today.setTime(today.getTime() + 1 * 86400000 ));
-                endDate = startDate;
-                break;
-            case "week":
-                var curr = today; // get current date
-                var monday = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
-                var sunday = monday + 6; // last day is the first day + 6
-                startDate = new Date(today.setDate(monday));
-                endDate = new Date(today.setDate(sunday));
-                break;
-            case "weekend":
-                var curr = new Date; // get current date
-                var friday = curr.getDate() - curr.getDay() + 5; // First day is the day of the month - the day of the week
-                var sunday = friday + 2; // last day is the first day + 6
-                startDate = new Date(today.setDate(friday));
-                endDate = new Date(today.setDate(sunday));
-                break;
-
-        }
-        this.setState({
-            startDate: startDate,
-            endDate: endDate
-        });
+    console.log(selectedOption);
+    var today = new Date(new Date().setHours(0, 0, 0, 0));
+    if (selectedOption) {
+      var startDate;
+      var endDate;
+      switch (selectedOption.value) {
+        case "today":
+          startDate = today;
+          endDate = today;
+          break;
+        case "tomorrow":
+          startDate = new Date(today.setTime(today.getTime() + 1 * 86400000));
+          endDate = startDate;
+          break;
+        case "week":
+          var curr = today; // get current date
+          var monday = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
+          var sunday = monday + 6; // last day is the first day + 6
+          startDate = new Date(today.setDate(monday));
+          endDate = new Date(today.setDate(sunday));
+          break;
+        case "weekend":
+          var curr = new Date(); // get current date
+          var friday = curr.getDate() - curr.getDay() + 5; // First day is the day of the month - the day of the week
+          var sunday = friday + 2; // last day is the first day + 6
+          startDate = new Date(today.setDate(friday));
+          endDate = new Date(today.setDate(sunday));
+          break;
+      }
+      this.setState({
+        startDate: startDate,
+        endDate: endDate,
+      });
+    } else {
+      this.setState({
+        startDate: today,
+        endDate: null,
+      });
     }
-    else{
-        this.setState({
-            startDate: today,
-            endDate: null,
-        });
-    }
-}
-
-
+  };
 
   submitFilter = (event) => {
     /*
@@ -265,7 +260,7 @@ class Events extends React.Component {
         url += "&";
       }
       //+1 Day that the choosen day is inclusive
-      url += "endDate=" + new Date(this.state.endDate.getTime() + 86400000)
+      url += "endDate=" + new Date(this.state.endDate.getTime() + 86400000);
       previous = true;
     }
 
@@ -277,10 +272,10 @@ class Events extends React.Component {
         console.log(data);
         component_scope.setState({ events: data });
       })
-      .catch(err => {
+      .catch((err) => {
         //Error is not important enough for display
-        console.log(err)}
-        );
+        console.log(err);
+      });
   };
 
   //maybe for later
@@ -311,203 +306,201 @@ class Events extends React.Component {
 
     // Date 1 Option - selection
     const dateSelection = [
-      { value: 'today', label: 'Today' },
-      { value: 'tomorrow', label: 'Tomorrow' },
-      { value: 'weekend', label: 'This Weekend' },
-      { value: 'week', label: 'This Week' },
+      { value: "today", label: "Today" },
+      { value: "tomorrow", label: "Tomorrow" },
+      { value: "weekend", label: "This Weekend" },
+      { value: "week", label: "This Week" },
     ];
 
-
     const danceStyleCategory = [
-      {value: 'all', label: 'All Styles'},
-      {value: 'latin', label: 'Latin/Rythm'},
-      {value: 'standard', label: 'Standard/Smooth'},
-      {value: 'various', label: 'Various'},
-  ];
-  
-  const all = [
-    {value: 'all', label: 'All styles'}
-  ]
+      { value: "all", label: "All Styles" },
+      { value: "latin", label: "Latin/Rythm" },
+      { value: "standard", label: "Standard/Smooth" },
+      { value: "various", label: "Various" },
+    ];
 
-  
+    const all = [{ value: "all", label: "All styles" }];
 
-  const latin = [
-      {value: 'latin', label: 'All latin styles'},
-      {value: 'jive', label: 'Jive'},
-      {value: 'rumba', label: 'Rumba'},
-      {value: 'cha-cha-cha', label: 'Cha-Cha-Cha'},
-      {value: 'samba', label: 'Samba'},
-      {value: 'paso doble', label: 'Paso Doble'},
-      {value: 'bolero', label: 'Bolero'},
-      {value: 'mambo', label: 'Mambo'},
-      {value: 'east coast swing', label: 'East Cost Swing'},
-  ];
-  const standard = [
-      {value: 'standard', label: 'All standard styles'},
-      {value: 'waltz', label: 'Waltz'},
-      {value: 'viennese waltz', label: 'Viennese Waltz'},
-      {value: 'tango', label: 'Tango'},
-      {value: 'foxtrot', label: 'Foxtrot'},
-      {value: 'quickstep', label: 'Quickstep'},
-  ];
-  const various = [
-      {value: 'various', label: 'All various styles'},
-      {value: 'salsa', label: 'Salsa'},
-      {value: 'bachata', label: 'Bachata'},
-      {value: 'west coast swing', label: 'West Cost Swing'},
-      {value: 'hustle', label: 'Hustle'},
-  ];
+    const latin = [
+      { value: "latin", label: "All latin styles" },
+      { value: "jive", label: "Jive" },
+      { value: "rumba", label: "Rumba" },
+      { value: "cha-cha-cha", label: "Cha-Cha-Cha" },
+      { value: "samba", label: "Samba" },
+      { value: "paso doble", label: "Paso Doble" },
+      { value: "bolero", label: "Bolero" },
+      { value: "mambo", label: "Mambo" },
+      { value: "east coast swing", label: "East Cost Swing" },
+    ];
+    const standard = [
+      { value: "standard", label: "All standard styles" },
+      { value: "waltz", label: "Waltz" },
+      { value: "viennese waltz", label: "Viennese Waltz" },
+      { value: "tango", label: "Tango" },
+      { value: "foxtrot", label: "Foxtrot" },
+      { value: "quickstep", label: "Quickstep" },
+    ];
+    const various = [
+      { value: "various", label: "All various styles" },
+      { value: "salsa", label: "Salsa" },
+      { value: "bachata", label: "Bachata" },
+      { value: "west coast swing", label: "West Cost Swing" },
+      { value: "hustle", label: "Hustle" },
+    ];
 
     return (
       <div>
-      <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
-      <Container fluid>
-        <Row>
-          {/*    Filter Sidebar   */}
-          <Col xs={5} md={4} lg={3} xl={2} id="sidebar-wrapper">
-            <div>
-              <form onSubmit={this.submitFilter}>
-                <h4>Filter Events </h4>
-                {/*    Eventtype   */}
-                <div className="form-group">
-                  <label className="label-bold">I'm looking for a...</label>
-                  <Select
-                        className="basic-single"
-                        placeholder={"Choose a Dance Style..."}
-                        onChange={this.handleSelect}
-                        name="eventtype"
-                        styles={SelectStyle}
-                        options={this.selectObjectList(types)}
-                  />
-                </div>
-                
-                
-                 {/*    Dance Style   */}
-                <div className="form-group">
-                  <label
-                    className="mr-2 label-bold"
-                    htmlFor="listOfProficiencyLevels"
-                  >
-                    To dance
-                  </label>
-                  <>
-                  <OverlayTrigger
-                      key={'right'}
-                      placement={'right'}
-                      overlay={
-                          <Tooltip id={`tooltip-right`}>The category is only for an easier selection below (Only below submitted).</Tooltip>
-                      }
-                  >
-                      <Select
-                          className="basic-single"
-                          classNamePrefix="select"
-                          defaultValue={this.state.danceCategory}
-                          placeholder={"Dance style category..."}
-                          isClearable={true}
-                          isSearchable={true}
-                          styles={SelectStyle}
-                          onChange={this.handleChange}
-                          name="danceCategory"
-                          options={danceStyleCategory}
-                          />
-                  </OverlayTrigger>
-                  </>
-                  {
+        <CriticalAlert
+          show={this.state.showAltert}
+          change={this.hideAlert}
+          text={this.state.errorMessage}
+        />
+        <Container fluid>
+          <Row>
+            {/*    Filter Sidebar   */}
+            <Col xs={5} md={4} lg={3} xl={2} id="sidebar-wrapper">
+              <div>
+                <form onSubmit={this.submitFilter}>
+                  <h4>Filter Events </h4>
+                  {/*    Eventtype   */}
+                  <div className="form-group">
+                    <label className="label-bold">I'm looking for a...</label>
+                    <Select
+                      className="basic-single"
+                      placeholder={"Choose a Dance Style..."}
+                      onChange={this.handleSelect}
+                      name="eventtype"
+                      styles={SelectStyle}
+                      options={this.selectObjectList(types)}
+                    />
+                  </div>
+
+                  {/*    Dance Style   */}
+                  <div className="form-group">
+                    <label
+                      className="mr-2 label-bold"
+                      htmlFor="listOfProficiencyLevels"
+                    >
+                      To dance
+                    </label>
+                    <>
+                      <OverlayTrigger
+                          key={'right'}
+                          placement={'right'}
+                          overlay={
+                              <Tooltip id={`tooltip-right`}>The category is only for an easier selection below (Only below submitted).</Tooltip>
+                          }
+                      >
+                          <Select
+                            className="basic-single"
+                            classNamePrefix="select"
+                            defaultValue={this.state.danceCategory}
+                            placeholder={"Dance style category..."}
+                            isClearable={true}
+                            isSearchable={true}
+                            styles={SelectStyle}
+                            onChange={this.handleChange}
+                            name="danceCategory"
+                            options={danceStyleCategory}
+                            />
+                      </OverlayTrigger>
+                    </>
                     {
-                      all: (
-                        <Select
-                          className="basic-multi-select"
-                          classNamePrefix="select"
-                          onChange={this.handleMultiSelect}
-                          isMulti={true}
-                          placeholder="Dance style..."
-                          isClearable={true}
-                          isSearchable={true}
-                          name="danceStyle"
-                          options={all}
-                          styles={SelectStyle}
-                        />
-                      ),
-                      latin: (
-                        <Select
-                          className="basic-multi-select"
-                          classNamePrefix="select"
-                          onChange={this.handleMultiSelect}
-                          isMulti={true}
-                          placeholder="Dance style..."
-                          isClearable={true}
-                          isSearchable={true}
-                          name="danceStyle"
-                          options={latin}
-                          styles={SelectStyle}
-                        />
-                      ),
-                      standard: (
-                        <Select
-                          className="basic-multi-select"
-                          classNamePrefix="select"
-                          onChange={this.handleMultiSelect}
-                          isMulti={true}
-                          placeholder="Dance style..."
-                          isClearable={true}
-                          isSearchable={true}
-                          name="danceStyle"
-                          options={standard}
-                          styles={SelectStyle}
-                        />
-                      ),
-                      various: (
-                        <Select
-                          className="basic-multi-select"
-                          classNamePrefix="select"
-                          onChange={this.handleMultiSelect}
-                          isMulti={true}
-                          placeholder="Dance style..."
-                          isClearable={true}
-                          isSearchable={true}
-                          name="danceStyle"
-                          options={various}
-                          styles={SelectStyle}
-                        />
-                      ),
-                    }[this.state.danceCategory]
-                  }
-                </div>
+                      {
+                        all: (
+                          <Select
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={this.handleMultiSelect}
+                            isMulti={true}
+                            placeholder="Dance style..."
+                            isClearable={true}
+                            isSearchable={true}
+                            name="danceStyle"
+                            options={all}
+                            styles={SelectStyle}
+                          />
+                        ),
+                        latin: (
+                          <Select
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={this.handleMultiSelect}
+                            isMulti={true}
+                            placeholder="Dance style..."
+                            isClearable={true}
+                            isSearchable={true}
+                            name="danceStyle"
+                            options={latin}
+                            styles={SelectStyle}
+                          />
+                        ),
+                        standard: (
+                          <Select
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={this.handleMultiSelect}
+                            isMulti={true}
+                            placeholder="Dance style..."
+                            isClearable={true}
+                            isSearchable={true}
+                            name="danceStyle"
+                            options={standard}
+                            styles={SelectStyle}
+                          />
+                        ),
+                        various: (
+                          <Select
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            onChange={this.handleMultiSelect}
+                            isMulti={true}
+                            placeholder="Dance style..."
+                            isClearable={true}
+                            isSearchable={true}
+                            name="danceStyle"
+                            options={various}
+                            styles={SelectStyle}
+                          />
+                        ),
+                      }[this.state.danceCategory]
+                    }
+                  </div>
 
-                 {/*    Dance Level   */}
-                 <div className="form-group">
-                  <label className="label-bold">Eventlevel</label>
+                  {/*    Dance Level   */}
+                  <div className="form-group">
+                    <label className="label-bold">Eventlevel</label>
 
-                  <Select
-                        className="basic-single"
-                        placeholder={"Choose a dance level..."}
-                        onChange={this.handleSelect}
-                        name="danceLevel"
-                        options={this.selectObjectList(eventLevels)}
-                        styles={SelectStyle}
-                  />
-                </div>
+                    <Select
+                      className="basic-single"
+                      placeholder={"Choose a dance level..."}
+                      onChange={this.handleSelect}
+                      name="danceLevel"
+                      options={this.selectObjectList(eventLevels)}
+                      styles={SelectStyle}
+                    />
+                  </div>
 
-                {/*    City   */}
+                  {/*    City   */}
 
-                <div className="form-group">
-                  <label className="label-bold" htmlFor="city">
-                    City
-                  </label>
-                  <Select
-                    className="basic-single"
-                    classNamePrefix="select"
-                    placeholder={"Choose a city..."}
-                    onChange={this.onChangeCity}
-                    name="city"
-                    options={cities}
-                    styles={SelectStyle}
-                    isClearable
-                  />
-                </div>
+                  <div className="form-group">
+                    <label className="label-bold" htmlFor="city">
+                      City
+                    </label>
+                    <Select
+                      className="basic-single"
+                      classNamePrefix="select"
+                      placeholder={"Choose a city..."}
+                      onChange={this.onChangeCity}
+                      name="city"
+                      options={cities}
+                      styles={SelectStyle}
+                      isClearable
+                    />
+                  </div>
 
-                {/* Date Type 1 - selection*/}
-                <label className="label-bold"> In the time...</label>
+                  {/* Date Type 1 - selection*/}
+                  <label className="label-bold"> In the time...</label>
                   <div className="form-group">
                     <label> On... </label>
                     <Select
@@ -524,97 +517,99 @@ class Events extends React.Component {
                       styles={SelectStyle}
                     />
                   </div>
-                
 
-                {/*    Startdate   */}
-                <div className="form-group">
-                  <label> From... </label>
-                  <DatePicker
-                    className="form-control"
-                    name="startDate"
-                    selected={this.state.startDate}
-                    onChange={(date) =>
-                      this.onChangeCalendar(date, "startDate")
-                    }
-                    dateFormat="MMMM d, yyyy"
-                    minDate={new Date()}
-                  />
-                </div>
-                {/*    Enddate   */}
-                <div className="form-group">
-                  <label> Till... </label>
-                  <DatePicker
-                    className="form-control"
-                    name="endDate"
-                    selected={this.state.endDate}
-                    onChange={(date) => this.onChangeCalendar(date, "endDate")}
-                    dateFormat="MMMM d, yyyy"
-                    minDate={this.state.startDate}
-                    placeholderText="Open End"
-                  />
-                </div>
+                  {/*    Startdate   */}
+                  <div className="form-group">
+                    <label> From... </label>
+                    <DatePicker
+                      className="form-control"
+                      name="startDate"
+                      selected={this.state.startDate}
+                      onChange={(date) =>
+                        this.onChangeCalendar(date, "startDate")
+                      }
+                      dateFormat="MMMM d, yyyy"
+                      minDate={new Date()}
+                    />
+                  </div>
+                  {/*    Enddate   */}
+                  <div className="form-group">
+                    <label> Till... </label>
+                    <DatePicker
+                      className="form-control"
+                      name="endDate"
+                      selected={this.state.endDate}
+                      onChange={(date) =>
+                        this.onChangeCalendar(date, "endDate")
+                      }
+                      dateFormat="MMMM d, yyyy"
+                      minDate={this.state.startDate}
+                      placeholderText="Open End"
+                    />
+                  </div>
 
-                {/*    Submit button (if pressed events will be fetched from backend based on set parameters)   */}
-                <div className="form-group">
-                  <input
-                    type="submit"
-                    className="btn button-pink"
-                    value="Submit"
+                  {/*    Submit button (if pressed events will be fetched from backend based on set parameters)   */}
+                  <div className="form-group">
+                    <input
+                      type="submit"
+                      className="btn button-pink"
+                      value="Submit"
+                    />
+                  </div>
+                </form>
+              </div>
+            </Col>
+            {/*    Events Part   */}
+            <Col xs={7} md={8} lg={9} xl={10} id="page-content-wrapper">
+              {/*    Sorting Navbar   */}
+              <Row>
+                <div style={{ marginLeft: "auto", width: "15rem" }}>
+                  Sorting by:
+                  <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    defaultValue={this.state.sorting.value}
+                    value={this.state.sorting.value}
+                    placeholder={""}
+                    isClearable={true}
+                    isSearchable={true}
+                    styles={SelectStyle}
+                    onChange={this.sortingChanged}
+                    name="gender"
+                    options={[
+                      { value: "date", label: "Date" },
+                      { value: "dateDesc", label: "Date Desc" },
+                    ]}
                   />
                 </div>
-              </form>
-            </div>
-          </Col>
-          {/*    Events Part   */}
-          <Col xs={7} md={8} lg={9} xl={10} id="page-content-wrapper">
-            {/*    Sorting Navbar   */}
-            <Row>
-          <div style={{ marginLeft: "auto" , width: "15rem"}}>
-      Sorting by:
-          <Select
-      className="basic-single"
-      classNamePrefix="select"
-      defaultValue={this.state.sorting.value}
-      value={this.state.sorting.value}
-      placeholder={""}
-      isClearable={true}
-      isSearchable={true}
-      styles={SelectStyle}
-      onChange={this.sortingChanged}
-      name="gender"
-      options={[
-              { value: 'date', label: 'Date' },
-      { value: 'dateDesc', label: 'Date Desc'},
-  ]}
-      />
-      </div>
-            </Row>
+              </Row>
 
-            {/*    Event Cards   */}
-            <Row>
-              {" "}
-              {this.state.events.length > 0 ? (
-                this.state.events.map((event) => (
-                  <EventCard
-                    event={event}
-                    state={this.props.state}
-                    onDeleteEvent={() => this.onDeleteEvent(event)}
-                    onSaveEvent={() => this.props.onSaveEvent(event)}
-                    onUnsaveEvent={() => this.props.onUnsaveEvent(event)}
-                  />
-                ))
-              ) : (
-                <div>
-                  <h3>Events</h3>
-                  <p>
-                    Appearently, no events are found with your selected Filters.{" "}
-                  </p>
-                </div>
-              )}{" "}
-            </Row>
-          </Col>
-        </Row>
-      </Container>
+              {/*    Event Cards   */}
+              <div className="row align-items-center">
+                {" "}
+                {this.state.events.length > 0 ? (
+                  this.state.events.map((event) => (
+                    <EventCard
+                      event={event}
+                      state={this.props.state}
+                      onDeleteEvent={() => this.onDeleteEvent(event)}
+                      onSaveEvent={() => this.props.onSaveEvent(event)}
+                      onUnsaveEvent={() => this.props.onUnsaveEvent(event)}
+                    />
+                  ))
+                ) : (
+                  <div>
+                    <h3>Events</h3>
+                    <p>
+                      Appearently, no events are found with your selected
+                      Filters.{" "}
+                    </p>
+                  </div>
+                )}{" "}
+              </div>
+            </Col>
+          </Row>
+        </Container>
       </div>
     );
   }

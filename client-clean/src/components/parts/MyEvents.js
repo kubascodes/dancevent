@@ -74,7 +74,7 @@ class MyEvents extends React.Component {
               onSaveEvent={this.props.onSaveEvent}
               onUnsaveEvent={this.props.onUnsaveEvent}
             />
-            <div className="row justify-content-center">
+            <div className="row justify-content-center mt-2">
               <div
                 className="btn btn-lg button-pink"
                 size="lg"
@@ -87,17 +87,15 @@ class MyEvents extends React.Component {
               </div>
             </div>
             {this.state.showPastEvents ? (
-              <>
-                <EventCardDeck
-                  events={this.props.state.savedEvents}
-                  limit="100"
-                  scope={["saved", "past"]}
-                  state={this.props.state}
-                  onDeleteEvent={this.props.onDeleteEvent}
-                  onSaveEvent={this.props.onSaveEvent}
-                  onUnsaveEvent={this.props.onUnsaveEvent}
-                />
-              </>
+              <EventCardDeck
+                events={this.props.state.savedEvents}
+                limit="100"
+                scope={["saved", "past"]}
+                state={this.props.state}
+                onDeleteEvent={this.props.onDeleteEvent}
+                onSaveEvent={this.props.onSaveEvent}
+                onUnsaveEvent={this.props.onUnsaveEvent}
+              />
             ) : (
               <></>
             )}

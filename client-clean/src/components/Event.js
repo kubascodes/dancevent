@@ -12,6 +12,25 @@ import Modal from "react-bootstrap/Modal";
 import CreateRequestForm from "./forms/CreateRequestForm";
 import PartnerRequestForm from "./forms/PartnerRequestForm";
 import { CardDeck } from "react-bootstrap";
+import moment from "moment";
+import {
+  MdMailOutline,
+  MdLocationOn,
+  MdPerson,
+  MdPhone,
+  MdLockOutline,
+  MdFavorite,
+  MdFace,
+  MdStarHalf,
+  MdEvent,
+  MdCreditCard,
+  MdFavoriteBorder,
+  MdTrendingFlat,
+  MdKeyboardArrowRight,
+  MdDelete,
+  MdCreate,
+  MdAccessTime,
+} from "react-icons/md";
 
 class Event extends React.Component {
   constructor(props) {
@@ -24,6 +43,7 @@ class Event extends React.Component {
       showDeletionDialog: false,
       showCreateRequestForm: false,
       showPartnerRequestDialog: false,
+      popover: {},
       redirect: null,
     };
   }
@@ -54,7 +74,7 @@ class Event extends React.Component {
     "Dec",
   ];
 
-  componentDidMount() {
+  componentDidMount = () => {
     var component_scope = this;
     const {
       match: { params },
@@ -63,22 +83,29 @@ class Event extends React.Component {
     fetch(`/events/${params.id}`)
       .then((res) => res.json())
       .then((data) => {
-        component_scope.setState({ event: data });
+        component_scope.setState({ event: data }, () => {
+          if (component_scope.state.event.promoCode) {
+            this.setState(
+              {
+                popover: (
+                  <Popover id="popover-basic">
+                    <Popover.Title as="h3">
+                      {component_scope.state.event.promoCode}
+                    </Popover.Title>
+                    <Popover.Content>
+                      <b>{component_scope.state.event.organizer.name}</b>{" "}
+                      provides the above discount code. Use it when registering
+                      for this event to save a buck.
+                    </Popover.Content>
+                  </Popover>
+                ),
+              },
+              () => console.log(this.state.popover)
+            );
+          }
+        });
       })
       .then(() => {
-        // Define the popover
-        component_scope.popover = (
-          <Popover id="popover-basic">
-            <Popover.Title as="h3">
-              {component_scope.state.event.promoCode}
-            </Popover.Title>
-            <Popover.Content>
-              <b>{component_scope.state.event.organizer.name}</b> provides the
-              above discount code. Use it when registering for this event to
-              save a buck.
-            </Popover.Content>
-          </Popover>
-        );
         if (component_scope.props.state.savedEvents.length > 0) {
           const savedEventIds = component_scope.props.state.savedEvents.map(
             (savedEvent) => savedEvent._id
@@ -120,7 +147,7 @@ class Event extends React.Component {
         })
         .catch((err) => alert(err));
     }
-  }
+  };
 
   componentDidUpdate = (prevProps) => {
     if (prevProps != this.props) {
@@ -213,90 +240,76 @@ class Event extends React.Component {
     return (
       <>
         {this.state.event.picture ? (
-          <Image
-            src={this.state.event.picture}
-            alt={this.state.event.title}
+          <div
+            className="banner"
             style={{
-              objectFit: "cover",
-              width: "100%",
-              height: "300px",
+              background: `url(${this.state.event.picture}) repeat-x center`,
             }}
           />
         ) : (
           <></>
         )}
-        <Container className="mt-3">
-          <Row>
-            <Col xs={9}>
+        <div className="container mt-3">
+          <div className="flex-row d-flex flex-wrap justify-content-end align-items-center">
+            <div className="col d-flex justify-content-start flex-column">
               <h1>{this.state.event.title}</h1>
-              <h5>dance {this.state.event.type}</h5>
               <h2>
-                {this.days[startDate.getDay()]}, {startDate.getDate()}{" "}
-                {this.months[startDate.getMonth()]} {startDate.getFullYear()}
+                <MdEvent /> {this.days[startDate.getDay()]},{" "}
+                {moment(this.state.event.startDate).format("D/M/YYYY")}
                 {this.state.event.type === "course" ? (
                   <>
                     {" "}
-                    &mdash; {this.days[endDate.getDay()]}, {endDate.getDate()}{" "}
-                    {this.months[endDate.getMonth()]} {endDate.getFullYear()} (
-                    {this.state.event.interval})
+                    &mdash;{" "}
+                    {moment(this.state.event.endDate).format("D/M/YYYY")}
                   </>
                 ) : (
                   ""
                 )}
               </h2>
-              <h3>
-                {this.convertTime24to12(
-                  startDate.getHours(),
-                  startDate.getMinutes()
-                )}{" "}
-                <>&mdash;</>{" "}
-                {this.convertTime24to12(
-                  endDate.getHours(),
-                  endDate.getMinutes()
-                )}
-              </h3>
-            </Col>
-            <Col className="text-center">
-              {this.state.interestedIn ? (
-                <Button
-                  className="float-right m-4"
-                  variant="success"
+              <h2>
+                <MdAccessTime />{" "}
+                {moment(this.state.event.startDate).format("H:mm")}
+              </h2>
+            </div>
+            <div className="col d-flex flex-column align-items-end">
+              {this.state.userIsOwner ? (
+                <></>
+              ) : this.state.interestedIn ? (
+                <Link
                   onClick={() => this.handleUnSave()}
+                  className="black-link"
                 >
-                  Saved
-                </Button>
+                  <MdFavorite className="" /> Saved
+                </Link>
               ) : (
-                <Button
-                  className="float-right m-4"
-                  variant="secondary"
-                  onClick={() => this.handleSave()}
-                >
-                  Save in <i>My Events</i>
-                </Button>
+                <Link onClick={() => this.handleSave()} className="black-link">
+                  <MdFavoriteBorder className="" /> Save
+                </Link>
               )}
               {this.state.userIsOwner ? (
-                <div>
+                <>
                   <Link
                     to={`/events/update/${this.props.match.params.id}`}
-                    className="btn button-pink float-right m-4"
+                    className="black-link"
                   >
-                    Edit Event
+                    <MdCreate /> Edit
                   </Link>
-                  <Button
-                    className="float-right m-4"
-                    variant="danger"
+
+                  <Link
+                    href="#"
                     onClick={() => this.setState({ showDeletionDialog: true })}
+                    className="text-danger mt-2"
                   >
-                    Delete Event
-                  </Button>
-                </div>
+                    <MdDelete /> Delete
+                  </Link>
+                </>
               ) : (
                 <></>
               )}
-            </Col>
-          </Row>
-          <Row>
-            <Col>
+            </div>
+          </div>
+          <div className="container d-flex mt-2">
+            <div className="col">
               <Table>
                 <tbody>
                   <tr>
@@ -339,8 +352,8 @@ class Event extends React.Component {
                   </tr>
                 </tbody>
               </Table>
-            </Col>
-            <Col>
+            </div>
+            <div className="col">
               <Table>
                 <tbody>
                   <tr>
@@ -367,19 +380,17 @@ class Event extends React.Component {
                     <td>
                       <b>Price:</b>
                     </td>
-                    <td>
+                    <td className="container d-flex align-items-center flex-wrap">
                       {this.state.event.price
-                        ? this.state.event.price === 0
-                          ? "free"
-                          : this.state.event.price + " EUR"
-                        : "not available"}
-                      {this.state.event.promoCode ? (
+                        ? `${this.state.event.price} EUR`
+                        : "free"}
+                      {this.state.event.promoCode && this.state.popover ? (
                         <OverlayTrigger
                           trigger="click"
                           placement="bottom"
-                          overlay={this.popover}
+                          overlay={this.state.popover}
                         >
-                          <Button className="ml-4" variant="link">
+                          <Button className="dancevent" variant="link">
                             Get a discount code
                           </Button>
                         </OverlayTrigger>
@@ -390,34 +401,42 @@ class Event extends React.Component {
                   </tr>
                 </tbody>
               </Table>
-            </Col>
-          </Row>
-          <Row className="mt-4 ml-1 mb-4">
+            </div>
+          </div>
+          <div className="row mt-4 ml-1 mb-4">
             {this.state.event.description ? this.state.event.description : ""}
-          </Row>
-          {window.sessionStorage.secret_token ? (
+          </div>
+          {!window.sessionStorage.secret_token ? (
+            <p>
+              {" "}
+              Please {<Link to={{ pathname: "login" }}>login</Link>} to view
+              partner requests for this event.
+            </p>
+          ) : this.state.partnerRequests.length === 0 ? (
+            <h4 className="text-center mt-4">
+              There are currently no open partner requests for this event.
+            </h4>
+          ) : (
             <>
-              <h3>Open partner requests for this event:</h3>
+              <h4 className="text-center mt-4">
+                Open partner requests for this event:
+              </h4>
               <CardDeck>
                 {this.state.partnerRequests.map((partnerRequest) => {
                   return <PartnerRequestForm request={partnerRequest} />;
                 })}
               </CardDeck>
             </>
-          ) : (
-            <p>
-              {" "}
-              Please {<Link to={{ pathname: "login" }}>login</Link>} to view
-              partner requests for this event.
-            </p>
           )}
-          <div
-            className="btn btn-lg button-pink"
-            onClick={() => this.showCreateRequestForm()}
-          >
-            Create a partner request
+          <div className="row justify-content-center">
+            <div
+              className="btn btn-lg button-pink mt-4"
+              onClick={() => this.showCreateRequestForm()}
+            >
+              Create a partner request
+            </div>
           </div>
-        </Container>
+        </div>
         <Modal
           show={this.state.showPartnerRequestDialog}
           backdrop="static"
@@ -448,7 +467,7 @@ class Event extends React.Component {
           <Modal.Footer>
             <Button
               variant="outline-dark"
-              onClick={() => this.setState({ showDialog: false })}
+              onClick={() => this.setState({ showDeletionDialog: false })}
             >
               Close
             </Button>

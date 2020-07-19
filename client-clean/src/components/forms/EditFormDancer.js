@@ -177,7 +177,8 @@ class EditFormDancer extends React.Component {
     fetch('/update/dancer', {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json; charset=utf-8'
+        'Content-Type': 'application/json; charset=utf-8',
+        'Authorization': 'Bearer ' + window.sessionStorage.secret_token
       },
       body: JSON.stringify(form),
     })

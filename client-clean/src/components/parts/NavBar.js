@@ -16,7 +16,7 @@ const NavBar = ({ state, logOut }) => {
   };
 
   /*When you're logged in, display a different NavBar*/
-  if (state.secret_token) {
+  if (window.sessionStorage.secret_token) {
     return (
       <div className="navBar">
         <nav

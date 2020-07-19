@@ -73,26 +73,32 @@ router.get(
 router.post(
   "/changePassword",
   passport.authenticate("jwt", { session: false }),
-  async (req, res, next) => {
-    /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
-    //console.log(req.user);
-    //console.log(req.body);
-    if (req.body.newPassword1 != req.body.newPassword1) {
-      return;
-    }
+    async (req, res, next) => {
     try {
+      if (req.body.newPassword1 != req.body.newPassword1) {
+        throw new Error('Passwords do not match');
+      }
+
       //setting the response object
       let hash = await bcrypt.hash(req.body.newPassword1, 10);
-      let pwdChange = await User.findOneAndUpdate({ _id: req.user._id },{ password: hash});
-      //console.log(pwdChange);
-      //generate a new token and send back
-      const token = await jwt.sign({ user: {_id: pwdChange._id , email: pwdChange.email} }, config.JwtSecret, { expiresIn: '12h' });
-      let response = {};
-      //if token then return to the user
-      if (token) {
-        response.token = token;
+
+      let person = await User.findById(req.user._id);
+      if(await person.isValidPassword(req.body.oldPassword)){
+
+        let pwdChange = await User.findOneAndUpdate({ _id: req.user._id },{ password: hash});
+        //generate a new token and send back
+        const token = await jwt.sign({ user: {_id: pwdChange._id , email: pwdChange.email} }, config.JwtSecret, { expiresIn: '12h' });
+        let response = {};
+        //if token then return to the user
+        if (token) {
+          response.token = token;
+        }
+        return res.status(200).json(response);
+
+
+      }else {
+        throw new Error('Old Password not correct');
       }
-      return res.status(200).json(response);
     } catch (error) {
       return res.status(500).json({
         error: "Internal server error",
