@@ -17,6 +17,9 @@ class FindDancePartnerView extends React.Component {
     };
   }
 
+
+
+
     //TODO: Checkbox - BUG: works only wright by clicking multiple times
     onChangeCheckbox = (event) => {
       /* This function should update the value "viewAllRequests" if it is checked afterwards it should call the getRequests function to fetch from the backend all requests */
@@ -33,6 +36,7 @@ class FindDancePartnerView extends React.Component {
                 checked.push(elements[x].value);
             } else {
             }
+          }
             if (checked.length < 1) {
                 //store empty if nothing
                 this.setState({[checkboxName]: ""});
@@ -47,7 +51,7 @@ class FindDancePartnerView extends React.Component {
             }
             console.log(this.state.viewAllRequests);
             this.getRequests(window.location.pathname);
-        };
+
 
 
 
@@ -178,8 +182,8 @@ class FindDancePartnerView extends React.Component {
             <Row >
         {/*TODO: Checkbox*/}
                 <div className="form-group" style={{ marginRight: "auto" }}>
-    <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
-        <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
+                    <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
+                    <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
                 </div>
 
                 <div style={{ marginLeft: "auto" , width: "15rem"}}>
