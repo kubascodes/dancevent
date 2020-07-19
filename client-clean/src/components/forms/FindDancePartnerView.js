@@ -18,6 +18,8 @@ class FindDancePartnerView extends React.Component {
   }
 
 
+  
+
     onChangeCheckbox = (event) => {
         var checkboxName = event.target.name;
         var elements = document.getElementsByName(checkboxName);
@@ -31,6 +33,7 @@ class FindDancePartnerView extends React.Component {
                 checked.push(elements[x].value);
             } else {
             }
+          }
             if (checked.length < 1) {
                 //store empty if nothing
                 this.setState({[checkboxName]: ""});
@@ -45,7 +48,7 @@ class FindDancePartnerView extends React.Component {
             }
             console.log(this.state.viewAllRequests);
             this.getRequests(window.location.pathname);
-        };
+        
 
 
 
