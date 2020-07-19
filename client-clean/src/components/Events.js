@@ -11,6 +11,7 @@ import {SelectStyle} from '../assets/styles'
 import "react-datepicker/dist/react-datepicker.css";
 
 import cities from "./forms/cities";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 class Events extends React.Component {
   constructor(props) {
@@ -389,17 +390,28 @@ class Events extends React.Component {
                   >
                     To dance
                   </label>
-                  <Select
-                    className="basic-single"
-                    classNamePrefix="select"
-                    placeholder="Dance style category..."
-                    isClearable={true}
-                    isSearchable={true}
-                    onChange={this.handleSelect}
-                    name="danceCategory"
-                    options={danceStyleCategory}
-                    styles={SelectStyle}
-                  />
+                  <>
+                  <OverlayTrigger
+                      key={'right'}
+                      placement={'right'}
+                      overlay={
+                          <Tooltip id={`tooltip-right`}>The category is only for an easier selection below (Only below submitted).</Tooltip>
+                      }
+                  >
+                      <Select
+                          className="basic-single"
+                          classNamePrefix="select"
+                          defaultValue={this.state.danceCategory}
+                          placeholder={"Dance style category..."}
+                          isClearable={true}
+                          isSearchable={true}
+                          styles={SelectStyle}
+                          onChange={this.handleChange}
+                          name="danceCategory"
+                          options={danceStyleCategory}
+                          />
+                  </OverlayTrigger>
+                  </>
                   {
                     {
                       all: (
