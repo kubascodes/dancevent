@@ -22,9 +22,9 @@ class Events extends React.Component {
       eventtype: "all",
       danceStyle: "various",
       danceLevel: "all",
-      city: "Munich",
+      city: "",
       //startDate: formatDate(Date.now()),
-      startDate: new Date(),
+      startDate: new Date(new Date().setHours(0,0,0,0)),
       endDate: null,
 
       sorting: "date",
@@ -83,14 +83,19 @@ class Events extends React.Component {
   //Changes the state for calendar inputs
   //type should specify if it is a start- or endDate
   onChangeCalendar = (date, type) => {
-    console.log(this);
+    console.log(date);
     this.setState({ [type]: date });
+    console.log(this.state)
   };
 
   //Changes the state for REACT-SELECT inputs
   onChangeCity = (event) => {
     console.log(event);
-    this.setState({ city: event.value });
+    this.setState({ 
+      city: event ? event.value : "",
+    })
+      //city: event.value });
+    console.log(this.state)
   };
 
   handleSelect = (selectedOption, action) => {
@@ -113,13 +118,15 @@ class Events extends React.Component {
     console.log(this.state);
   };
 
-  sortingChanged = (event) => {
-    /*
-        If Events should be sorted based on parameter 'sorting' this function is called
-    */
+    sortingChanged = (selectedOption, action) => {
+        /*
+            If Events should be sorted based on parameter 'sorting' this function is called
+        */
 
-    //set the new state
-    this.setState({ sorting: event.target.value });
+        //set the new state
+        this.setState({
+            sorting: selectedOption ? selectedOption.value : ""
+        });
 
     //sort after prefered sortingmethods
 
@@ -136,6 +143,54 @@ class Events extends React.Component {
       );
     }
   };
+
+  handleTextDate = (selectedOption, action) => {
+    /*this function gets a text like "tomorrow" and evaluates than the start and end date*/
+    console.log(selectedOption)
+    var today = new Date(new Date().setHours(0,0,0,0));
+    if(selectedOption){
+
+        var startDate ;
+        var endDate;
+        switch(selectedOption.value){
+            case "today":
+                startDate = today;
+                endDate = today;
+                break;
+            case "tomorrow":
+                startDate = new Date(today.setTime(today.getTime() + 1 * 86400000 ));
+                endDate = startDate;
+                break;
+            case "week":
+                var curr = today; // get current date
+                var monday = curr.getDate() - curr.getDay() + 1; // First day is the day of the month - the day of the week
+                var sunday = monday + 6; // last day is the first day + 6
+                startDate = new Date(today.setDate(monday));
+                endDate = new Date(today.setDate(sunday));
+                break;
+            case "weekend":
+                var curr = new Date; // get current date
+                var friday = curr.getDate() - curr.getDay() + 5; // First day is the day of the month - the day of the week
+                var sunday = friday + 2; // last day is the first day + 6
+                startDate = new Date(today.setDate(friday));
+                endDate = new Date(today.setDate(sunday));
+                break;
+
+        }
+        this.setState({
+            startDate: startDate,
+            endDate: endDate
+        });
+    }
+    else{
+        this.setState({
+            startDate: today,
+            endDate: null,
+        });
+    }
+}
+
+
 
   submitFilter = (event) => {
     /*
@@ -253,6 +308,15 @@ class Events extends React.Component {
     const eventLevels = ["all", "beginner", "intermediate", "advanced"];
     const types = ["all", "course", "ball", "competition", "party"];
 
+    // Date 1 Option - selection
+    const dateSelection = [
+      { value: 'today', label: 'Today' },
+      { value: 'tomorrow', label: 'Tomorrow' },
+      { value: 'weekend', label: 'This Weekend' },
+      { value: 'week', label: 'This Week' },
+    ];
+
+
     const danceStyleCategory = [
       {value: 'all', label: 'All Styles'},
       {value: 'latin', label: 'Latin/Rythm'},
@@ -263,6 +327,8 @@ class Events extends React.Component {
   const all = [
     {value: 'all', label: 'All styles'}
   ]
+
+  
 
   const latin = [
       {value: 'latin', label: 'All latin styles'},
@@ -297,7 +363,7 @@ class Events extends React.Component {
       <Container fluid>
         <Row>
           {/*    Filter Sidebar   */}
-          <Col xs={2} id="sidebar-wrapper">
+          <Col xs={5} md={4} lg={3} xl={2} id="sidebar-wrapper">
             <div>
               <form onSubmit={this.submitFilter}>
                 <h4>Filter Events </h4>
@@ -424,12 +490,33 @@ class Events extends React.Component {
                     name="city"
                     options={cities}
                     styles={SelectStyle}
+                    isClearable
                   />
                 </div>
 
+                {/* Date Type 1 - selection*/}
+                <label className="label-bold"> In the time...</label>
+                  <div className="form-group">
+                    <label> On... </label>
+                    <Select
+                      className="basic-single"
+                      classNamePrefix="select"
+                      defaultValue={this.state.prefDateSelection}
+                      placeholder={"E.g. Tomorrow"}
+                      isClearable={true}
+                      isSearchable={true}
+                      styles={SelectStyle}
+                      onChange={this.handleTextDate}
+                      name="dateSelection"
+                      options={dateSelection}
+                      styles={SelectStyle}
+                    />
+                  </div>
+                
+
                 {/*    Startdate   */}
                 <div className="form-group">
-                  <label className="label-bold"> Earliest start date </label>
+                  <label> From... </label>
                   <DatePicker
                     className="form-control"
                     name="startDate"
@@ -443,7 +530,7 @@ class Events extends React.Component {
                 </div>
                 {/*    Enddate   */}
                 <div className="form-group">
-                  <label className="label-bold"> Latest start date </label>
+                  <label> Till... </label>
                   <DatePicker
                     className="form-control"
                     name="endDate"
@@ -467,16 +554,28 @@ class Events extends React.Component {
             </div>
           </Col>
           {/*    Events Part   */}
-          <Col xs={10} id="page-content-wrapper">
+          <Col xs={7} md={8} lg={9} xl={10} id="page-content-wrapper">
             {/*    Sorting Navbar   */}
             <Row>
-              <div style={{ marginLeft: "auto" }}>
-                Sorting by:
-                <select name="sorting" onChange={this.sortingChanged}>
-                  <option value="date">Date</option>
-                  <option value="dateDesc">Date desc</option>
-                </select>
-              </div>
+          <div style={{ marginLeft: "auto" , width: "15rem"}}>
+      Sorting by:
+          <Select
+      className="basic-single"
+      classNamePrefix="select"
+      defaultValue={this.state.sorting.value}
+      value={this.state.sorting.value}
+      placeholder={""}
+      isClearable={true}
+      isSearchable={true}
+      styles={SelectStyle}
+      onChange={this.sortingChanged}
+      name="gender"
+      options={[
+              { value: 'date', label: 'Date' },
+      { value: 'dateDesc', label: 'Date Desc'},
+  ]}
+      />
+      </div>
             </Row>
 
             {/*    Event Cards   */}

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import EventCardDeck from "./EventCardDeck";
 import RequestCardDeck from "./RequestCardDeck";
 import Button from "react-bootstrap/Button";
+import MyRequests from "../forms/MyRequests";
 import moment from "moment";
 import {
   MdMailOutline,
@@ -20,7 +21,7 @@ import {
 import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
 const Avatar = createAvatarComponent({ sources: [SrcSource, IconSource] });
 
-const ProfileDancer = (props) => {
+const ProfileDancer = (props, userData) => {
   const capitalize = (input) => {
     const capitalStr = input.replace(/\b\w/g, function (string) {
       return string.toUpperCase();
@@ -102,15 +103,13 @@ const ProfileDancer = (props) => {
         <EventCardDeckOld state={props.state} />
 */}
         <h5 className="text-center mt-2">
-          <Link
-            className="font-weight-bolder text-body text-decoration-none"
-            to="/myrequests"
-          >
+          <b>
             Your Partner Requests
-          </Link>
+          </b>
         </h5>
+            <MyRequests state={props.state}/>
 
-        <RequestCardDeck state={props.state} />
+            {/*<RequestCardDeck state={props.state} />*/}
       </div>
     </div>
   );

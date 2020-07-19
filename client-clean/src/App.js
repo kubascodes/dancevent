@@ -31,6 +31,8 @@ export default class App extends Component {
       savedEvents: [],
       organizedEvents: [],
       exampleEvent: {},
+      eventFetched: false,
+      userFetched: false,
     };
   }
 
@@ -75,10 +77,13 @@ export default class App extends Component {
       .then((res) => res.json(res))
       .then((res) => {
         console.log(res);
-        context.setState({ savedEvents: res.interestedInEvents });
         if (res.userType === "Organizer") {
           context.setState({ organizedEvents: res.organizedEvents });
         }
+        context.setState({
+          savedEvents: res.interestedInEvents,
+          eventFetched: true,
+        });
       })
       .catch((err) => alert(err));
   };
@@ -105,6 +110,7 @@ export default class App extends Component {
             city: res.city,
             userType: res.userType,
             profilePicture: res.picture,
+            userFetched: true,
           },
           () => {
             if (context.state.userType === "Organizer") {
@@ -117,6 +123,10 @@ export default class App extends Component {
       .catch((err) => alert(err));
 
     this.fetchUserEvents();
+  };
+
+  dataFetched = () => {
+    return this.state.eventFetched && this.state.userFetched;
   };
 
   logIn = (data) => {
@@ -146,6 +156,13 @@ export default class App extends Component {
 
   addEvent = (event) => {
     this.state.organizedEvents.push(event);
+  };
+
+  updateEvent = (event) => {
+    const index = this.state.organizedEvents.findIndex(
+      (element) => element._id === event._id
+    );
+    this.state.organizedEvents[index] = event;
   };
 
   // Propagated up from the EventCard
@@ -379,6 +396,8 @@ export default class App extends Component {
                 {...props}
                 auth_token={this.secret_token}
                 onCreate={this.addEvent}
+                userType={this.state.userType}
+                dataFetched={this.dataFetched}
               />
             )}
           />
@@ -386,9 +405,13 @@ export default class App extends Component {
             path="/events/update/:id"
             render={(props) => (
               <EventCreationForm
-                update
                 {...props}
+                update
                 auth_token={this.secret_token}
+                onCreate={this.updateEvent}
+                userType={this.state.userType}
+                userEvents={this.state.organizedEvents}
+                dataFetched={this.dataFetched}
               />
             )}
           />

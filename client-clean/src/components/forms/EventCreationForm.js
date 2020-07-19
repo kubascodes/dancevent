@@ -7,9 +7,10 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import "react-datepicker/dist/react-datepicker.css";
 import {SelectStyle} from '../../assets/styles';
 
+import RouteAuthentication from "../../services/RouteAuthentication";
 import ProcessImage from '../../services/imageProcessing';
 
-import { Image, Button, Container, Row, Col, Table } from "react-bootstrap";
+import { Image, Button, Container, Row, Col, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
 
 import { CriticalAlert } from "../helpers/Alert";
 
@@ -25,7 +26,7 @@ class EventCreationForm extends React.Component {
     super(props);
     this.state = {
       //Event attributes
-      title: null,
+      title: "",
       type: "course",
       description: "",
       startDate: new Date(),
@@ -138,6 +139,27 @@ class EventCreationForm extends React.Component {
           })
           console.log(err)
         });
+    }
+  }
+
+  userOwnsEvent = () => {
+
+
+    //to get the param ID specified in the URL
+    const {
+      match: { params },
+    } = this.props;
+    if (this.props.userEvents.length > 0) {
+      const organizedEventIds = this.props.userEvents.map(
+        (organizedEvent) => organizedEvent._id
+      );
+      if (!organizedEventIds.includes(params.id)) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
     }
   }
 
@@ -340,6 +362,7 @@ class EventCreationForm extends React.Component {
         .then((res) => {
           //Save the new event in the App
           this.props.onCreate(res)
+
           //Redirect to Event
           this.setState({ redirect: "/events/single/" + res._id });
 
@@ -408,6 +431,21 @@ class EventCreationForm extends React.Component {
       { value: 'hustle', label: 'Hustle' },
     ];
 
+    if(window.sessionStorage.secret_token === null){
+      return <Redirect to="/" />
+    }
+
+
+    //checks if th user is an Organizer and owns the event
+    //Befor checking the Data must habe benn fetched in App
+    if(this.props.dataFetched()){
+      if(this.props.userType !== "Organizer" ){
+        return <Redirect to="/" />
+      }
+      if(this.props.update && !this.userOwnsEvent()){
+        return <Redirect to="/" />
+      }
+    }
 
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />
@@ -435,10 +473,18 @@ class EventCreationForm extends React.Component {
             <Container className="mt-3">
               <Row className="justify-content-md-center">
                 <div className="form-group">
-                  <div className="custom-file">
-                    <input type="file" className="custom-file-input form-control" name="picture" onChange={this.onChangeFile} id="customFile" />
-                    <label className="custom-file-label form-control" htmlFor="customFile">Upload your event picture</label>
-                  </div>
+                  <OverlayTrigger 
+                    placement='bottom'
+                    overlay={
+                      <Tooltip>
+                        The pictrue will be croped to a ration of 10 to 6. Make sure it also looks good in banner mode as seen above.
+                      </Tooltip>
+                  }>
+                    <div className="custom-file">
+                     <input type="file" className="custom-file-input form-control" name="picture" onChange={this.onChangeFile} id="customFile" />
+                     <label className="custom-file-label form-control" htmlFor="customFile">Upload your event picture</label>
+                    </div>
+                    </OverlayTrigger>
                 </div>
               </Row>
 
@@ -540,14 +586,14 @@ class EventCreationForm extends React.Component {
               </Row>
 
               <Row>
-                <Col>
+                <Col xs={12} md={6}>
                   <Table>
                     <tbody>
                       <tr>
-                        <td>
+                        <td width={'30%'}>
                           <b>Organizer:</b>
                         </td>
-                        <td>
+                        <td width={'70%'}>
                           You
                     </td>
                       </tr>
@@ -643,14 +689,14 @@ class EventCreationForm extends React.Component {
                   </Table>
                 </Col>
 
-                <Col>
+                <Col xs={12} md={6}>
                   <Table>
                     <tbody>
                       <tr>
-                        <td>
+                        <td width={'30%'}>
                           <b>City:</b>
                         </td>
-                        <td>
+                        <td width={'70%'}>
                           <Select
                             className="basic-single border-red"
                             classNamePrefix="select"
@@ -752,4 +798,4 @@ EventCreationForm.defaultProps = {
   update: false,
 }
 
-export default EventCreationForm
+export default RouteAuthentication(EventCreationForm)

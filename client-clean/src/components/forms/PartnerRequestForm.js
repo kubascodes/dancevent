@@ -1,14 +1,14 @@
 import React from "react";
 import {
-  Button,
-  Card,
-  Col,
-  Container,
-  Row,
-  Popover,
-  OverlayTrigger,
-  Image,
-    Modal,
+    Button,
+    Card,
+    Col,
+    Container,
+    Row,
+    Popover,
+    OverlayTrigger,
+    Image,
+    Modal, ModalTitle,
 } from "react-bootstrap";
 import {
   MdMailOutline,
@@ -34,17 +34,23 @@ class PartnerRequestForm extends React.Component {
     this.state = {
       showModal: false,
       showContactModal : false,
+        showDeletionDialog: false,
     };
   }
 
   handleCancel = () => {
     this.setState({ showModal: false });
     this.setState({ showContactModal: false });
+    this.setState({ showDeletionDialog: false });
   };
 
   handleContactCancel = () => {
     this.setState({ showContactModal: false });
   };
+
+    handleDeleteCancel = () => {
+        this.setState({ showDeletionDialog: false });
+    };
 
   handleShow = () => {
     this.setState({ showModal: true });
@@ -53,6 +59,10 @@ class PartnerRequestForm extends React.Component {
   handleContactShow = () => {
     this.setState({ showContactModal: true });
   };
+
+    handleDeleteShow = () => {
+        this.setState({ showDeletionDialog: true });
+    };
 
   handleDelete = (requestId) => {
     this.handleCancel();
@@ -136,62 +146,124 @@ class PartnerRequestForm extends React.Component {
 
     return (
       <div className="form-group" key={request._id}>
+
+        {this.props.profile ? (
+            <Card
+                id={request._id}
+                style={{ width: "15rem" }}
+                className="text-center"
+            >
+                <Card.Body onClick={this.handleShow}>
+
+                    {/*using Image instead of Card.Image to round the picture*/}
+                    <Image
+                        src={
+                            request.event.picture ? request.event.picture : "img/placeholder2_1024x365.png"
+                        }
+                        alt={request.event.name}
+                        style={{ width: "180px", height: "171px" }}
+                        roundedCircle
+                    />
+
+                    <Card.Title> </Card.Title>
+                    <Card.Text>
+
+                        <li className="cart-text list-unstyled">
+                          <GiPartyFlags className="align-text-bottom"/> {" "}{request.event.title}
+                        </li>
+
+                        <li className="cart-text list-unstyled">
+                            <MdLocationOn className="align-text-bottom"/> {request.event.city}
+                        </li>
+
+                        <li className="cart-text list-unstyled">
+                          <MdEvent className="align-text-bottom" />
+                              {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
+                                {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
+                                {request.event.type === "course" ? (
+                              <>
+                              {" "}
+                              &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
+                              {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
+                              {request.event.interval})
+                              </>
+                              ) : (
+                                  ""
+                              )}
+                        </li>
+                          <li className="cart-text list-unstyled">
+                              <MdEvent className="align-text-left" /> Created on:{" "}
+                              {" "}<label>{moment(request.timestamp).format("dddd D.M.YYYY")}</label>
+                          </li>
+                    </Card.Text>
+                </Card.Body>
+
+                <div class="card-footer bg-transparent">
+
+                    <Link onClick={this.handleShow} className="ml-auto mr-2 black-link align-text-bottom">More Details<MdKeyboardArrowRight className="align-text-bottom" /></Link>
+
+                </div>
+            </Card>
+        ) : (
+
         <Card
           id={request._id}
           style={{ width: "15rem" }}
           className="text-center"
         >
           <Card.Body onClick={this.handleShow}>
-            {/*using Image instead of Card.Image to round the picture*/}
-            <Image
-              src={
-                user.picture ? user.picture : "img/placeholderDancerProfile.png"
-              }
-              alt={user.name}
-              style={{ width: "180px", height: "171px" }}
-              roundedCircle
-            />
-            <Card.Title> </Card.Title>
-            <Card.Title> {user.name} </Card.Title>
-            <Card.Text>
-              <li className="cart-text list-unstyled">
-        <MdFace className="align-text-bottom" />{" "}{this.calculate_age(user.yearOfBirth)}
-               </li>
-              <li className="cart-text list-unstyled">
-        <MdStarHalf className="align-text-bottom" />{" "}{this.capitalize(user.proficiencyLevel)}
-               </li>
-                <li className="cart-text list-unstyled">
-                <GiPartyFlags className="align-text-bottom"/> {" "}{request.event.title}
-                </li>
-        <li className="cart-text list-unstyled">
-        <MdLocationOn className="align-text-bottom"/> {request.event.city}
-        </li>
-              <li className="cart-text list-unstyled">
-                <MdEvent className="align-text-bottom" />
-                {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
-                  {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
-                  {request.event.type === "course" ? (
-                      <>
-                      {" "}
-                      &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
-                    {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
-                      {request.event.interval})
-                  </>
-                  ) : (
-                      ""
-                  )}
-              </li>
-            </Card.Text>
-            {/*TODO: Add event location*/}
-            {/*TODO: Add event date*/}
-          </Card.Body>
-    <div class="card-footer bg-transparent">
-        <Link onClick={this.handleShow} className="ml-auto mr-2 black-link align-text-bottom">More Details<MdKeyboardArrowRight className="align-text-bottom" /></Link>
-          {/*<Card.Footer>
-                                 <Button id="deleteRequest" onClick={()=>{this.props.deleteRequest(request._id)}}>Delete Request</Button>
-                             </Card.Footer>*/}
-                             </div>
+                {/*using Image instead of Card.Image to round the picture*/}
+                <Image
+                  src={
+                    user.picture ? user.picture : "img/placeholderDancerProfile.png"
+                  }
+                  alt={user.name}
+                  style={{ width: "180px", height: "171px" }}
+                  roundedCircle
+                />
+                <Card.Title> </Card.Title>
+                <Card.Title> {user.name} </Card.Title>
+                <Card.Text>
+                    <li className="cart-text list-unstyled">
+                        <MdFace className="align-text-bottom" />{" "}{this.calculate_age(user.yearOfBirth)}
+                    </li>
+
+                    <li className="cart-text list-unstyled">
+                        <MdStarHalf className="align-text-bottom" />{" "}{this.capitalize(user.proficiencyLevel)}
+                    </li>
+
+                    <li className="cart-text list-unstyled">
+                        <GiPartyFlags className="align-text-bottom"/> {" "}{request.event.title}
+                    </li>
+
+                    <li className="cart-text list-unstyled">
+                        <MdLocationOn className="align-text-bottom"/> {request.event.city}
+                    </li>
+
+                    <li className="cart-text list-unstyled">
+                        <MdEvent className="align-text-bottom" />
+                        {days[new Date(request.event.startDate).getDay()]}, {new Date(request.event.startDate).getDate()}{" "}
+                          {months[new Date (request.event.startDate).getMonth()]} {new Date (request.event.startDate).getFullYear()}
+                          {request.event.type === "course" ? (
+                              <>
+                              {" "}
+                              &mdash; {days[new Date(request.event.endDate).getDay()]}, {new Date(request.event.endDate).getDate()}{" "}
+                            {months[new Date(request.event.endDate).getMonth()]} {new Date(request.event.endDate).getFullYear()} (
+                              {request.event.interval})
+                          </>
+                          ) : (
+                              ""
+                          )}
+                    </li>
+                </Card.Text>
+            </Card.Body>
+
+            <div class="card-footer bg-transparent">
+                <Link onClick={this.handleShow} className="ml-auto mr-2 black-link align-text-bottom">More Details<MdKeyboardArrowRight className="align-text-bottom" /></Link>
+
+             </div>
         </Card>
+  )}
         
         <ContactModal show={this.state.showContactModal} onHide={this.handleContactCancel} id={request._id} name={user.name}/>
         
@@ -205,22 +277,36 @@ class PartnerRequestForm extends React.Component {
           centered
         >
           <Modal.Header closeButton>
-      {" "}
-      <Col>{" "}
-      </Col>
-      <Col>
+            {" "}
+            <Col>{" "} </Col>
+            <Col>
 
-      <Modal.Title>{" "}<Image
-      src={
-          user.picture
-              ? user.picture
-              : "img/placeholderDancerProfile.png"
-      }
-      alt={user.name}
-      style={{ width: "180px", height: "171px" }}
-      roundedCircle
-      /></Modal.Title>
-      </Col>
+              <Modal.Title>
+                {" "}
+                { this.props.profile
+                    ?
+                    <Image
+                        src={
+                            request.event.picture ? request.event.picture : "img/placeholder2_1024x365.png"
+                        }
+                        alt={request.event.name}
+                        style={{ width: "180px", height: "171px" }}
+                        roundedCircle
+                    />
+                    :
+                      <Image
+                        src={
+                            user.picture
+                              ? user.picture
+                              : "img/placeholderDancerProfile.png"
+                        }
+                        alt={user.name}
+                        style={{ width: "180px", height: "171px" }}
+                        roundedCircle
+                      />
+                }
+              </Modal.Title>
+            </Col>
 
 
 
@@ -251,7 +337,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-    <GiBodyHeight className="align-text-bottom"/>  {" "}<label>My height...</label>{" "}
+                    <GiBodyHeight className="align-text-bottom"/>  {" "}<label>My height...</label>{" "}
                 </Col>
 
                 <Col>
@@ -264,7 +350,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-    <MdStarHalf className="align-text-bottom" />{" "}<label>My proficiency experience...</label>{" "}
+                    <MdStarHalf className="align-text-bottom" />{" "}<label>My proficiency experience...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -276,7 +362,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-    <MdFavorite className="align-text-bottom"/>{" "}<label>I usually enjoy to dance...</label>{" "}
+                    <MdFavorite className="align-text-bottom"/>{" "}<label>I usually enjoy to dance...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -298,13 +384,13 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-    <MdPerson className="align-text-bottom" />{" "}<label> Gender... </label>{" "}
+                    <MdPerson className="align-text-bottom" />{" "}<label> Gender... </label>{" "}
                 </Col>
                 <Col>
                   {" "}
-      <label>{request.listofGenders.map((gender)=>
+                <label>{request.listofGenders.map((gender)=>
               <li className="cart-text list-unstyled">{this.capitalize(gender)}</li>
-  )}</label>{" "}
+                 )}</label>{" "}
                 </Col>
               </Row>
 
@@ -312,7 +398,7 @@ class PartnerRequestForm extends React.Component {
               <Row>
                 <Col>
                   {" "}
-    <MdFace className="align-text-bottom" />{" "}<label>Age range...</label>{" "}
+                      <MdFace className="align-text-bottom" />{" "}<label>Age range...</label>{" "}
                 </Col>
                 <Col>
                   {" "}
@@ -411,25 +497,52 @@ class PartnerRequestForm extends React.Component {
                 <Button className="btn button-pink"> Contact </Button>
               </OverlayTrigger>*/
             )}
-            {/*this.props.profile && (
+            {this.props.profile && (
               <div>
                 <Button
                   variant="danger"
-                  onClick={() => {
-                    this.handleDelete(request._id);
-                  }}
+                  onClick={this.handleDeleteShow}
                 >
                   {" "}
                   Delete{" "}
-                </Button>{" "}
-                <Button variant="primary" onClick={this.handleCancel}>
+                </Button>
+                {" "}
+                {/*<Button variant="primary" onClick={this.handleCancel}>
                   {" "}
                   Update{" "}
-                </Button>
+                </Button>*/}
               </div>
-                )*/}
+                )}
           </Modal.Footer>
         </Modal>
+      <Modal
+      show={this.state.showDeletionDialog}
+      onHide={this.handleDeleteCancel}
+      backdrop="static"
+      keyboard={false}
+          >
+          <Modal.Header closeButton>
+          <Modal.Title>Delete Request</Modal.Title>
+      </Modal.Header>
+          <Modal.Body>
+          Are you sure you want to delete the request for the{" "}
+            <b>{request.event.title} </b>? It will not be visible to users of
+      the platform anymore. This cannot be undone.
+      </Modal.Body>
+      <Modal.Footer>
+      <Button
+      variant="secondary"
+      onClick={this.handleDeleteCancel}
+  >
+      Close
+      </Button>
+      <Button variant="danger" onClick={() => {
+          this.handleDelete(request._id);
+      }}>
+          Understood
+          </Button>
+          </Modal.Footer>
+          </Modal>
       </div>
     );
   }

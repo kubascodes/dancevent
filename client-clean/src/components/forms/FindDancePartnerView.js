@@ -4,14 +4,92 @@ import PartnerRequestForm from "./PartnerRequestForm";
 
 import { Row, Col, Container, CardDeck } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import Select from "react-select";
+import {SelectStyle} from "../../assets/styles";
 
 class FindDancePartnerView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       requests: [],
+        sorting: "",
+        viewAllRequests: "",
     };
   }
+
+
+    onChangeCheckbox = (event) => {
+        var checkboxName = event.target.name;
+        var elements = document.getElementsByName(checkboxName);
+        var checked = [];
+
+        //console.log(elements);
+        for (var x = 0; x < elements.length; x++) {
+
+
+            if (elements[x].checked) {
+                checked.push(elements[x].value);
+            } else {
+            }
+            if (checked.length < 1) {
+                //store empty if nothing
+                this.setState({[checkboxName]: ""});
+                //console.log(this.state);
+            } else if (checked.length == 1) {
+                //store as a string if only 1 preference
+                this.setState({[checkboxName]: checked[0]});
+                //console.log(this.state);
+            } else if (checked.length > 1) {
+                //store as an array if multiple preferences
+
+            }
+            console.log(this.state.viewAllRequests);
+            this.getRequests(window.location.pathname);
+        };
+
+
+
+
+    };
+
+
+    sortingChanged = (selectedOption, action) => {
+        /*
+            If Events should be sorted based on parameter 'sorting' this function is called
+        */
+
+        //set the new state
+        this.setState({
+            sorting: selectedOption ? selectedOption.value : ""
+        });
+
+        //sort after prefered sortingmethods
+
+        //sort date old to new
+        if (this.state.sorting == "eventDate") {
+            this.state.requests.sort((a, b) =>
+                a.event.startDate > b.event.startDate ? 1 : a.event.startDate < b.event.startDate ? -1 : 0
+            );
+        }
+        //sort date new to old
+        else if (this.state.sorting == "eventDateDesc") {
+            this.state.requests.sort((a, b) =>
+                a.event.startDate < b.event.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
+            );
+        }
+        //sort date old to new
+        if (this.state.sorting == "reqDate") {
+            this.state.requests.sort((a, b) =>
+                a.timestamp > b.timestamp ? 1 : a.timestamp < b.timestamp ? -1 : 0
+            );
+        }
+        //sort date new to old
+        else if (this.state.sorting == "reqDateDesc") {
+            this.state.requests.sort((a, b) =>
+                a.timestamp < b.timestamp ? 1 : a.timestamp > b.timestamp ? -1 : 0
+            );
+        }
+    };
 
   componentDidMount() {
     /* The function call is in the buildup and loads all the requests */
@@ -22,6 +100,18 @@ class FindDancePartnerView extends React.Component {
 
   getRequests = (url) => {
     /* fetches all requests from the backend*/
+   console.log(url);
+      console.log(this.state.viewAllRequests);
+
+   if(url == window.location.pathname  && this.state.viewAllRequests != "" ){
+        url += "/?allRequests=" + this.state.viewAllRequests;
+    } ;
+   if(url == "/dancepartner/?" && this.state.viewAllRequests != ""){
+       url += "allRequests=" + this.state.viewAllRequests;
+    };
+   if(url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != ""){
+       url += "&allRequests=" + this.state.viewAllRequests;
+   };
 
     fetch(url, {
       method: "GET",
@@ -32,35 +122,13 @@ class FindDancePartnerView extends React.Component {
     })
       .then((res) => res.json(res))
       .then((requests) => {
+        console.log(requests);
         this.setState({ requests });
-        //console.log(this.state.requests);
+        console.log(this.state.requests);
       })
       .catch((err) => alert(err));
   };
 
-  deleteRequest = (requestId) => {
-    /*delete requests: takes the Id of the request that should be deleted and deletes it*/
-
-    var secret_token = window.sessionStorage.secret_token;
-
-    try {
-      fetch("/dancepartner/request/delete", {
-        //fetch("/dancepartner/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + secret_token,
-        },
-        body: JSON.stringify({ id: requestId }),
-      })
-        .then((res) => res.json(res))
-        .catch((err) => alert(err));
-    } catch (err) {
-      console.log(err);
-    }
-
-    this.getRequests(window.location.pathname);
-  };
 
   onChange = (e) => {
     e.preventDefault();
@@ -94,37 +162,38 @@ class FindDancePartnerView extends React.Component {
             {/*RequestPart*/}
             <Col>
               {/*SortingNavbar*/}
-              <Row>
-                <div style={{ marginLeft: "auto" }}>
-                  Sorted by:
-                  <select
-                    className="form-control"
-                    name="sort"
-                    onChange={this.onChange}
-                  >
-                    <optgroup label="Descanding">
-                      {sortSelect.map((sortSelect) => (
-                        <option value={"descanding" + sortSelect}>
-                          {"Desc " +
-                            sortSelect.charAt(0).toUpperCase() +
-                            sortSelect.slice(1)}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="Ascanding">
-                      {sortSelect.map((sortSelect) => (
-                        <option value={"ascanding" + sortSelect}>
-                          {"Asc " +
-                            sortSelect.charAt(0).toUpperCase() +
-                            sortSelect.slice(1)}
-                        </option>
-                      ))}
-                    </optgroup>
-                  </select>
+            <Row >
+                <div className="form-group" style={{ marginRight: "auto" }}>
+                    <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
+                    <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
                 </div>
-              </Row>
 
-              <Row>
+
+                <div style={{ marginLeft: "auto" , width: "15rem"}}>
+                    Sorting by:
+                        <Select
+                            className="basic-single"
+                            classNamePrefix="select"
+                            defaultValue={this.state.sorting.value}
+                            value={this.state.sorting.value}
+                            placeholder={""}
+                            isClearable={true}
+                            isSearchable={true}
+                            styles={SelectStyle}
+                            onChange={this.sortingChanged}
+                            name="gender"
+                            options={[
+                                { value: 'eventDate', label: 'Event Date' },
+                                { value: 'reqDate', label: 'Request Date' },
+                                { value: 'eventDateDesc', label: 'Event Date Desc'},
+                                { value: 'reqDateDesc', label: 'Request Date Desc'},
+                            ]}
+                        />
+                </div>
+
+            </Row>
+
+              <Row> { this.state.requests.length ? (
                 <CardDeck>
                   {this.state.requests.map((request) => (
                     <PartnerRequestForm
@@ -132,8 +201,13 @@ class FindDancePartnerView extends React.Component {
                       user={request.dancerId}
                       profile={false}
                     />
-                  ))}
-                </CardDeck>
+                  ))}</CardDeck>
+    )
+        :(
+            <p> At the moment there are no open requests that are matching your profile or filter. </p>
+        )
+        }
+
               </Row>
             </Col>
           </Row>
@@ -153,8 +227,6 @@ class FindDancePartnerView extends React.Component {
             Please {<Link to={{ pathname: "login" }}>login</Link>} to see all
             the open requests.
           </p>
-          {/* Alternative to link:
-            <Button onClick={()=>{{this.props.history.push('/login')}}}>Login</Button>*/}
         </div>
       );
     }

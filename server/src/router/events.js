@@ -199,24 +199,39 @@ router.delete(
     const uid = req.params.id;
     let event = await Event.findById(uid).exec();
 
+
+
     if (event && event.organizer == req.user._id) {
-      Event.findOneAndDelete({ _id: uid }, (err, event) => {
-        //error in step (will also be called if <id> has not correct the pattern)
-        if (err) {
+      
+      //Delete
+      Request.deleteMany({event : uid}, (err1, resu) =>{
+        if (err1) {
           return res.status(500).json({
             error: "Internal server error",
-            message: err.message,
+            message: err1.message,
           });
         }
-        //Query is empty (event does not exist)
-        if (!event) {
-          return res.status(404).json({
-            error: "Event not found",
-          });
-        }
-        //successful query -> send deleted event
-        res.send(`Event deleted: ${event._id}`);
-      });
+
+        Event.findOneAndDelete({ _id: uid }, (err, event) => {
+          //error in step (will also be called if <id> has not correct the pattern)
+          if (err) {
+            return res.status(500).json({
+              error: "Internal server error",
+              message: err.message,
+            });
+          }
+          //Query is empty (event does not exist)
+          if (!event) {
+            return res.status(404).json({
+              error: "Event not found",
+            });
+          }
+          //successful query -> send deleted event
+          res.send(`Event deleted: ${event._id}`);
+        });
+
+
+      })
     } else {
       return res.status(403).json({
         error: "User has no Authority to change the Event",
