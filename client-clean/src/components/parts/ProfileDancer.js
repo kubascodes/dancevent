@@ -30,11 +30,14 @@ const ProfileDancer = (props) => {
 
   return (
     <div className="container d-flex flex-wrap flex-column">
-
-    <Link to={{ pathname: '/edit/dancer', state: props.state.user }} style={{textDecoration: "none"}}>
-    <Button variant="outline-dark" className="d-flex ml-auto">Edit
-    </Button>
-    </Link>
+      <Link
+        to={{ pathname: "/edit/dancer", state: props.state.user }}
+        style={{ textDecoration: "none" }}
+      >
+        <Button variant="outline-dark" className="d-flex ml-auto">
+          Edit
+        </Button>
+      </Link>
 
       <Avatar
         round="50%"
@@ -86,18 +89,10 @@ const ProfileDancer = (props) => {
       </div>
 
       <div>
-        <h5 className="text-center mt-2">
-          <Link
-            className="font-weight-bolder text-body text-decoration-none"
-            to="/myevents"
-          >
-            Your Saved Events{" "}
-          </Link>
-        </h5>
-
         <EventCardDeck
           events={props.stateProps.savedEvents}
           limit="5"
+          scope={["saved", "upcoming"]}
           state={props.stateProps}
           onDeleteEvent={(event) => props.onDeleteEvent(event)}
           onSaveEvent={(event) => props.onSaveEvent(event)}

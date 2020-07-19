@@ -29,9 +29,13 @@ const ProfileOrganizer = (props) => {
 
   return (
     <div className="container d-flex flex-wrap flex-column">
-      <Link to={{ pathname: '/edit/organizer', state: props.state.user }} style={{textDecoration: "none"}}>
-      <Button variant="outline-dark" className="d-flex ml-auto">Edit
-      </Button>
+      <Link
+        to={{ pathname: "/edit/organizer", state: props.state.user }}
+        style={{ textDecoration: "none" }}
+      >
+        <Button variant="outline-dark" className="d-flex ml-auto">
+          Edit
+        </Button>
       </Link>
 
       <div className="crop-box crop-to-fit">
@@ -72,18 +76,10 @@ const ProfileOrganizer = (props) => {
       </div>
 
       <div>
-        <h5 className="text-center mt-2">
-          <Link
-            className="font-weight-bolder text-body text-decoration-none"
-            to="/myevents"
-          >
-            Your Hosted Events
-          </Link>
-        </h5>
-
         <EventCardDeck
           events={props.stateProps.organizedEvents}
           limit="5"
+          scope={["organized", "upcoming"]}
           state={props.stateProps}
           onDeleteEvent={(event) => props.onDeleteEvent(event)}
           onSaveEvent={(event) => {

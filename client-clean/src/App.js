@@ -26,9 +26,11 @@ export default class App extends Component {
       email: null,
       name: null,
       userType: null,
+      city: null,
       profilePicture: null, //TODO
       savedEvents: [],
       organizedEvents: [],
+      exampleEvent: {},
     };
   }
 
@@ -41,6 +43,22 @@ export default class App extends Component {
   };
   deleteUser = (User) => {
     console.log(User);
+  };
+
+  createExampleEvent = () => {
+    const title = `${this.state.name}'s new event`;
+    const startDate = new Date();
+    // Set the date to tomorrow 8 PM
+    startDate.setDate(startDate.getDate() + 1);
+    startDate.setHours(20, 0, 0, 0);
+    const location = this.state.city;
+    this.setState({
+      exampleEvent: {
+        title: title,
+        startDate: startDate,
+        location: location,
+      },
+    });
   };
 
   fetchUserEvents = () => {
@@ -78,14 +96,23 @@ export default class App extends Component {
     })
       .then((res) => res.json(res))
       .then(function (res) {
-        context.setState({
-          secret_token: window.sessionStorage.secret_token,
-          login: true,
-          email: res.email,
-          name: res.name,
-          userType: res.userType,
-          profilePicture: res.picture,
-        });
+        context.setState(
+          {
+            secret_token: window.sessionStorage.secret_token,
+            login: true,
+            email: res.email,
+            name: res.name,
+            city: res.city,
+            userType: res.userType,
+            profilePicture: res.picture,
+          },
+          () => {
+            if (context.state.userType === "Organizer") {
+              // Template that the organizer sees as the "Create Event" button
+              context.createExampleEvent();
+            }
+          }
+        );
       })
       .catch((err) => alert(err));
 
@@ -117,10 +144,9 @@ export default class App extends Component {
     console.log("main state");
   };
 
-
   addEvent = (event) => {
-    this.state.organizedEvents.push(event)
-  }
+    this.state.organizedEvents.push(event);
+  };
 
   // Propagated up from the EventCard
   deleteEvent = (event) => {
@@ -353,7 +379,7 @@ export default class App extends Component {
                 {...props}
                 auth_token={this.secret_token}
                 onCreate={this.addEvent}
-                />
+              />
             )}
           />
           <Route

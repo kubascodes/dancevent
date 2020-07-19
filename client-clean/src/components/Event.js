@@ -11,7 +11,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 import CreateRequestForm from "./forms/CreateRequestForm";
 import PartnerRequestForm from "./forms/PartnerRequestForm";
-import {CardDeck} from "react-bootstrap";
+import { CardDeck } from "react-bootstrap";
 
 class Event extends React.Component {
   constructor(props) {
@@ -239,15 +239,20 @@ class Event extends React.Component {
               )}
               {this.state.userIsOwner ? (
                 <div>
-                <Link to={"/events/update/"+ this.props.match.params.id} className="btn button-pink float-right m-4">Update Event</Link>
-                <Button
-                className="float-right m-4"
-                variant="danger"
-                onClick={() => this.setState({ showDeletionDialog: true })}
-              >
-                Delete Event
-              </Button>
-              </div>
+                  <Link
+                    to={`/events/update/${this.props.match.params.id}`}
+                    className="btn button-pink float-right m-4"
+                  >
+                    Edit Event
+                  </Link>
+                  <Button
+                    className="float-right m-4"
+                    variant="danger"
+                    onClick={() => this.setState({ showDeletionDialog: true })}
+                  >
+                    Delete Event
+                  </Button>
+                </div>
               ) : (
                 <></>
               )}
@@ -329,7 +334,7 @@ class Event extends React.Component {
                       {this.state.event.price
                         ? this.state.event.price === 0
                           ? "free"
-                          : this.state.event.price + " €"
+                          : this.state.event.price + " EUR"
                         : "not available"}
                       {this.state.event.promoCode ? (
                         <OverlayTrigger
@@ -366,7 +371,10 @@ class Event extends React.Component {
               )}
 
               {this.props.state.userType === "Dancer" ? (
-                <Button className="btn button-pink"onClick={this.showCreateRequestForm}>
+                <Button
+                  className="btn button-pink"
+                  onClick={this.showCreateRequestForm}
+                >
                   Create a partner request
                 </Button>
               ) : (
@@ -376,10 +384,11 @@ class Event extends React.Component {
                   create a request.
                 </p>
               )}
-          <CardDeck>
-              {this.state.partnerRequests.map((partnerRequest) => {
-                return <PartnerRequestForm request={partnerRequest} />;
-              })}</CardDeck>
+              <CardDeck>
+                {this.state.partnerRequests.map((partnerRequest) => {
+                  return <PartnerRequestForm request={partnerRequest} />;
+                })}
+              </CardDeck>
             </>
           ) : (
             ""

@@ -23,6 +23,8 @@ class EventCardDeck extends React.Component {
     super(props);
     this.state = {
       eventsShortened: [],
+      showComponent: true,
+      showExampleCard: false,
       redirect: null,
     };
   }
@@ -43,18 +45,41 @@ class EventCardDeck extends React.Component {
 
   // Filter the received savedEvents and organizedEvents to only show upcoming ones
   handleEventsToDisplay = (events) => {
+    var context = this;
+    context.setState({ showExampleCard: false });
+    const scope = this.props.scope; // Decide whether upcoming or past events are shown
     const now = new Date();
     return new Promise((resolve, reject) => {
       try {
-        this.convertStringToDate(events).then((convertedEvents) => {
-          let eventsToDisplay = convertedEvents.filter(
-            (convertedEvent) => convertedEvent.startDate > now
-          );
-          eventsToDisplay.sort((a, b) =>
-            a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
-          );
+        context.convertStringToDate(events).then((convertedEvents) => {
+          let eventsToDisplay = [];
+          if (scope.includes("past")) {
+            eventsToDisplay = convertedEvents.filter(
+              (convertedEvent) => convertedEvent.startDate < now
+            );
+            if (eventsToDisplay.length === 0) {
+              context.setState({ showComponent: false });
+            }
+            eventsToDisplay.sort((a, b) =>
+              a.startDate < b.startDate ? 1 : a.startDate > b.startDate ? -1 : 0
+            );
+          } else {
+            eventsToDisplay = convertedEvents.filter(
+              (convertedEvent) => convertedEvent.startDate > now
+            );
+            eventsToDisplay.sort((a, b) =>
+              a.startDate > b.startDate ? 1 : a.startDate < b.startDate ? -1 : 0
+            );
+            if (
+              scope.includes("organized") &&
+              scope.includes("upcoming") &&
+              context.props.state.exampleEvent
+            ) {
+              console.log(context.props.state.exampleEvent);
+              context.setState({ showExampleCard: true });
+            }
+          }
 
-          // Only 3 events are displayed on the homepage
           eventsToDisplay.length = Math.min(
             eventsToDisplay.length,
             parseInt(this.props.limit)
@@ -96,25 +121,71 @@ class EventCardDeck extends React.Component {
       return <Redirect push to={this.state.redirect} />;
     }
 
-    if (window.sessionStorage.secret_token != null) {
+    if (
+      window.sessionStorage.secret_token != null &&
+      this.state.showComponent
+    ) {
       /*Display personalized content when logged in*/
       return (
-        <div className="row justify-content-start">
-          {this.state.eventsShortened.map((event) => {
-            return (
+        <>
+          <h4 className="text-center mt-4">
+            {this.props.scope.includes("organized") &&
+            this.props.scope.includes("upcoming") ? (
+              <Link
+                className="font-weight-bolder text-body text-decoration-none"
+                to="/myevents"
+              >
+                Upcoming Events Hosted By You
+              </Link>
+            ) : this.props.scope.includes("organized") &&
+              this.props.scope.includes("past") ? (
+              "Past Events Hosted By You"
+            ) : this.props.scope.includes("saved") &&
+              this.props.scope.includes("upcoming") ? (
+              <Link
+                className="font-weight-bolder text-body text-decoration-none"
+                to="/myevents"
+              >
+                {this.props.state.userType === "Organizer"
+                  ? "Saved Upcoming Events"
+                  : "Upcoming Events"}
+              </Link>
+            ) : this.props.state.userType === "Organizer" ? (
+              "Saved Past Events"
+            ) : (
+              "Past Events"
+            )}
+          </h4>
+          <div className="row justify-content-start">
+            {this.state.eventsShortened.map((event) => {
+              return (
+                <EventCard
+                  key={event._id}
+                  event={event}
+                  state={this.props.state}
+                  onDeleteEvent={() => this.props.onDeleteEvent(event)}
+                  onSaveEvent={() => {
+                    this.props.onSaveEvent(event);
+                  }}
+                  onUnsaveEvent={() => this.props.onUnsaveEvent(event)}
+                  isExample={false}
+                />
+              );
+            })}
+            {this.state.showExampleCard && this.props.state.exampleEvent ? (
               <EventCard
-                key={event._id}
-                event={event}
+                event={this.props.state.exampleEvent}
                 state={this.props.state}
-                onDeleteEvent={() => this.props.onDeleteEvent(event)}
-                onSaveEvent={() => {
-                  this.props.onSaveEvent(event);
-                }}
-                onUnsaveEvent={() => this.props.onUnsaveEvent(event)}
+                onDeleteEvent={() => console.log("Cannot be deleted")}
+                onSaveEvent={() => console.log("Cannot be saved")}
+                onUnsaveEvent={() => console.log("Cannot be unsaved")}
+                isExample={true}
               />
-            );
-          })}
-        </div>
+            ) : (
+              <></>
+            )}
+          </div>
+        </>
       );
     } else {
       return <></>;

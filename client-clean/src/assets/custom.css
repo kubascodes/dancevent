@@ -1,11 +1,16 @@
 /*BODY*/
 
 body {
-  color: #161112!important;
+  color: #161112 !important;
 }
 /*titles font weight and color*/
-h1, h2, h3, h4, h5, h6 {
-  color: #161112!important;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #161112 !important;
   font-weight: 500;
 }
 .divider {
@@ -27,7 +32,9 @@ h1, h2, h3, h4, h5, h6 {
 .dancevent {
   color: #ce9aa3;
 }
-.dancevent:hover, .dancevent:focus, .dancevent:active {
+.dancevent:hover,
+.dancevent:focus,
+.dancevent:active {
   color: #ce9aa3;
 }
 
@@ -41,7 +48,9 @@ h1, h2, h3, h4, h5, h6 {
 .pink-dark {
   color: #e5acb6;
 }
-.pink-dark:hover, .pink-dark:focus, .pink-dark:active {
+.pink-dark:hover,
+.pink-dark:focus,
+.pink-dark:active {
   color: #161112;
   text-decoration: none;
 }
@@ -51,7 +60,9 @@ h1, h2, h3, h4, h5, h6 {
 .white {
   color: #ffffff;
 }
-.white:hover, .white:focus, .white:active {
+.white:hover,
+.white:focus,
+.white:active {
   color: #f5f5f5;
 }
 .black {
@@ -60,7 +71,9 @@ h1, h2, h3, h4, h5, h6 {
 .black-link {
   color: #161112;
 }
-.black-link:hover, .black-link:focus, .black-link:active {
+.black-link:hover,
+.black-link:focus,
+.black-link:active {
   color: #ffbbbb;
   text-decoration: none;
 }
@@ -68,18 +81,20 @@ h1, h2, h3, h4, h5, h6 {
 /*FORMS*/
 /*Progress bar when uploading image*/
 .progress-bar {
-  background-color: #ffbbbb!important;
+  background-color: #ffbbbb !important;
 }
 /*Pink on focus*/
 .form-control:focus {
   border: 1px solid #ffbbbb;
-  box-shadow: 0 0 0 0.2rem rgba(255,187,187, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(255, 187, 187, 0.25);
 }
 /*Required fields*/
 .border-red {
   border: 1px solid #ffc8c8;
 }
-.border-red:hover, .border-red:focus, .border-red:active {
+.border-red:hover,
+.border-red:focus,
+.border-red:active {
   border: 1px solid #ffd6d6;
 }
 /*Datepickers and sliders*/
@@ -90,11 +105,11 @@ h1, h2, h3, h4, h5, h6 {
 .react-datepicker-wrapper {
   width: 100%;
 }
- .age-slider{
-   position: relative;
-   margin: 0 auto 20px;
-   height: 35px;
- }
+.age-slider {
+  position: relative;
+  margin: 0 auto 20px;
+  height: 35px;
+}
 .age-slider input {
   pointer-events: none;
   position: absolute;
@@ -106,7 +121,6 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   border-radius: 8px;
-
 }
 .age-slider input::-webkit-slider-thumb {
   pointer-events: all;
@@ -121,7 +135,9 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #ffffff;
   color: #161112;
 }
-.button-pink:hover, .button-pink:focus, .button-pink:active {
+.button-pink:hover,
+.button-pink:focus,
+.button-pink:active {
   border: 1px solid #ffbbbb;
   background-color: #ffbbbb;
   color: #ffffff;
@@ -131,7 +147,9 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #ffbbbb;
   color: #ffffff;
 }
-.button-pink-fill:hover, .button-pink-fill:focus, .button-pink-fill:active {
+.button-pink-fill:hover,
+.button-pink-fill:focus,
+.button-pink-fill:active {
   border: 1px solid #ffbbbb;
   background-color: #ffbbbb;
   color: #161112;
@@ -147,24 +165,27 @@ h1, h2, h3, h4, h5, h6 {
 /*CARDS*/
 
 .card {
- height: 100%;
+  height: 100%;
 }
 .event-card {
-  margin: 0.5rem;
+  margin: 0rem;
   min-width: 220px;
+  height: 80%;
+}
+.example-card {
+  position: relative;
 }
 /*card images*/
 .card-img-top {
-  flex-shrink: 0;
-  min-width: 100%;
-  min-height: 100%;
+  width: 100%;
+  height: 42%;
   object-fit: cover;
 }
 /*card images crop*/
 .crop-box {
-  width: 100%;
-  max-height: 250px;
+  position: relative;
 }
+
 .crop-to-fit {
   display: flex;
   justify-content: center;
@@ -172,20 +193,20 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
 }
 /*card title*/
-h5.card-title  {
+h5.card-title {
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 /*card footer*/
 .card-footer {
-  border-top:1px solid #ffbbbb;
+  border-top: 1px solid #ffbbbb;
 }
 
 .modal-header {
   border-bottom: 0 none;
 }
 
-.modal-title{
+.modal-title {
   margin: auto;
   height: auto;
 }
@@ -196,7 +217,7 @@ h5.card-title  {
 
 .modal-footer {
   margin: auto;
-  border-top:1px solid #ffbbbb;
+  border-top: 1px solid #ffbbbb;
   text-align: center;
 }
 
