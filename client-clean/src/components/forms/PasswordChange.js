@@ -69,7 +69,7 @@ class PasswordChange extends React.Component {
 
     let form = await this.formCleaning();
     console.log(form);
- 
+
     fetch('/changePassword', {
       method: 'POST',
       headers: {
