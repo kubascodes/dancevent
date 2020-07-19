@@ -2,7 +2,7 @@ import React from "react";
 import Select from 'react-select';
 import cities from './cities';
 import DatePicker from "react-datepicker";
-import {Row, Col} from "react-bootstrap";
+import {Row, Col, Tooltip, OverlayTrigger} from "react-bootstrap";
 import {SelectStyle} from "../../assets/styles";
 
 
@@ -18,7 +18,7 @@ class FilterRequest extends React.Component {
       prefEventDate: "",
       prefDateSelection: "",
       eventType: "",
-      danceCategory: "",
+      danceCategory: "latin",
       danceStyle: "",
         startDate: new Date(new Date().setHours(0,0,0,0)),
         endDate: null,
@@ -119,18 +119,21 @@ class FilterRequest extends React.Component {
         [action.name]: selectedOption ? selectedOption.value : ""
       });
 
-      if(action.name == 'danceCategory'){
+      /*if(action.name == 'danceCategory'){
         this.setState({
           danceStyle: ''
         })
-      }
+      }*/
 
   }
 
-  handleChangeMSelect = (danceStyle) => {
-    /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
-    this.setState({danceStyle});
-  }
+    handleMultiSelect = (danceStyle) => {
+        /*this function handles a multi selection where the user can select multiple values in the dropdown of the selection*/
+        console.log("new event");
+        console.log(danceStyle);
+        this.setState({ danceStyle });
+        console.log(this.state);
+    };
 
   submitFilter = (e) => {
     /*
@@ -174,22 +177,25 @@ class FilterRequest extends React.Component {
       previous = true;
     }
     //beong to the request
-    if (this.state.danceCategory != "") {
-      if (previous) {
-        url += "&";
+      if (!this.state.danceStyle.includes("all")) {
+          if (this.state.danceStyle.length !== 0) {
+              console.log(this.state.danceStyle);
+              var index;
+              for (index in this.state.danceStyle) {
+                  console.log(index);
+                  if (index !== 0) {
+                      url += "&";
+                  } else if (previous) {
+                      url += "&";
+                  }
+                  console.log(this.state.danceStyle[index]);
+                  console.log(this.state.danceStyle[index].value);
+                  url += "listOfDanceStyles=" + this.state.danceStyle[index].value;
+                  console.log(url);
+              }
+              previous = true;
+          }
       }
-      url += "listOfDanceStyles=" + this.state.danceCategory;
-      previous = true;
-      if (this.state.danceStyle != "") {
-        if(previous){
-            const style = this.state.danceStyle ? this.state.danceStyle.map(style => style.value) : "";
-            if (style){
-                style.map((styles) => (
-                    url += "&listOfDanceStyles=" + styles
-                ));
-            }
-        }}
-    }
     // belong to event
       if (this.state.city) {
           if (previous) {
@@ -223,7 +229,7 @@ class FilterRequest extends React.Component {
 
     //fetch requests from backend
     this.props.getRequests(url);
-    //console.log(url);
+    console.log(url);
   };
     //Changes the state for calendar inputs
     //type should specify if it is a start- or endDate
@@ -262,12 +268,20 @@ class FilterRequest extends React.Component {
 
     // Dance Styles
       const danceStyleCategory = [
+          {value: 'all', label: 'All Styles'},
           {value: 'latin', label: 'Latin/Rythm'},
           {value: 'standard', label: 'Standard/Smooth'},
           {value: 'various', label: 'Various'},
       ];
 
+      const all = [
+          {value: 'all', label: 'All styles'}
+      ]
+
+
+
       const latin = [
+          {value: 'latin', label: 'All latin styles'},
           {value: 'jive', label: 'Jive'},
           {value: 'rumba', label: 'Rumba'},
           {value: 'cha-cha-cha', label: 'Cha-Cha-Cha'},
@@ -278,6 +292,7 @@ class FilterRequest extends React.Component {
           {value: 'east coast swing', label: 'East Cost Swing'},
       ];
       const standard = [
+          {value: 'standard', label: 'All standard styles'},
           {value: 'waltz', label: 'Waltz'},
           {value: 'viennese waltz', label: 'Viennese Waltz'},
           {value: 'tango', label: 'Tango'},
@@ -285,6 +300,7 @@ class FilterRequest extends React.Component {
           {value: 'quickstep', label: 'Quickstep'},
       ];
       const various = [
+          {value: 'various', label: 'All various styles'},
           {value: 'salsa', label: 'Salsa'},
           {value: 'bachata', label: 'Bachata'},
           {value: 'west coast swing', label: 'West Cost Swing'},
@@ -454,6 +470,14 @@ class FilterRequest extends React.Component {
         {/*TODO: change*/}
         <div className="form-group">
           <label> To dance... </label>
+      <>
+          <OverlayTrigger
+                key={'right'}
+                placement={'right'}
+                overlay={
+                    <Tooltip id={`tooltip-right`}>The category is only for an easier selection below (Only below submitted).</Tooltip>
+                    }
+            >
           <Select
               className="basic-single"
               classNamePrefix="select"
@@ -461,60 +485,72 @@ class FilterRequest extends React.Component {
               placeholder={"Dance style category..."}
               isClearable={true}
               isSearchable={true}
-      styles={SelectStyle}
+                styles={SelectStyle}
               onChange={this.handleChange}
               name="danceCategory"
               options={danceStyleCategory}
           />
+          </OverlayTrigger>
+          </>
           {
-            {
-              'latin':
+              {
+                  all: (
                   <Select
-                  className="basic-single"
+                  className="basic-multi-select"
                   classNamePrefix="select"
-                  onChange={this.handleChangeMSelect}
-                  defaultValue={''}
-                  value={danceStyle}
-                  isMulti = {true}
-                  placeholder={"Dance style..."}
+                  onChange={this.handleMultiSelect}
+                  isMulti={true}
+                  placeholder="Dance style..."
                   isClearable={true}
-                styles={SelectStyle}
+                  isSearchable={true}
+                  name="danceStyle"
+                  options={all}
+                  styles={SelectStyle}
+                  />
+              ),
+                  latin: (
+                  <Select
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                  onChange={this.handleMultiSelect}
+                  isMulti={true}
+                  placeholder="Dance style..."
+                  isClearable={true}
                   isSearchable={true}
                   name="danceStyle"
                   options={latin}
-                  /> ,
-              'standard':
+                  styles={SelectStyle}
+                  />
+              ),
+                  standard: (
                   <Select
-                  className="basic-single"
+                  className="basic-multi-select"
                   classNamePrefix="select"
-                  onChange={this.handleChangeMSelect}
-                  defaultValue={''}
-                  value={danceStyle}
-                  isMulti = {true}
-                  placeholder={"Dance style..."}
+                  onChange={this.handleMultiSelect}
+                  isMulti={true}
+                  placeholder="Dance style..."
                   isClearable={true}
-                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={standard}
-                  /> ,
-              'various':
+                  styles={SelectStyle}
+                  />
+              ),
+                  various: (
                   <Select
-                  className="basic-single"
+                  className="basic-multi-select"
                   classNamePrefix="select"
-                  onChange={this.handleChangeMSelect}
-                  defaultValue={''}
-                  value={danceStyle}
-                  isMulti = {true}
-                  placeholder={"Dance style..."}
+                  onChange={this.handleMultiSelect}
+                  isMulti={true}
+                  placeholder="Dance style..."
                   isClearable={true}
-                styles={SelectStyle}
                   isSearchable={true}
                   name="danceStyle"
                   options={various}
-                />
-
-            }[this.state.danceCategory]
+                  styles={SelectStyle}
+                  />
+              ),
+              }[this.state.danceCategory]
           }
         </div>
 

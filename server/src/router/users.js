@@ -40,7 +40,7 @@ router.get(
             .populate("dancer", "-_id ")
             .populate("event", null, {'startDate': { $gte: new Date() }})
           .sort({ timestamp: 1 });
-          console.log(requests);
+          //console.log(requests);
           let requestsEvent = requests.filter(request =>  request.event != null);
         response.requests = requestsEvent;
         response.events = events;
@@ -123,7 +123,7 @@ router.get(
       user.password = null;
       user._id = null;
       user.__v = null;
-      console.log(user);
+     // console.log(user);
       return res.status(200).json(user);
     } catch (error) {
       return res.status(500).json({
@@ -235,23 +235,21 @@ router.get(
                 dancerValues.push({'proficiencyLevel': proficiencyLevel});
                 delete req.query.listOfProficiencyLevelsDancer;
             }
-            console.log(dancerValues);
 
             // filter dance styles request
             let danceStyles = req.query.listOfDanceStyles;
             if (danceStyles) {
                 req.query.listOfDanceStyles = { $in: danceStyles };
             }
+            console.log(req.query.listOfDanceStyles);
 
             //Event
 
 
-            console.log(req.query);
             var eventValue = [];
             var start = new Date();
             if (req.query.startDate) {
                 start = new Date(req.query.startDate);
-                console.log("START"+start);
             }
             if (req.query.endDate) {
                 eventValue.push({'startDate': { $gte: start, $lte: req.query.endDate }});
@@ -272,7 +270,6 @@ router.get(
                 delete req.query.type;
             }
 
-            console.log(eventValue);
 
             // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
             if(dancerValues.length == 0 && eventValue.length == 0){
@@ -470,7 +467,7 @@ router.post("/register/organizer", async (req, res) => {
 //Register as a Dancer
 router.post("/register/dancer", async (req, res) => {
   //Validate the request body
-  console.log(req.body);
+  //console.log(req.body);
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
@@ -553,7 +550,7 @@ router.post("/update/organizer", passport.authenticate("jwt", { session: false }
 //Update the dancer
 router.post("/update/dancer", passport.authenticate("jwt", { session: false }), async (req, res) => {
   //Validate the request body
-  console.log(req.body);
+  //console.log(req.body);
   if (Object.keys(req.body).length === 0)
     return res.status(400).json({
       error: "Bad Request",
@@ -595,7 +592,7 @@ router.post(
   "/createrequest",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    console.log(req.body);
+    //console.log(req.body);
     if (Object.keys(req.body).length === 0)
       return res.status(400).json({
         error: "Bad Request",
@@ -603,14 +600,14 @@ router.post(
       });
 
     req.body.dancer = req.user._id;
-    console.log(req.body.dancer);
-    console.log(req.body);
+   // console.log(req.body.dancer);
+   // console.log(req.body);
 
     try {
       let request = await Request.create(req.body);
       return res.status(201).json(request);
     } catch (error) {
-      console.log(error.message);
+     // console.log(error.message);
       return res.status(500).json({
         error: "Internal server error",
         message: error.message,
@@ -679,7 +676,7 @@ router.post(
     )
       .exec()
       .then((result) => {
-        console.log(result);
+        //console.log(result);
         res.status(200).json(result);
       })
       .catch((err) => next(err));
@@ -691,7 +688,7 @@ router.delete(
   "/profile/request/delete",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    console.log(req.body);
+   // console.log(req.body);
 
     if (Object.keys(req.body).length === 0)
       return res.status(400).json({
