@@ -175,7 +175,7 @@ router.get(
             // match request and user information
             //TODO: Checkbox - Check if still right or needs if needs to check of the opposite
             // BUG at the moment: Somhow there is a bug. it should normaly be the orther way around
-            if(req.query.allRequests == "viewAllRequests"){
+            if(req.query.allRequests != "viewAllRequests"){
                 let user = await User.findOne({ _id: userId });
                 if(user){
                     req.query.listofGenders = user.gender;
