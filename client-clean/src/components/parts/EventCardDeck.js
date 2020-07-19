@@ -145,13 +145,18 @@ class EventCardDeck extends React.Component {
                   ? "Saved Upcoming Events"
                   : "Upcoming Events"}
               </Link>
-            ) : this.props.state.userType === "Organizer" ? (
-              "Saved Past Events"
+            ) : this.props.scope.includes("saved") &&
+              this.props.scope.includes("past") ? (
+              <>
+                {this.props.state.userType === "Organizer"
+                  ? "Saved Past Events"
+                  : "Past Events"}
+              </>
             ) : (
-              "Past Events"
+              <></>
             )}
           </h4>
-          <div className="row justify-content-start">
+          <div className="row justify-content-start align-items-center">
             {this.state.eventsShortened.map((event) => {
               return (
                 <EventCard
