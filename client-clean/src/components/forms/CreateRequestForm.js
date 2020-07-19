@@ -94,16 +94,16 @@ class CreateRequestForm extends React.Component {
 
     var allow = true;
     // check that the min in not bigger than the max and the other way around
-    if (e.target.name == "prefAgeMin") {
-      if (e.target.value >= this.state.prefAgeMax) {
-        allow = false;
+      if (e.target.name == "prefAgeMin") {
+          if (Number(e.target.value )>= Number(this.state.prefAgeMax)) {
+              allow = false;
+          }
       }
-    }
-    if (e.target.name == "prefAgeMax") {
-      if (e.target.value <= this.state.prefAgeMin) {
-        allow = false;
+      if (e.target.name == "prefAgeMax") {
+          if (Number(e.target.value) <= Number(this.state.prefAgeMin)) {
+              allow = false;
+          }
       }
-    }
 
     // if a desciption is enered set the validation true
     if (e.target.name == "description") {
@@ -438,6 +438,69 @@ class CreateRequestForm extends React.Component {
                       {" "}
                       <label><b>I am looking for...</b></label>{" "}
                     </Row>
+
+
+          {/* Preferred - Age Range*/}
+      <Row>
+          <Col>
+          <MdFace className="align-text-bottom" />{" "} <label>Age range...</label>
+          </Col>
+          <Col>
+          <Row>
+          <Col xs={4}>
+              <input type="number"
+          placeholder={this.state.prefAgeMin}
+          className="form-control col"
+          name="prefAgeMin"
+          step="5"
+          style={{ width: "70px" }}
+          onChange={this.onChange}
+          value={this.state.prefAgeMin}
+          />
+          </Col>
+          <Col >
+
+          </Col>
+          <Col xs={4}>
+              <input type="number"
+          placeholder={this.state.prefAgeMax}
+          className="form-control col"
+          name="prefAgeMax"
+          step="5"
+          style={{ width: "70px" }}
+          onChange={this.onChange}
+          value={this.state.prefAgeMax}
+          />
+          </Col>
+          </Row>
+          <div class="age-slider">
+              <input
+          type="range"
+          className="custom-range"
+          id="prefAgeMin"
+          name="prefAgeMin"
+          min="0"
+          max="100"
+          step="5"
+          value={this.state.prefAgeMin}
+          onChange={this.onChange}
+
+          />
+          <input
+          type="range"
+          className="custom-range"
+          id="prefAgeMax"
+          name="prefAgeMax"
+          min="0"
+          max="100"
+          step="5"
+          value={this.state.prefAgeMax}
+          onChange={this.onChange}
+          />
+          </div>
+          </Col>
+          </Row>
+
                     {/* Preferred - Gender */}
                     {/*Gender Type // TODO (optional): clear unspecified/ other how to name it*/}
                     <Row>
@@ -465,66 +528,6 @@ class CreateRequestForm extends React.Component {
                       </Col>
                     </Row>
 
-        {/* Preferred - Age Range*/}
-                    <Row>
-                      <Col>
-          <MdFace className="align-text-bottom" />{" "} <label>Age range...</label>
-                      </Col>
-                      <Col>
-                        <Row>
-                          <Col xs={4}>
-                            <input type="number"
-                              placeholder={this.state.prefAgeMin}
-                              className="form-control col"
-                              name="prefAgeMin"
-                              step="5"
-                                style={{ width: "70px" }}
-                              onChange={this.onChange}
-                              value={this.state.prefAgeMin}
-                            />
-                          </Col>
-                          <Col >
-
-                          </Col>
-                          <Col xs={4}>
-                            <input type="number"
-                              placeholder={this.state.prefAgeMax}
-                              className="form-control col"
-                              name="prefAgeMax"
-                              step="5"
-          style={{ width: "70px" }}
-                              onChange={this.onChange}
-                              value={this.state.prefAgeMax}
-                            />
-                          </Col>
-                                </Row>
-                            <div class="age-slider">
-                                  <input
-                              type="range"
-                              className="custom-range"
-                              id="prefAgeMin"
-                              name="prefAgeMin"
-                              min="0"
-                              max="100"
-                              step="5"
-                              value={this.state.prefAgeMin}
-                              onChange={this.onChange}
-
-                              />
-                              <input
-                              type="range"
-                              className="custom-range"
-                              id="prefAgeMax"
-                              name="prefAgeMax"
-                              min="0"
-                              max="100"
-                              step="5"
-                              value={this.state.prefAgeMax}
-                              onChange={this.onChange}
-                              />
-                              </div>
-                      </Col>
-                    </Row>
 
                     {/* Preferred - Skill Level*/}
                     <Row>

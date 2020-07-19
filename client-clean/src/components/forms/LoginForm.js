@@ -1,6 +1,8 @@
 import React from "react";
 import RouteRedirect from "../../services/RouteRedirect";
 import { Link } from "react-router-dom";
+import { CriticalAlert } from "../helpers/Alert";
+
 
 
 class LoginForm extends React.Component {
@@ -11,11 +13,16 @@ class LoginForm extends React.Component {
       login: false,
       email: null,
       password: null,
+
+      showAltert : false,
+      errorMessage: "",
     };
     //binding events to the component context
     this.userLogin = this.userLogin.bind(this);
     this.onChange = this.onChange.bind(this);
   };
+
+  hideAlert = () => { this.setState({ showAltert: !this.state.showAltert }) }
 
   onChange (event) {
     /*
@@ -45,7 +52,12 @@ class LoginForm extends React.Component {
         password: this.state.password,
       }),
     }) //create a get request which is a Promise
-      .then((res) => res.json(res))
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json()
+      })
       .then(function (res) {
         //store the token in the browser's session storage
         if (res.token) {
@@ -81,7 +93,13 @@ class LoginForm extends React.Component {
         //context.setState({isLoggedIn: true});
         //this.forceUpdate();
       })
-      .catch((err) => alert(err));
+      .catch(err => {
+        this.setState({
+          showAltert: true,
+          errorMessage: "Login failed."
+        })
+        console.log(err)
+    });
   };
 
   /*
@@ -112,6 +130,7 @@ class LoginForm extends React.Component {
   render() {
       return (
         <div className="container loginForm" className="loginForm">
+          <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
           <div id="img-homepage"></div>
           <form className="form-group" id="loginForm" onSubmit={this.userLogin}>
             <div className="form-group">

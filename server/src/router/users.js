@@ -42,7 +42,6 @@ router.get(
           .sort({ timestamp: 1 });
           console.log(requests);
           let requestsEvent = requests.filter(request =>  request.event != null);
-          console.log(requestsEvent);
         response.requests = requestsEvent;
         response.events = events;
       }
@@ -176,7 +175,7 @@ router.get(
 );
 
 //List all dance request on Dance Partner Page
-//TODO: sort is missing, events
+//TODO: Sort missing
 router.get(
     "/dancepartner",
     passport.authenticate("jwt", { session: false }),
@@ -189,8 +188,9 @@ router.get(
             var myAge = null;
 
             // match request and user information
-            //TODO: Somhow there is a bug. it should normaly be the orther way around
-            if(req.query.allRequests == "viewAllRequests"){
+            //TODO: Checkbox - Check if still right or needs if needs to check of the opposite
+            // BUG at the moment: Somhow there is a bug. it should normaly be the orther way around
+            if(req.query.allRequests != "viewAllRequests"){
                 let user = await User.findOne({ _id: userId });
                 if(user){
                     req.query.listofGenders = user.gender;
@@ -268,11 +268,9 @@ router.get(
 
             console.log(eventValue);
 
-            //TODO: delete id's // TODO: city filter
-
             // check, if we just need to filter the request information or also the dancer information and return the result of that fetch
             if(dancerValues.length == 0 && eventValue.length == 0){
-                await Request.find(req.query).populate("dancer event", "-_id").exec(function(err, docs){
+                await Request.find(req.query).populate("dancer event", "-_id").sort({ timestamp: 1 }).exec(function(err, docs){
                     if(myAge){
                         docs = docs.filter(function(doc){
                             return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax;
@@ -284,15 +282,23 @@ router.get(
             if(dancerValues.length && eventValue.length){
                 let dancerCheck = { $and: dancerValues};
                 let eventCheck = {$and: eventValue};
-                await Request.find(req.query
-                ).populate( "dancer", null , dancerCheck
-                ).populate("event", null, eventCheck).exec(function(err, docs){
+                await Request.find(req.query)
+                    .populate( "dancer", null , dancerCheck)
+                    .populate("event", null, eventCheck)
+                    .sort({ timestamp: 1 })
+                    .exec(function(err, docs){
                     docs = docs.filter(function(doc){
                         if(myAge){
-                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null;
+                            if( myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null && doc.event != null){
+                                doc.dancer._id = null;
+                                return doc;
+                            };
                         }
                         else {
-                            return doc.dancer != null && doc.event != null;
+                            if( doc.dancer != null && doc.event != null){
+                                doc.dancer._id = null;
+                                return doc;
+                            };
                         }
                     })
                     return res.status(200).json(docs);
@@ -300,9 +306,11 @@ router.get(
             };
             if(dancerValues.length==0 && eventValue.length){
                 let eventCheck = {$and: eventValue};
-                await Request.find(req.query
-                ).populate( "event", null, eventCheck
-                ).populate("dancer", "-_id").exec(function(err, docs){
+                await Request.find(req.query)
+                    .populate( "event", null, eventCheck)
+                    .populate("dancer", "-_id")
+                    .sort({ timestamp: 1 })
+                    .exec(function(err, docs){
                     docs = docs.filter(function(doc){
                         if(myAge){
                             return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.event != null;
@@ -316,20 +324,52 @@ router.get(
             };
             if(dancerValues.length && eventValue.length==0){
                 let dancerCheck = { $and: dancerValues};
-                await Request.find(req.query
-                ).populate( "dancer", null , dancerCheck
-                ).populate("event", "-_id").exec(function(err, docs){
+                await Request.find(req.query)
+                    .populate( "dancer", null , dancerCheck)
+                    .populate("event", "-_id")
+                    .sort({ timestamp: 1 })
+                    .exec(function(err, docs){
                     docs = docs.filter(function(doc){
                         if(myAge){
-                            return myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null ;
+                            if( myAge >= doc.prefAgeMin && myAge <= doc.prefAgeMax && doc.dancer != null ){
+                                doc.dancer._id = null;
+                                return doc;
+                            }
                         }
                         else {
-                            return doc.dancer != null ;
+                            if (doc.dancer != null){
+                                doc.dancer._id = null;
+                                return doc;
+                            };
                         }
                     })
                     return res.status(200).json(docs);
                 });
             };
+
+        } catch (err) {
+            return res.status(500).json({
+                error: "Internal server error",
+                message: err.message,
+            });
+        }
+
+    });
+
+
+//List all dance request on Dance Partner Page
+router.get( "/loggedout/requests", async (req, res, next)  => {
+        try {
+
+            await Request.find(req.query).populate("event", null, {'startDate': { $gte: new Date() }}).exec(function(err, docs){
+                docs = docs.filter(function(doc){
+                    if(doc.event != null){
+                        doc.event._id = null;
+                        return doc;
+                    }
+                })
+                return res.status(200).json(docs);
+            });
 
         } catch (err) {
             return res.status(500).json({

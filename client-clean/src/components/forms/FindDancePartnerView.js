@@ -18,6 +18,8 @@ class FindDancePartnerView extends React.Component {
   }
 
 
+
+
     onChangeCheckbox = (event) => {
         var checkboxName = event.target.name;
         var elements = document.getElementsByName(checkboxName);
@@ -31,21 +33,22 @@ class FindDancePartnerView extends React.Component {
                 checked.push(elements[x].value);
             } else {
             }
+          }
             if (checked.length < 1) {
                 //store empty if nothing
-                this.setState({[checkboxName]: ""});
+                this.setState({[checkboxName]: ""}, () => {this.getRequests(window.location.pathname)});
                 //console.log(this.state);
             } else if (checked.length == 1) {
                 //store as a string if only 1 preference
-                this.setState({[checkboxName]: checked[0]});
+                this.setState({[checkboxName]: checked[0]}, () => {this.getRequests(window.location.pathname)});
                 //console.log(this.state);
             } else if (checked.length > 1) {
                 //store as an array if multiple preferences
 
-            }
+            };
             console.log(this.state.viewAllRequests);
-            this.getRequests(window.location.pathname);
-        };
+            //this.getRequests(window.location.pathname);
+        
 
 
 
@@ -74,7 +77,7 @@ class FindDancePartnerView extends React.Component {
         //sort date new to old
         else if (this.state.sorting == "eventDateDesc") {
             this.state.requests.sort((a, b) =>
-                a.event.startDate < b.event.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
+                a.event.startDate < b.even5r4t.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
             );
         }
         //sort date old to new
@@ -99,20 +102,33 @@ class FindDancePartnerView extends React.Component {
 
 
   getRequests = (url) => {
-    /* fetches all requests from the backend*/
-   console.log(url);
-      console.log(this.state.viewAllRequests);
 
-   if(url == window.location.pathname  && this.state.viewAllRequests != "" ){
-        url += "/?allRequests=" + this.state.viewAllRequests;
-    } ;
-   if(url == "/dancepartner/?" && this.state.viewAllRequests != ""){
-       url += "allRequests=" + this.state.viewAllRequests;
-    };
-   if(url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != ""){
-       url += "&allRequests=" + this.state.viewAllRequests;
-   };
+      if(window.sessionStorage.secret_token != null) {
+          //TODO: Checkbox - check if right value is send and if the right data comes back (state of requests is updated right)
+          /* fetches all requests from the backend*/
+          console.log(url);
+          console.log(this.state.viewAllRequests);
 
+          if (url == window.location.pathname && this.state.viewAllRequests != "") {
+              url += "/?allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+          if (url == "/dancepartner/?" && this.state.viewAllRequests != "") {
+              url += "allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+          if (url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != "") {
+              url += "&allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+      }
+      else {
+            url = "/loggedout/requests";
+      };
+      console.log(url);
+
+
+   console.log(url)
     fetch(url, {
       method: "GET",
       headers: {
@@ -140,9 +156,8 @@ class FindDancePartnerView extends React.Component {
     });
   };
 
+
   // display requests, filtered
-  //TODO: make dependent on filter option
-  //TODO: sort requests
   render() {
     const sortSelect = ["date"];
 
@@ -165,7 +180,8 @@ class FindDancePartnerView extends React.Component {
             <Row >
                 <div className="form-group" style={{ marginRight: "auto" }}>
                     <input className="mr-1" type="checkbox" id="viewAllRequests" name="viewAllRequests" value="viewAllRequests" onChange={this.onChangeCheckbox} />
-                    <label class="checkbox-inline mr-2">View all Requests (also not matching my profile)</label>
+                    <label class="checkbox-inline mr-2">View all Requests </label>
+                    <label class="checkbox-inline mr-2"style={{color:"#ce9aa3"}}>(including mismatches to my profile) </label>
                 </div>
 
 
@@ -204,7 +220,7 @@ class FindDancePartnerView extends React.Component {
                   ))}</CardDeck>
     )
         :(
-            <p> At the moment there are no open requests that are matching your profile or filter. </p>
+            <p> At the moment there are <b>no open requests</b> that are <b>matching</b> your profile or filter. </p>
         )
         }
 

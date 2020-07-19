@@ -27,10 +27,6 @@ class FilterRequest extends React.Component {
   }
 
 
-  //TODO: write Submit
-  //TODO: handle city
-  //TODO: check filter => return filtered array
-  //TODO: handle reset all
   //submitFilter = (e) => {
   submitFilterOld = (e) => {
     /*This function is called if the user enters a city and presses enter*/
@@ -38,29 +34,29 @@ class FilterRequest extends React.Component {
     const filterRequests = this.props.requests.filter((request) => {
       return request;
     });
-    this.props.filterRequests(this.state); //TODO: change
+    this.props.filterRequests(this.state);
   };
 
-  onChange = (e) => {
-    /*This function is called if the user changes a variable of the filter options*/
-    e.preventDefault();
+    onChange = (e) => {
+        /*This function is called if the user changes a variable of the filter options*/
+        e.preventDefault();
 
-      var allow = true;
-      // check that the min in not bigger than the max and the other way around
-      if (e.target.name == "prefAgeMin") {
-          if (e.target.value >= this.state.prefAgeMax) {
-              allow = false;
-          }
-      }
-      if (e.target.name == "prefAgeMax") {
-          if (e.target.value <= this.state.prefAgeMin) {
-              allow = false;
-          }
-      };
-      if (allow) {
-          this.setState({[e.target.name]: e.target.value});
-      };
-  };
+        var allow = true;
+        // check that the min in not bigger than the max and the other way around
+        if (e.target.name == "prefAgeMin") {
+            if (Number(e.target.value )>= Number(this.state.prefAgeMax)) {
+                allow = false;
+            }
+        }
+        if (e.target.name == "prefAgeMax") {
+            if (Number(e.target.value) <= Number(this.state.prefAgeMin)) {
+                allow = false;
+            }
+        }
+        if (allow) {
+            this.setState({[e.target.name]: e.target.value});
+        }
+    }
 
     //Changes the state for REACT-SELECT inputs
     onChangeCity = (event) => {
@@ -225,8 +221,6 @@ class FilterRequest extends React.Component {
       previous = true;
     }
 
-    //TODO: date, event, age
-
     //fetch requests from backend
     this.props.getRequests(url);
     //console.log(url);
@@ -311,7 +305,7 @@ class FilterRequest extends React.Component {
       <form onSubmit={this.submitFilter}>
         <h4>Filter Requests</h4>
 
-        {/*Gender Type // TODO (optional): clear unspecified*/}
+        {/*Gender Type }
         <div className="form-group">
         <label> I am looking for a... </label>
         <Select
@@ -364,12 +358,12 @@ class FilterRequest extends React.Component {
 
           <div class="age-slider">
               <input type="range" className="custom-range" id="prefAgeMin" name="prefAgeMin"
-                  min="0" max="100" step="5"
+                  min="0" step="5"
                   value={this.state.prefAgeMin}
                   onChange={this.onChange}/>
 
               <input type="range" className="custom-range" id="prefAgeMax" name="prefAgeMax"
-                min="0" max="100" step="5"
+                min="0" step="5"
                 value={this.state.prefAgeMax}
                 onChange={this.onChange}/>
           </div>
@@ -458,7 +452,6 @@ class FilterRequest extends React.Component {
 
         {/* Dance Style Type */}
         {/*TODO: change*/}
-        {/*TODO: add secound*/}
         <div className="form-group">
           <label> To dance... </label>
           <Select
@@ -526,7 +519,6 @@ class FilterRequest extends React.Component {
         </div>
 
         {/* Event Type */}
-        {/*TODO: change*/}
         <div className="form-group">
           <label>At a...</label>
 
