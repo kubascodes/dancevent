@@ -129,21 +129,14 @@ class EditFormDancer extends React.Component {
 
   };
 
-  checkItem(child) {
-    let item = child.name;
-    console.log(child.name)
-    let value = child.value;
-    let checkArray = [];
-    for (var key in this.state) {
-      if (key === item) {
-        for (let i=0;i<this.state[key].length;i++) {
-          if (this.state[key] == value) {
-            return "checked";
-          }
-        }
-      }
-    }
-  }
+
+
+  capitalize = (input) => {
+    const capitalStr = input.replace(/\b\w/g, function (string) {
+      return string.toUpperCase();
+    });
+    return capitalStr;
+  };
 
   formCleaning = async () => {
     //form inputs we want to upload
@@ -294,13 +287,13 @@ class EditFormDancer extends React.Component {
       <div className="form-group">
         <label className="radio-inline mr-2 label-bold" for="gender">Gender</label>
 
-        <input className="mr-1" type="radio" name="gender" id="gender" value="male" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="gender" id="gender" value="male" onChange={this.onChangeCheckbox} checked={this.state.gender ? this.state.gender.includes("male") : null} />
         <label className="radio-inline mr-2" for="inlineRadio1">Male</label>
 
-        <input className="mr-1" type="radio" name="gender" id="gender" value="female" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="gender" id="gender" value="female" onChange={this.onChangeCheckbox} checked={this.state.gender ? this.state.gender.includes("female") : null} />
         <label className="radio-inline mr-2" for="inlineRadio2">Female</label>
 
-        <input className="mr-1" type="radio" name="gender" id="gender" value="other" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="gender" id="gender" value="other" onChange={this.onChangeCheckbox} checked={this.state.gender ? this.state.gender.includes("other") : null}  />
         <label className="radio-inline mr-2" for="inlineRadio3">Other</label>
       </div>
 
@@ -317,61 +310,61 @@ class EditFormDancer extends React.Component {
       <div className="form-group">
         <label className="mr-2 label-bold" htmlFor="listOfDanceStyles">Preferred Dance Styles</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="latin" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="latin" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("latin") : null} />
           <label class="checkbox-inline mr-2">Latin</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="cha-cha-cha" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="cha-cha-cha" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("cha-cha-cha") : null}  />
           <label class="checkbox-inline mr-2">Cha-cha-cha</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="samba" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="samba" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("samba") : null}  />
           <label class="checkbox-inline mr-2">Samba</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="jive" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="jive" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("jive") : null}  />
           <label class="checkbox-inline mr-2">Jive</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="paso doble" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="paso doble" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("paso doble") : null }  />
           <label class="checkbox-inline mr-2">Paso Doble</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="boldero" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="boldero" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("boldero") : null}  />
           <label class="checkbox-inline mr-2">Boldero</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="rumba" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="rumba" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("rumba") : null}  />
           <label class="checkbox-inline mr-2">Rumba</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="east coast swing" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="east coast swing" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("east coast swing") : null}  />
           <label class="checkbox-inline mr-2">East Coast Swing</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="standard" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="standard" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("standard") : null} />
           <label class="checkbox-inline mr-2">Standard</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="waltz" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="waltz" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("waltz") : null}  />
           <label class="checkbox-inline mr-2">Waltz</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="viennese waltz" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="viennese waltz" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("viennese waltz") : null}  />
           <label class="checkbox-inline mr-2">Viennese Waltz</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="tango" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="tango" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("tango") : null}  />
           <label class="checkbox-inline mr-2">Tango</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="foxtrot" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="foxtrot" onChange={this.onChangeCheckbox} cchecked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("foxtrot") : null}  />
           <label class="checkbox-inline mr-2">Foxtrot</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="quickstep" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="quickstep" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("quickstep") : null}  />
           <label class="checkbox-inline mr-2">Quickstep</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="hustle" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="hustle" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("hustle") : null}  />
           <label class="checkbox-inline mr-2">Hustle</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="west coast swing" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="west coast swing" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("west coast swing") : null}  />
           <label class="checkbox-inline mr-2">West Coast Swing</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="salsa" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="salsa" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("salsa") : null}  />
           <label class="checkbox-inline mr-2">Salsa</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="bachata" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="bachata" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("bachata") : null}  />
           <label class="checkbox-inline mr-2">Bachata</label>
 
-          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="various" onChange={this.onChangeCheckbox} />
+          <input className="mr-1" type="checkbox" id="listOfDanceStyles" name="listOfDanceStyles" value="various" onChange={this.onChangeCheckbox} checked={this.state.listOfDanceStyles ? this.state.listOfDanceStyles.includes("various") : null}  />
           <label class="checkbox-inline mr-2">Various</label>
 
       </div>
@@ -379,13 +372,13 @@ class EditFormDancer extends React.Component {
       <div className="form-group">
         <label className="mr-2 label-bold" htmlFor="proficiencyLevel">Dance Proficiency Level</label>
 
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="beginner" />
+          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="beginner" checked={this.state.proficiencyLevel ? this.state.proficiencyLevel.includes("beginner") : null} />
           <label class="radio-inline mr-2">Beginner</label>
 
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="intermediate" />
+          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="intermediate" checked={this.state.proficiencyLevel ? this.state.proficiencyLevel.includes("intermediate") : null} />
           <label class="radio-inline mr-2">Intermediate</label>
 
-          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="advanced" />
+          <input className="mr-1" type="radio" id="proficiencyLevel" name="proficiencyLevel" onChange={this.onChangeCheckbox} value="advanced" checked={this.state.proficiencyLevel ? this.state.proficiencyLevel.includes("advanced") : null} />
           <label class="radio-inline mr-2">Advanced</label>
 
       </div>
@@ -405,13 +398,13 @@ class EditFormDancer extends React.Component {
       <div className="form-group">
         <label className="radio-inline mr-2 label-bold" for="prefGender">Preferred Gender of Dancers</label>
 
-        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="male" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="male" onChange={this.onChangeCheckbox} checked={this.state.prefGender ? this.state.prefGender.includes("male") : null} />
         <label className="radio-inline mr-2" for="inlineRadio1">Male</label>
 
-        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="female" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="female" onChange={this.onChangeCheckbox} checked={this.state.prefGender ? this.state.prefGender.includes("female") : null} />
         <label className="radio-inline mr-2" for="inlineRadio2">Female</label>
 
-        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="other" onChange={this.onChangeCheckbox} />
+        <input className="mr-1" type="radio" name="prefGender" id="prefGender" value="other" onChange={this.onChangeCheckbox} checked={this.state.prefGender ? this.state.prefGender.includes("other") : null} />
         <label className="radio-inline mr-2" for="inlineRadio3">Other</label>
       </div>
 
