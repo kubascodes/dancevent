@@ -121,7 +121,8 @@ class EditFormOrganizer extends React.Component {
     fetch('/update/organizer', {
       method: 'PUT',
       headers: {
-        'Content-Type': 'application/json; charset=utf-8'
+        'Content-Type': 'application/json; charset=utf-8',
+        'Authorization': 'Bearer ' + window.sessionStorage.secret_token
       },
       body: JSON.stringify(form),
     }) //create a get request which is a Promise

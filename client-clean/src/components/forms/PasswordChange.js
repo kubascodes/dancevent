@@ -68,11 +68,12 @@ class PasswordChange extends React.Component {
 
     let form = await this.formCleaning();
     console.log(form);
- 
+
     fetch('/changePassword', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json; charset=utf-8'
+        'Content-Type': 'application/json; charset=utf-8',
+        'Authorization': 'Bearer ' + window.sessionStorage.secret_token
       },
       body: JSON.stringify(form),
     })
