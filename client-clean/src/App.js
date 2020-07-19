@@ -29,6 +29,9 @@ export default class App extends Component {
       profilePicture: null, //TODO
       savedEvents: [],
       organizedEvents: [],
+      eventFetched: false,
+      userFetched: false
+
     };
   }
 
@@ -57,10 +60,12 @@ export default class App extends Component {
       .then((res) => res.json(res))
       .then((res) => {
         console.log(res);
-        context.setState({ savedEvents: res.interestedInEvents });
         if (res.userType === "Organizer") {
           context.setState({ organizedEvents: res.organizedEvents });
         }
+        context.setState({ savedEvents: res.interestedInEvents,
+          eventFetched: true });
+        
       })
       .catch((err) => alert(err));
   };
@@ -85,12 +90,18 @@ export default class App extends Component {
           name: res.name,
           userType: res.userType,
           profilePicture: res.picture,
+
+          userFetched: true
         });
       })
       .catch((err) => alert(err));
 
     this.fetchUserEvents();
   };
+
+  dataFetched = () =>{
+    return (this.state.eventFetched && this.state.userFetched) 
+  }
 
   logIn = (data) => {
     this.setState({
@@ -358,6 +369,8 @@ export default class App extends Component {
                 {...props}
                 auth_token={this.secret_token}
                 onCreate={this.addEvent}
+                userType={this.state.userType}
+                dataFetched={this.dataFetched}
                 />
             )}
           />
@@ -365,10 +378,13 @@ export default class App extends Component {
             path="/events/update/:id"
             render={(props) => (
               <EventCreationForm
-                update
                 {...props}
+                update
                 auth_token={this.secret_token}
                 onCreate={this.updateEvent}
+                userType={this.state.userType}
+                userEvents={this.state.organizedEvents}
+                dataFetched={this.dataFetched}
               />
             )}
           />

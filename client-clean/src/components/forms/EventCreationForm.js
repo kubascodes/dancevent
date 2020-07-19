@@ -7,6 +7,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import "react-datepicker/dist/react-datepicker.css";
 import {SelectStyle} from '../../assets/styles';
 
+import RouteAuthentication from "../../services/RouteAuthentication";
 import ProcessImage from '../../services/imageProcessing';
 
 import { Image, Button, Container, Row, Col, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
@@ -25,7 +26,7 @@ class EventCreationForm extends React.Component {
     super(props);
     this.state = {
       //Event attributes
-      title: null,
+      title: "",
       type: "course",
       description: "",
       startDate: new Date(),
@@ -138,6 +139,27 @@ class EventCreationForm extends React.Component {
           })
           console.log(err)
         });
+    }
+  }
+
+  userOwnsEvent = () => {
+
+
+    //to get the param ID specified in the URL
+    const {
+      match: { params },
+    } = this.props;
+    if (this.props.userEvents.length > 0) {
+      const organizedEventIds = this.props.userEvents.map(
+        (organizedEvent) => organizedEvent._id
+      );
+      if (!organizedEventIds.includes(params.id)) {
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
     }
   }
 
@@ -409,6 +431,21 @@ class EventCreationForm extends React.Component {
       { value: 'hustle', label: 'Hustle' },
     ];
 
+    if(window.sessionStorage.secret_token === null){
+      return <Redirect to="/" />
+    }
+
+
+    //checks if th user is an Organizer and owns the event
+    //Befor checking the Data must habe benn fetched in App
+    if(this.props.dataFetched()){
+      if(this.props.userType !== "Organizer" ){
+        return <Redirect to="/" />
+      }
+      if(this.props.update && !this.userOwnsEvent()){
+        return <Redirect to="/" />
+      }
+    }
 
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />
@@ -761,4 +798,4 @@ EventCreationForm.defaultProps = {
   update: false,
 }
 
-export default EventCreationForm
+export default RouteAuthentication(EventCreationForm)
