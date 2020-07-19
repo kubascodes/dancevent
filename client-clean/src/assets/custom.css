@@ -107,16 +107,17 @@ h6 {
 }
 
 .age-slider {
+  -moz-appearance: none !important;
   position: relative;
   margin: 0 auto 20px;
   height: 35px;
 }
 .age-slider input {
+  -moz-appearance: none !important;
   pointer-events: none;
   position: absolute;
   left: 0;
   top: 20px;
-  width: 100%;
   outline: none;
   height: 8px;
   margin: 0;
@@ -125,15 +126,24 @@ h6 {
 }
 
 .age-slider input::-webkit-slider-thumb {
+
   pointer-events: all;
   position: relative;
   z-index: 1;
   background-color: #ffbbbb;
 }
 
-.rounded-circle {
-  border-radius: 50%;
+.age-slider input::-moz-range-thumb {
+  -webkit-appearance: none !important;
+  -moz-appearance:    none !important;
+  appearance: none !important;
+  pointer-events: all;
+  position: relative;
+  z-index: 1;
+  background-color: #ffbbbb;
 }
+
+
 
 /*BUTTONS*/
 .button-pink {
