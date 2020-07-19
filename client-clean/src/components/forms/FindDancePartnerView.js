@@ -36,18 +36,18 @@ class FindDancePartnerView extends React.Component {
           }
             if (checked.length < 1) {
                 //store empty if nothing
-                this.setState({[checkboxName]: ""});
+                this.setState({[checkboxName]: ""}, () => {this.getRequests(window.location.pathname)});
                 //console.log(this.state);
             } else if (checked.length == 1) {
                 //store as a string if only 1 preference
-                this.setState({[checkboxName]: checked[0]});
+                this.setState({[checkboxName]: checked[0]}, () => {this.getRequests(window.location.pathname)});
                 //console.log(this.state);
             } else if (checked.length > 1) {
                 //store as an array if multiple preferences
 
-            }
+            };
             console.log(this.state.viewAllRequests);
-            this.getRequests(window.location.pathname);
+            //this.getRequests(window.location.pathname);
         
 
 
@@ -77,7 +77,7 @@ class FindDancePartnerView extends React.Component {
         //sort date new to old
         else if (this.state.sorting == "eventDateDesc") {
             this.state.requests.sort((a, b) =>
-                a.event.startDate < b.event.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
+                a.event.startDate < b.even5r4t.startDate ? 1 : a.event.startDate > b.event.startDate ? -1 : 0
             );
         }
         //sort date old to new
@@ -116,6 +116,7 @@ class FindDancePartnerView extends React.Component {
        url += "&allRequests=" + this.state.viewAllRequests;
    };
 
+   console.log(url)
     fetch(url, {
       method: "GET",
       headers: {
