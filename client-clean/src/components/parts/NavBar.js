@@ -41,7 +41,12 @@ const NavBar = ({ state, logOut }) => {
                   className="font-weight-bolder dancevent text-decoration-none"
                   to="/"
                 >
-                  <img height="25" class="d-inline-block align-top" src="img/logo.png" alt="Dancevent"/>
+                  <img
+                    height="25"
+                    class="d-inline-block align-top"
+                    src="img/logo.png"
+                    alt="Dancevent"
+                  />
                 </Link>
               </li>
               <li className="nav-item nav-link">
@@ -60,23 +65,6 @@ const NavBar = ({ state, logOut }) => {
                   Dance Partners
                 </Link>
               </li>
-              <li className="nav-item nav-link ">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/myevents"
-                >
-                  My Events
-                </Link>
-              </li>
-              {/**  // Request can only be created from an event page
-              <li className="nav-item nav-link text-secondary text-decoration-none">
-                  <Link
-              className="font-weight-bolder text-body text-decoration-none"
-              to="/createrequest" >
-                  Create Request
-              </Link>
-              </li>
-              */}
             </ul>
 
             <ul className="nav navbar-nav ml-auto flex-row justify-content-start flex-nowrap">
@@ -139,7 +127,12 @@ const NavBar = ({ state, logOut }) => {
                   className="font-weight-bolder dancevent text-decoration-none"
                   to="/"
                 >
-                  <img height="25" class="d-inline-block align-top" src="img/logo.png" alt="Dancevent"/>
+                  <img
+                    height="25"
+                    class="d-inline-block align-top"
+                    src="img/logo.png"
+                    alt="Dancevent"
+                  />
                 </Link>
               </li>
               <li className="nav-item nav-link">
@@ -158,25 +151,6 @@ const NavBar = ({ state, logOut }) => {
                   Dance Partners
                 </Link>
               </li>
-
-              <li className="nav-item nav-link ">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/login"
-                >
-                  My Events
-                </Link>
-              </li>
-              {/**  // Request can only be created from an event page
-              <li className="nav-item nav-link text-secondary text-decoration-none">
-                <Link
-                  className="font-weight-bolder text-body text-decoration-none"
-                  to="/createrequest"
-                >
-                  Create Request
-                </Link>
-              </li>
-              */}
             </ul>
 
             <ul className="nav navbar-nav ml-auto flex-row justify-content-start flex-nowrap">

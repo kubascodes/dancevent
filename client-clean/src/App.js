@@ -26,12 +26,12 @@ export default class App extends Component {
       email: null,
       name: null,
       userType: null,
+      city: null,
       profilePicture: null, //TODO
       savedEvents: [],
       organizedEvents: [],
       eventFetched: false,
-      userFetched: false
-
+      userFetched: false,
     };
   }
 
@@ -63,9 +63,10 @@ export default class App extends Component {
         if (res.userType === "Organizer") {
           context.setState({ organizedEvents: res.organizedEvents });
         }
-        context.setState({ savedEvents: res.interestedInEvents,
-          eventFetched: true });
-        
+        context.setState({
+          savedEvents: res.interestedInEvents,
+          eventFetched: true,
+        });
       })
       .catch((err) => alert(err));
   };
@@ -88,10 +89,10 @@ export default class App extends Component {
           login: true,
           email: res.email,
           name: res.name,
+          city: res.city,
           userType: res.userType,
           profilePicture: res.picture,
-
-          userFetched: true
+          userFetched: true,
         });
       })
       .catch((err) => alert(err));
@@ -99,9 +100,9 @@ export default class App extends Component {
     this.fetchUserEvents();
   };
 
-  dataFetched = () =>{
-    return (this.state.eventFetched && this.state.userFetched) 
-  }
+  dataFetched = () => {
+    return this.state.eventFetched && this.state.userFetched;
+  };
 
   logIn = (data) => {
     this.setState({
@@ -122,21 +123,24 @@ export default class App extends Component {
       secret_token: null,
       email: null,
       login: false,
+      savedEvents: [],
+      organizedEvents: [],
     });
     window.sessionStorage.removeItem("secret_token");
     console.log(this.state);
     console.log("main state");
   };
 
-
   addEvent = (event) => {
-    this.state.organizedEvents.push(event)
-  }
+    this.state.organizedEvents.push(event);
+  };
 
   updateEvent = (event) => {
-    const index = this.state.organizedEvents.findIndex((element) => (element._id === event._id));
-    this.state.organizedEvents[index] = event
-  }
+    const index = this.state.organizedEvents.findIndex(
+      (element) => element._id === event._id
+    );
+    this.state.organizedEvents[index] = event;
+  };
 
   // Propagated up from the EventCard
   deleteEvent = (event) => {
@@ -371,7 +375,7 @@ export default class App extends Component {
                 onCreate={this.addEvent}
                 userType={this.state.userType}
                 dataFetched={this.dataFetched}
-                />
+              />
             )}
           />
           <Route

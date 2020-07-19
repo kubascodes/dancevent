@@ -11,7 +11,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Modal from "react-bootstrap/Modal";
 import CreateRequestForm from "./forms/CreateRequestForm";
 import PartnerRequestForm from "./forms/PartnerRequestForm";
-import {CardDeck} from "react-bootstrap";
+import { CardDeck } from "react-bootstrap";
 
 class Event extends React.Component {
   constructor(props) {
@@ -23,6 +23,7 @@ class Event extends React.Component {
       partnerRequests: [],
       showDeletionDialog: false,
       showCreateRequestForm: false,
+      showPartnerRequestDialog: false,
       redirect: null,
     };
   }
@@ -84,6 +85,8 @@ class Event extends React.Component {
           );
           if (savedEventIds.includes(component_scope.state.event._id)) {
             component_scope.setState({ interestedIn: true });
+          } else {
+            component_scope.setState({ interestedIn: false });
           }
         }
         if (component_scope.props.state.organizedEvents.length > 0) {
@@ -92,6 +95,8 @@ class Event extends React.Component {
           );
           if (organizedEventIds.includes(component_scope.state.event._id)) {
             component_scope.setState({ userIsOwner: true });
+          } else {
+            component_scope.setState({ userIsOwner: false });
           }
         }
       })
@@ -116,6 +121,32 @@ class Event extends React.Component {
         .catch((err) => alert(err));
     }
   }
+
+  componentDidUpdate = (prevProps) => {
+    if (prevProps != this.props) {
+      var component_scope = this;
+      if (component_scope.props.state.savedEvents.length > 0) {
+        const savedEventIds = component_scope.props.state.savedEvents.map(
+          (savedEvent) => savedEvent._id
+        );
+        if (savedEventIds.includes(component_scope.state.event._id)) {
+          component_scope.setState({ interestedIn: true });
+        } else {
+          component_scope.setState({ interestedIn: false });
+        }
+      }
+      if (component_scope.props.state.organizedEvents.length > 0) {
+        const organizedEventIds = component_scope.props.state.organizedEvents.map(
+          (organizedEvent) => organizedEvent._id
+        );
+        if (organizedEventIds.includes(component_scope.state.event._id)) {
+          component_scope.setState({ userIsOwner: true });
+        } else {
+          component_scope.setState({ userIsOwner: false });
+        }
+      }
+    }
+  };
 
   handleSave = () => {
     var component_scope = this;
@@ -155,8 +186,14 @@ class Event extends React.Component {
   };
 
   showCreateRequestForm = () => {
-    if (this.props.state.userType == "Dancer") {
-      this.setState({ showCreateRequestForm: true });
+    if (window.sessionStorage.secret_token != null) {
+      if (this.props.state.userType === "Dancer") {
+        this.setState({ showCreateRequestForm: true });
+      } else if (this.props.state.userType === "Organizer") {
+        this.setState({ showPartnerRequestDialog: true });
+      }
+    } else {
+      this.setState({ redirect: "/login" });
     }
   };
 
@@ -239,15 +276,20 @@ class Event extends React.Component {
               )}
               {this.state.userIsOwner ? (
                 <div>
-                <Link to={"/events/update/"+ this.props.match.params.id} className="btn button-pink float-right m-4">Update Event</Link>
-                <Button
-                className="float-right m-4"
-                variant="danger"
-                onClick={() => this.setState({ showDeletionDialog: true })}
-              >
-                Delete Event
-              </Button>
-              </div>
+                  <Link
+                    to={`/events/update/${this.props.match.params.id}`}
+                    className="btn button-pink float-right m-4"
+                  >
+                    Edit Event
+                  </Link>
+                  <Button
+                    className="float-right m-4"
+                    variant="danger"
+                    onClick={() => this.setState({ showDeletionDialog: true })}
+                  >
+                    Delete Event
+                  </Button>
+                </div>
               ) : (
                 <></>
               )}
@@ -329,7 +371,7 @@ class Event extends React.Component {
                       {this.state.event.price
                         ? this.state.event.price === 0
                           ? "free"
-                          : this.state.event.price + " €"
+                          : this.state.event.price + " EUR"
                         : "not available"}
                       {this.state.event.promoCode ? (
                         <OverlayTrigger
@@ -356,38 +398,45 @@ class Event extends React.Component {
           {window.sessionStorage.secret_token ? (
             <>
               <h3>Open partner requests for this event:</h3>
-              {this.state.partnerRequests.length > 5 ? (
-                <h4>
-                  There are {this.state.partnerRequests.length} open partner
-                  requests for this event.
-                </h4>
-              ) : (
-                <></>
-              )}
-
-              {this.props.state.userType === "Dancer" ? (
-                <Button className="btn button-pink"onClick={this.showCreateRequestForm}>
-                  Create a partner request
-                </Button>
-              ) : (
-                <p>
-                  {" "}
-                  Please {<Link to={{ pathname: "login" }}>login</Link>} to
-                  create a request.
-                </p>
-              )}
-          <CardDeck>
-              {this.state.partnerRequests.map((partnerRequest) => {
-                return <PartnerRequestForm request={partnerRequest} />;
-              })}</CardDeck>
+              <CardDeck>
+                {this.state.partnerRequests.map((partnerRequest) => {
+                  return <PartnerRequestForm request={partnerRequest} />;
+                })}
+              </CardDeck>
             </>
           ) : (
-            ""
+            <p>
+              {" "}
+              Please {<Link to={{ pathname: "login" }}>login</Link>} to view
+              partner requests for this event.
+            </p>
           )}
+          <div
+            className="btn btn-lg button-pink"
+            onClick={() => this.showCreateRequestForm()}
+          >
+            Create a partner request
+          </div>
         </Container>
         <Modal
+          show={this.state.showPartnerRequestDialog}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Body>
+            You need to login as a dancer to create a partner request.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="outline-dark"
+              onClick={() => this.setState({ showPartnerRequestDialog: false })}
+            >
+              Ok
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
           show={this.state.showDeletionDialog}
-          onHide={this.handleClose}
           backdrop="static"
           keyboard={false}
         >
@@ -398,12 +447,12 @@ class Event extends React.Component {
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="secondary"
-              onClick={() => this.setState({ showDeletionDialog: false })}
+              variant="outline-dark"
+              onClick={() => this.setState({ showDialog: false })}
             >
               Close
             </Button>
-            <Button variant="primary" onClick={this.handleDelete}>
+            <Button variant="outline-dark" onClick={this.handleDelete}>
               Understood
             </Button>
           </Modal.Footer>

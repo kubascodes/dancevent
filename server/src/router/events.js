@@ -106,7 +106,8 @@ router.get(
       /*let userId = req.user._id;
       req.query.dancer = {$ne: userId}; // do not send back my own created requests*/
       let requests = await Request.find({ event: new ObjectId(req.params.id) })
-        .populate("dancer", "-_id -__v -password -interestedInEvents").populate("event", "-_id")
+        .populate("dancer", "-_id -__v -password -interestedInEvents")
+        .populate("event", "-organizer")
         //.select("-_id -__v")
         .select("-__v")
         .sort({ timestamp: 1 })
@@ -199,12 +200,9 @@ router.delete(
     const uid = req.params.id;
     let event = await Event.findById(uid).exec();
 
-
-
     if (event && event.organizer == req.user._id) {
-      
       //Delete
-      Request.deleteMany({event : uid}, (err1, resu) =>{
+      Request.deleteMany({ event: uid }, (err1, resu) => {
         if (err1) {
           return res.status(500).json({
             error: "Internal server error",
@@ -229,9 +227,7 @@ router.delete(
           //successful query -> send deleted event
           res.send(`Event deleted: ${event._id}`);
         });
-
-
-      })
+      });
     } else {
       return res.status(403).json({
         error: "User has no Authority to change the Event",

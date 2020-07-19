@@ -35,94 +35,53 @@ class Homepage extends React.Component {
     if (window.sessionStorage.secret_token != null) {
       /*Display personalized content when logged in*/
       return (
-        <React.Fragment>
-          {this.props.state.userType === "Dancer" ? (
-            <HomepageBanner />
-          ) : (
-            <>
-              <Container>
-                <h1>Hi {this.props.state.name}, welcome to dancevent!</h1>
-                <h2 className="">Events organized by you</h2>
+        <>
+          <h1 className="text-center mb-4">
+            Hi {this.props.state.name}, welcome to dancevent!
+          </h1>
+          <HomepageBanner userType={this.props.state.userType} />
+          <hr />
+          <div className="container">
+            {this.props.state.userType === "Organizer" ? (
+              <>
                 <EventCardDeck
                   events={this.props.state.organizedEvents}
                   limit="3"
+                  scope={["organized", "upcoming"]}
                   state={this.props.state}
                   onDeleteEvent={this.props.onDeleteEvent}
                   onSaveEvent={this.props.onSaveEvent}
                   onUnsaveEvent={this.props.onUnsaveEvent}
                 />
-
-                <div className="col-md-4 col-lg-3 mt-4">
-                  <div className="card event-card shadow-sm">
-                    <div className="crop-box crop-to-fit">
-                      <Link to={"/events/create"}>
-                        <img
-                          src="img/placeholder2_1024x365.png"
-                          class="card-img-top"
-                          alt="..."
-                        />
-                      </Link>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                      <Link
-                        to={"/events/create"}
-                        style={{ textDecoration: "none", color: "black" }}
-                      >
-                        <h5 class="card-title">Create a new event!</h5>
-                      </Link>
-                      <li className="cart-text list-unstyled">
-                        <MdLocationOn /> [location]
-                      </li>
-                      <li className="cart-text list-unstyled">
-                        <MdEvent /> [DD.MM.YYY]
-                      </li>
-                      <li className="cart-text list-unstyled">
-                        <MdCreditCard /> [price]
-                      </li>
-                      <div className="text-center mt-auto"></div>
-                    </div>
-                  </div>
-                </div>
-              </Container>
-            </>
-          )}
-
-          <hr />
-          <Container>
-            <h2 className="">Your Saved Events</h2>
+              </>
+            ) : (
+              <></>
+            )}
             <EventCardDeck
               events={this.props.state.savedEvents}
-              limit="3"
+              limit="4"
+              scope={["saved", "upcoming"]}
               state={this.props.state}
               onDeleteEvent={this.props.onDeleteEvent}
               onSaveEvent={this.props.onSaveEvent}
               onUnsaveEvent={this.props.onUnsaveEvent}
             />
-            <Row>
-              <Col className="col">
-                {this.props.state.savedEvents.length > 0 ? (
-                  <Button
-                    className="button-pink"
-                    size="md"
-                    block
-                    onClick={() => this.setState({ redirect: "/myevents" })}
-                  >
-                    Go to <i>My Events</i>
-                  </Button>
-                ) : (
-                  <Button
-                    className="button-pink"
-                    size="md"
-                    block
-                    onClick={() => this.setState({ redirect: "/events" })}
-                  >
-                    Nothing to see yet. Click here to search for events!
-                  </Button>
-                )}
-              </Col>
-            </Row>
-          </Container>
-        </React.Fragment>
+            <div className="row justify-content-center">
+              {this.props.state.savedEvents.length > 0 ? (
+                <></>
+              ) : (
+                <div
+                  className="btn button-pink"
+                  size="md"
+                  block
+                  onClick={() => this.setState({ redirect: "/events" })}
+                >
+                  Nothing to see yet. Click here to search for events!
+                </div>
+              )}
+            </div>
+          </div>
+        </>
       );
     } else {
       /*Display public content not logged in*/
