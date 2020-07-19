@@ -13,7 +13,8 @@ const Organizer = require("../models/organizer"); //to create new organizers
 const Request = require("../models/partnerrequest"); //returning requests to profile
 const Event = require("../models/event"); //returning events to profile
 const ObjectId = require("mongoose").Types.ObjectId;
-const mail = require("../services/mail")
+const mail = require("../services/mail");
+const bcrypt = require("bcrypt");
 //Unsecured routes for anyone to access
 
 //access the /profile of the user
@@ -39,7 +40,6 @@ router.get(
             .populate("dancer", "-_id ")
             .populate("event", null, {'startDate': { $gte: new Date() }})
           .sort({ timestamp: 1 });
-          console.log("__________RRREEEEEEQUESTTTTTT__________");
           console.log(requests);
           let requestsEvent = requests.filter(request =>  request.event != null);
           console.log(requestsEvent);
@@ -72,15 +72,28 @@ router.get(
 );
 
 router.post(
-  "/password",
+  "/changePassword",
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     /*AFTER AUTHORIZATION OF THE JWT TOKEN, USER ID IS ACCESSIBLE IN REQ.USER*/
     //console.log(req.user);
+    console.log(req.body);
+    if (req.body.newPassword1 != req.body.newPassword1) {
+      return;
+    }
     try {
       //setting the response object
-      let pwdChange = await User.findOneAndUpdate({ _id: req.user._id },{ password: req.password});
-      return res.status(200).json("Success!");
+      let hash = await bcrypt.hash(req.body.newPassword1, 10);
+      let pwdChange = await User.findOneAndUpdate({ _id: req.user._id },{ password: hash});
+      console.log(pwdChange);
+      //generate a new token and send back
+      const token = await jwt.sign({ user: {_id: pwdChange._id , email: pwdChange.email} }, config.JwtSecret, { expiresIn: '12h' });
+      let response = {};
+      //if token then return to the user
+      if (token) {
+        response.token = token;
+      }
+      return res.status(200).json(response);
     } catch (error) {
       return res.status(500).json({
         error: "Internal server error",
@@ -344,16 +357,18 @@ router.post("/login", (req, res, next) => {
           _id: user._id,
           email: user.email,
         };
-        //Sign the JWT token and populate the payload with the user email and id
-        const token = await jwt.sign({ user: body }, config.JwtSecret);
         //Send back the token to the user
         const response = {
           name: user.name,
           email: user.email,
           picture: user.picture,
           userType: user.userType,
-          token: token,
         };
+        const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+        //if token then return to the user
+        if (token) {
+          response.token = token;
+        }
         return res.json(response);
       });
     } catch (error) {
@@ -381,18 +396,20 @@ router.post("/register/organizer", async (req, res) => {
       _id: organizer._id,
       email: organizer.email,
     };
-    //sign the JWT token and populate the payload with the user email and id
-    const token = await jwt.sign({ user: body }, config.JwtSecret);
     //return the token to the user (redirect to homepage will happen on the client);
     const response = {
       name: organizer.name,
       email: organizer.email,
       picture: organizer.picture,
       userType: organizer.userType,
-      token: token,
     };
+    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+    //if token then return to the user
+    if (token) {
+      response.token = token;
+    }
     //Send Welcome Mail
-    await mail.sendCreateMail(organizer.name, organizer.email, 
+    await mail.sendCreateMail(organizer.name, organizer.email,
       //Mail is not crucial for user does only log it interbaly
       (err, data)=> {if(err){console.log("Mailclient error at organizercreation" + err)} });
     return res.status(201).json(response);
@@ -422,18 +439,20 @@ router.post("/register/dancer", async (req, res) => {
       _id: dancer._id,
       email: dancer.email,
     };
-    //sign the JWT token and populate the payload with the user email and id
-    const token = await jwt.sign({ user: body }, config.JwtSecret);
     //return the token to the user (redirect to homepage will happen on the client);
     const response = {
       name: dancer.name,
       email: dancer.email,
       picture: dancer.picture,
       userType: dancer.userType,
-      token: token,
     };
+    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+    //if token then return to the user
+    if (token) {
+      response.token = token;
+    }
     //Send Welcome Mail
-    await mail.sendCreateMail(dancer.name, dancer.email, 
+    await mail.sendCreateMail(dancer.name, dancer.email,
       //Mail is not crucial for user does only log it interbaly
       (err, data)=> {if(err){console.log("Mailclient error at dancercreation" + err)} });
     return res.status(201).json(response);
@@ -456,23 +475,26 @@ router.post("/update/organizer", passport.authenticate("jwt", { session: false }
     });
 
   try {
-    //create a new organizer
-    let organizer = await Organizer.findOneAndUpdate(req.body);
+    //update the new organizer
+    let organizer = await Organizer.findOneAndUpdate({ _id: req.user._id }, req.body);
     //populate the body request for the JWT token issuing with the newly created organizer
     const body = {
       _id: organizer._id,
       email: organizer.email,
     };
-    //sign the JWT token and populate the payload with the user email and id
-    const token = await jwt.sign({ user: body }, config.JwtSecret);
     //return the token to the user (redirect to homepage will happen on the client);
     const response = {
       name: organizer.name,
       email: organizer.email,
       picture: organizer.picture,
       userType: organizer.userType,
-      token: token,
     };
+    //sign the JWT token and populate the payload with the user email and id
+    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+    //if token then return to the user
+    if (token) {
+      response.token = token;
+    }
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
@@ -482,7 +504,7 @@ router.post("/update/organizer", passport.authenticate("jwt", { session: false }
   }
 });
 
-//Register as a Dancer
+//Update the dancer
 router.post("/update/dancer", passport.authenticate("jwt", { session: false }), async (req, res) => {
   //Validate the request body
   console.log(req.body);
@@ -494,22 +516,25 @@ router.post("/update/dancer", passport.authenticate("jwt", { session: false }), 
 
   try {
     //create a new dancer
-    let dancer = await Dancer.create(req.body);
+    let dancer = await Dancer.findOneAndUpdate({_id: req.body.user._id},req.body);
     //populate the body request for the JWT token issuing with the newly created dancer
     const body = {
       _id: dancer._id,
       email: dancer.email,
     };
-    //sign the JWT token and populate the payload with the user email and id
-    const token = await jwt.sign({ user: body }, config.JwtSecret);
     //return the token to the user (redirect to homepage will happen on the client);
     const response = {
       name: dancer.name,
       email: dancer.email,
       picture: dancer.picture,
       userType: dancer.userType,
-      token: token,
     };
+    //sign the JWT token and populate the payload with the user email and id
+    const token = await jwt.sign({ user: body }, config.JwtSecret, { expiresIn: '12h' });
+    //if token then return to the user
+    if (token) {
+      response.token = token;
+    }
     return res.status(201).json(response);
   } catch (error) {
     return res.status(500).json({
@@ -555,7 +580,7 @@ router.post(
   async (req, res) => {
 
     try{
-      let user = await User.findById(req.user._id).exec(); 
+      let user = await User.findById(req.user._id).exec();
       if (user && user.userType == "Dancer") {
 
 
@@ -583,8 +608,8 @@ router.post(
         message: "Error with database. Please try again later." + error.message,
       });
     }
-  }  
-  
+  }
+
 );
 
 // Update user via POST request -> TODO: should be PUT

@@ -32,7 +32,6 @@ class PasswordChange extends React.Component {
 
   onChangeInput = (event) => {
         this.setState({ [event.target.name]: event.target.value });
-
   };
 
 
@@ -68,23 +67,21 @@ class PasswordChange extends React.Component {
     }
 
     let form = await this.formCleaning();
-
+    console.log(form);
+ 
     fetch('/changePassword', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf-8'
       },
-      body: JSON.stringify({form}),
+      body: JSON.stringify(form),
     })
     .then(res => {
-      if (!res.ok) {
-        throw new Error('Network response was not ok');
-      }
-      alert(res.json());
-      }
+      console.log(res);
+    }
     )
     .then(function(res){
-      document.getElementById("RegistrationFormDancer").reset();
+      document.getElementById("PasswordForm").reset();
       context.setState({
         oldPassword: null,
         newPassword1: null,
@@ -101,7 +98,7 @@ class PasswordChange extends React.Component {
     return (
       <div>
       <h4 className="text-center">Change Password</h4>
-      <form className="form-group" id="RegistrationFormDancer" onSubmit={this.registerUser}>
+      <form className="form-group" id="PasswordForm" onSubmit={this.changePassword}>
 
       <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
 
@@ -114,12 +111,12 @@ class PasswordChange extends React.Component {
 
       <div className="form-group">
         <label htmlFor="password">New Password</label>
-        <input type="password" className="form-control border-red" id="newPassword1" name="newPassword1" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.state.newPassword1} required/>
+        <input type="password" className="form-control border-red" id="newPassword1" minlength="6" name="newPassword1" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.state.newPassword1} required/>
       </div>
 
       <div className="form-group">
         <label htmlFor="password">Repeat New Password</label>
-        <input type="password" className="form-control border-red" id="newPassword2" name="newPassword2" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.state.newPassword2} required/>
+        <input type="password" className="form-control border-red" id="newPassword2" minlength="6" name="newPassword2" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.state.newPassword2} required/>
       </div>
 
 

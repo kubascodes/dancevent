@@ -114,7 +114,9 @@ export default class App extends Component {
       profilePicture: data.profilePicture,
     });
     //add secret token to session storage
-    window.sessionStorage.setItem("secret_token", data.secret_token);
+    if (data.secret_token) {
+      window.sessionStorage.setItem("secret_token", data.secret_token);
+    }
     this.fetchUserEvents();
   };
 

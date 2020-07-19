@@ -171,7 +171,7 @@ class RegistrationFormOrganizer extends React.Component {
 
     return (
       <form className="form-group" id="RegistrationFormOrganizer" onSubmit={this.registerUser}>
-      
+
       <CriticalAlert show={this.state.showAltert} change={this.hideAlert} text={this.state.errorMessage}/>
 
       <div className="form-group">
@@ -186,7 +186,7 @@ class RegistrationFormOrganizer extends React.Component {
 
       <div className="form-group">
         <label htmlFor="password">Password</label>
-        <input type="password" className="form-control border-red" id="password" name="password" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.password} required/>
+        <input type="password" className="form-control border-red" id="password" minlength="6" name="password" onChange={this.onChangeInput} placeholder="Pwd (required)" value={this.password} required/>
       </div>
 
       <div className="form-group">

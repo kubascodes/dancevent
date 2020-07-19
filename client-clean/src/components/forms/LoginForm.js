@@ -48,15 +48,18 @@ class LoginForm extends React.Component {
       .then((res) => res.json(res))
       .then(function (res) {
         //store the token in the browser's session storage
-        window.sessionStorage.setItem("secret_token", res.token);
+        if (res.token) {
+          window.sessionStorage.setItem("secret_token", res.token);
+          context.setState({
+            password: null,
+            email: res.email,
+            login: true,
+            secret_token: res.token
+          });
+        }
         //reset the login form -> TODO: Maybe a react unmount?
         document.getElementById("loginForm").reset();
-        context.setState({
-          password: null,
-          email: res.email,
-          login: true,
-          secret_token: res.token
-        });
+
 
         //populate login data
         let data = {
@@ -65,8 +68,10 @@ class LoginForm extends React.Component {
           email: res.email,
           profilePicture: res.picture,
           userType: res.userType,
-          secret_token: res.token
         };
+        if (res.token) {
+          data.secret_token = res.token;
+        }
 
         //call the app component and login the user
         console.log(context);
