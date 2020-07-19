@@ -162,7 +162,7 @@ class PartnerRequestForm extends React.Component {
                 src={
                   request.event.picture
                     ? request.event.picture
-                    : "img/placeholder2_1024x365.png"
+                    : "img/placeholder_1000x600.png"
                 }
                 alt={request.event.name}
                 style={{ width: "180px", height: "171px" }}
@@ -323,7 +323,7 @@ class PartnerRequestForm extends React.Component {
                     src={
                       request.event.picture
                         ? request.event.picture
-                        : "img/placeholder2_1024x365.png"
+                        : "img/placeholder_1000x600.png"
                     }
                     alt={request.event.name}
                     style={{ width: "180px", height: "171px" }}
