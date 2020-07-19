@@ -18,7 +18,7 @@ class FindDancePartnerView extends React.Component {
   }
 
 
-  
+
 
     onChangeCheckbox = (event) => {
         var checkboxName = event.target.name;
@@ -102,19 +102,31 @@ class FindDancePartnerView extends React.Component {
 
 
   getRequests = (url) => {
-    /* fetches all requests from the backend*/
-   console.log(url);
-      console.log(this.state.viewAllRequests);
 
-   if(url == window.location.pathname  && this.state.viewAllRequests != "" ){
-        url += "/?allRequests=" + this.state.viewAllRequests;
-    } ;
-   if(url == "/dancepartner/?" && this.state.viewAllRequests != ""){
-       url += "allRequests=" + this.state.viewAllRequests;
-    };
-   if(url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != ""){
-       url += "&allRequests=" + this.state.viewAllRequests;
-   };
+      if(window.sessionStorage.secret_token != null) {
+          //TODO: Checkbox - check if right value is send and if the right data comes back (state of requests is updated right)
+          /* fetches all requests from the backend*/
+          console.log(url);
+          console.log(this.state.viewAllRequests);
+
+          if (url == window.location.pathname && this.state.viewAllRequests != "") {
+              url += "/?allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+          if (url == "/dancepartner/?" && this.state.viewAllRequests != "") {
+              url += "allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+          if (url != "/dancepartner/?" && url == window.location.pathname && this.state.viewAllRequests != "") {
+              url += "&allRequests=" + this.state.viewAllRequests;
+          }
+          ;
+      }
+      else {
+            url = "/loggedout/requests";
+      };
+      console.log(url);
+
 
    console.log(url)
     fetch(url, {
@@ -144,9 +156,8 @@ class FindDancePartnerView extends React.Component {
     });
   };
 
+
   // display requests, filtered
-  //TODO: make dependent on filter option
-  //TODO: sort requests
   render() {
     const sortSelect = ["date"];
 
