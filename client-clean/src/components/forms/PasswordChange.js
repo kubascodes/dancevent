@@ -65,6 +65,7 @@ class PasswordChange extends React.Component {
       alert("The passwords do not match!");
       return;
     }
+    const token = window.sessionStorage.secret_token
 
     let form = await this.formCleaning();
     console.log(form);
@@ -72,12 +73,17 @@ class PasswordChange extends React.Component {
     fetch('/changePassword', {
       method: 'POST',
       headers: {
+        'Authorization': "Bearer " + token,
         'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(form),
     })
     .then(res => {
       console.log(res);
+      if (!res.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return res.json()
     }
     )
     .then(function(res){
@@ -87,7 +93,16 @@ class PasswordChange extends React.Component {
         newPassword1: null,
         newPassword2: null,
       });
-    })
+    }).catch(
+      err => {
+              this.setState({
+                showAltert: true,
+                errorMessage: "Passwordchange failed!"
+              })
+              console.log(err)
+          }
+      
+      )
 
   };
 
