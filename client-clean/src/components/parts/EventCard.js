@@ -110,7 +110,7 @@ class EventCard extends React.Component {
       return (
         <div className="col-md-4 col-lg-3 mt-4">
           <div
-            className="event-card example-card shadow-sm"
+            className="event-card example-card d-flex flex-column shadow-sm"
             onMouseOver={() => this.setState({ isHovered: true })}
             onMouseLeave={() => this.setState({ isHovered: false })}
           >
@@ -136,7 +136,7 @@ class EventCard extends React.Component {
               </li>
               {this.state.isHovered && (
                 <a
-                  className="btn button-pink mt-2"
+                  className="btn button-pink mt-2 mt-auto"
                   href="/events/create"
                   size="sm"
                 >
@@ -151,7 +151,7 @@ class EventCard extends React.Component {
       return (
         <>
           <div className="col-md-4 col-lg-3 mt-4">
-            <div className="event-card shadow-sm">
+            <div className="event-card d-flex flex-column shadow-sm">
               <img
                 src={
                   this.props.event.picture
@@ -190,7 +190,7 @@ class EventCard extends React.Component {
                     : "free"}
                 </li>
               </div>
-              <div class="card-footer bg-transparent">
+              <div class="card-footer mt-auto bg-transparent">
                 <div className="row">
                   {this.props.state.userType === "Organizer" &&
                   this.state.userIsOwner ? (

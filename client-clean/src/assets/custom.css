@@ -203,6 +203,7 @@ h6 {
   margin: 0rem;
   min-width: 220px;
   max-width: 300px;
+  height: 100%; /*take the height of the parent*/
 }
 .example-card {
   position: relative;
