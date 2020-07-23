@@ -68,3 +68,6 @@ package-lock.json
 
 # Distribution files
 dist/
+
+# Node modules
+client/node_modules/

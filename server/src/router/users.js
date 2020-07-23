@@ -598,7 +598,7 @@ router.post(
     try {
       //create a new dancer
       let dancer = await Dancer.findOneAndUpdate(
-        { _id: req.body.user._id },
+        { _id: req.user._id },
         req.body
       );
       //populate the body request for the JWT token issuing with the newly created dancer
