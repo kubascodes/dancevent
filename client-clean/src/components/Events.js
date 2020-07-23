@@ -588,7 +588,7 @@ class Events extends React.Component {
               </Row>
 
               {/*    Event Cards   */}
-              <div className="row align-items-center">
+              <div className="row">
                 {" "}
                 {this.state.events.length > 0 ? (
                   this.state.events.map((event) => (
