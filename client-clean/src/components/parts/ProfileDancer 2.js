@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 //import EventCardDeckOld from "./EventCardDeckOld";
 import EventCardDeck from "./EventCardDeck";
+import RequestCardDeck from "./RequestCardDeck";
 import Button from "react-bootstrap/Button";
 import MyRequests from "../forms/MyRequests";
 import moment from "moment";
 import {
   MdMailOutline,
   MdLocationOn,
+  MdPhone,
+  MdLockOutline,
   MdFavorite,
   MdFace,
   MdStarHalf,
+  MdEvent,
+  MdCreditCard,
 } from "react-icons/md";
 //profile avatar
 import { createAvatarComponent, SrcSource, IconSource } from "react-avatar";
@@ -98,11 +103,13 @@ const ProfileDancer = (props, userData) => {
         <EventCardDeckOld state={props.state} />
 */}
         <h4 className="text-center mt-2">
-          <b>Your Partner Requests</b>
+          <b>
+            Your Partner Requests
+          </b>
         </h4>
-        <MyRequests state={props.state} />
+            <MyRequests state={props.state}/>
 
-        {/*<RequestCardDeck state={props.state} />*/}
+            {/*<RequestCardDeck state={props.state} />*/}
       </div>
     </div>
   );
