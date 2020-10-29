@@ -56,27 +56,18 @@ class RegistrationFormDancer extends React.Component {
     //setting the file to the input
     if (event.target.files[0]) {
       let file = event.target.files[0];
-      let fileUrl = URL.createObjectURL(file);
       let context = this;
-      //defining the function
-      async function processImage(file, fileUrl, context) {
-        //console.log(file);
-        try {
-          let image = await ProcessImage(
-            file,
-            fileUrl,
-            "profilePicture",
-            context
-          );
-          context.setState({ picture: image });
-        } catch (error) {
-          alert(error);
-        }
-      }
-      //displaying progress bar
-      this.setState({ hiddenProgress: false });
       //calling the process function
-      processImage(file, fileUrl, context);
+      (async function () {
+        context.setState({ hiddenProgress: false });
+        let image = await ProcessImage(context);
+        if (image && context !== undefined) {
+          context.setState({ picture: image });
+          console.log(context);
+        }
+      })();
+
+
     }
   };
 

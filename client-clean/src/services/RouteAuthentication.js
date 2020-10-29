@@ -3,9 +3,8 @@ import { Redirect } from "react-router-dom";
 
 const RouteAuthentication = (Component, props) => {
   const AuthRoute = (props) => {
-    console.log(props);
     //check if the user has a jwt token
-    const isAuth = window.sessionStorage.secret_token;
+    const isAuth = sessionStorage.getItem("secret_token");
     //if he has, display the requested component
     if (isAuth) {
       return <Component {...props} />;
